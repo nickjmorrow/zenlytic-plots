@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
   webpackConfig: {
     module: {
@@ -9,5 +11,10 @@ module.exports = {
         },
       ],
     },
+  },
+  title: "Zenlytic Plots",
+  styleguideDir: "dist-docs",
+  moduleAliases: {
+    "zenlytic-plots": path.resolve(__dirname, "src"),
   },
 };

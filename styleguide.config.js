@@ -13,7 +13,7 @@ module.exports = {
     },
   },
   title: "Zenlytic Plots",
-  styleguideDir: "dist-docs",
+  styleguideDir: "docs",
   moduleAliases: {
     "zenlytic-plots": path.resolve(__dirname, "src"),
   },

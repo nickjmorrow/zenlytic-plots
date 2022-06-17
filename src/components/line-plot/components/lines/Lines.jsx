@@ -11,7 +11,17 @@ import React from 'react';
 import Line from './components/line/Line';
 import getLineColor from '../../util/getLineColor';
 
-function Lines({ lines = [[]], xScale, yScale, plotId, getXValue, getYValue, plotColor }) {
+function Lines({
+  lines = [[]],
+  xScale,
+  yScale,
+  plotId,
+  getXValue,
+  getYValue,
+  plotColor,
+  categoryDataIndex,
+  colorScale,
+}) {
   const isSingleLine = lines.length === 1;
   const curve = curveMonotoneX;
 
@@ -43,7 +53,7 @@ function Lines({ lines = [[]], xScale, yScale, plotId, getXValue, getYValue, plo
           curve={curve}
           getXValue={getXValue}
           getYValue={getYValue}
-          lineColor={plotColor}
+          lineColor={getLineColor(line, categoryDataIndex, colorScale, plotColor)}
         />
       ))}
     </>

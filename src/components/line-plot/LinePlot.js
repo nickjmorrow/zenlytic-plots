@@ -6,6 +6,7 @@ import { GridColumns } from '@visx/grid';
 import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { PLOT_MARGIN, SCALE_TYPES } from 'constants/plotConstants';
 import PropTypes from 'prop-types';
@@ -14,6 +15,11 @@ import Lines from './components/lines/Lines';
 import { getValue } from './util/accessors';
 import getXScale from './util/getXScale';
 import getYScale from './util/getYScale';
+import Brush from './components/brush/Brush';
+import getD3DataFormatter from '../../utils/getD3DataFormatter';
+import { scaleOrdinal } from '@visx/scale';
+import { PLOT_COLOR_PALETTE } from '../../constants/plotConstants';
+import getColorScale from './util/getColorScale';
 
 function LinePlot({
   height = 300,
@@ -130,7 +136,8 @@ function LinePlot({
       },
     ],
   ],
-  yAxisFormat,
+  yAxisZenlyticFormat,
+  xAxisZenlyticFormat,
   backgroundColor = 'transparent',
   accentColor = 'lightgray',
   axisColor = '#8A8A8A',
@@ -138,10 +145,14 @@ function LinePlot({
   yAxisNumberOfTicks = 4,
   xAxisDataIndex,
   yAxisDataIndex,
+  categoryDataIndex,
+  categoryLabel,
+  categoryZenlyticFormat,
   xAxisLabel,
   yAxisLabel,
+  useBrush = false,
 }) {
-  const plotId = '123-456-789';
+  const plotId = uuidv4();
 
   const PATTERN_ID = 'brush_pattern';
 
@@ -161,9 +172,13 @@ function LinePlot({
 
   const xScale = getXScale(lines, xAxisDataIndex, xMax, scaleType);
   const yScale = getYScale(lines, yAxisDataIndex, yMax);
+  const colorScale = getColorScale(lines, categoryDataIndex);
 
   const getXValue = (d) => getValue(d, xAxisDataIndex, scaleType);
   const getYValue = (d) => getValue(d, yAxisDataIndex);
+
+  const yAxisD3Format = getD3DataFormatter(yAxisZenlyticFormat);
+  const xAxisD3Format = getD3DataFormatter(xAxisZenlyticFormat);
 
   if (width < 10) return null;
   return (
@@ -209,7 +224,7 @@ function LinePlot({
           numTicks={yAxisNumberOfTicks}
           stroke={axisColor}
           tickStroke={axisColor}
-          tickFormat={yScale.tickFormat(6, yAxisFormat)}
+          tickFormat={yScale.tickFormat(6, yAxisD3Format)}
           label={yAxisLabel}
           labelOffset={50}
         />
@@ -224,6 +239,17 @@ function LinePlot({
           scaleType={scaleType}
           plotId={plotId}
           plotColor={plotColor}
+          categoryDataIndex={categoryDataIndex}
+          colorScale={colorScale}
+        />
+        <Brush
+          xAxisZenlyticFormat={xAxisZenlyticFormat}
+          xScale={xScale}
+          yScale={yScale}
+          margin={PLOT_MARGIN}
+          useBrush={useBrush}
+          xMax={xMax}
+          yMax={yMax}
         />
       </Group>
     </svg>

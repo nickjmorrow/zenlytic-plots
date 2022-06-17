@@ -1,5 +1,6 @@
-const getLineColor = (line, categoryIndex, colorScale) => {
-  const lineCategory = line.length ? line[0][categoryIndex] : null;
+const getLineColor = (line, categoryDataIndex, colorScale, plotColor) => {
+  if (!categoryDataIndex) return plotColor;
+  const lineCategory = line.length ? line[0][categoryDataIndex] : null;
   const catColor = colorScale(lineCategory);
   return catColor;
 };

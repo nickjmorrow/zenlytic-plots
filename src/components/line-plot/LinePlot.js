@@ -1,17 +1,16 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/require-default-props */
-import { curveMonotoneX } from '@visx/curve';
+import { AxisBottom, AxisLeft } from '@visx/axis';
 import { LinearGradient } from '@visx/gradient';
 import { GridColumns } from '@visx/grid';
 import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
-import { AreaClosed } from '@visx/shape';
-import { AxisBottom, AxisLeft } from '@visx/axis';
+import React from 'react';
 
 import { PLOT_MARGIN, SCALE_TYPES } from 'constants/plotConstants';
 import PropTypes from 'prop-types';
-import React from 'react';
 
+import Lines from './components/lines/Lines';
 import { getValue } from './util/accessors';
 import getXScale from './util/getXScale';
 import getYScale from './util/getYScale';
@@ -132,11 +131,10 @@ function LinePlot({
     ],
   ],
   yAxisFormat,
-  gradientFrom,
-  gradientTo,
   backgroundColor = 'transparent',
   accentColor = 'lightgray',
   axisColor = '#8A8A8A',
+  plotColor = '#8a8a8a',
   yAxisNumberOfTicks = 4,
   xAxisDataIndex,
   yAxisDataIndex,
@@ -164,6 +162,9 @@ function LinePlot({
   const xScale = getXScale(lines, xAxisDataIndex, xMax, scaleType);
   const yScale = getYScale(lines, yAxisDataIndex, yMax);
 
+  const getXValue = (d) => getValue(d, xAxisDataIndex, scaleType);
+  const getYValue = (d) => getValue(d, yAxisDataIndex);
+
   if (width < 10) return null;
   return (
     <svg
@@ -179,24 +180,6 @@ function LinePlot({
           to={backgroundColor}
           rotate={45}
         />
-        <LinearGradient
-          id={`area-gradient-${plotId}`}
-          from={gradientFrom}
-          to={gradientTo}
-          fromOpacity={1}
-          toOpacity={0.0}
-        />
-        {lines.length === 1 && (
-          <AreaClosed
-            data={lines[0]}
-            x={(d) => xScale(getValue(d, xAxisDataIndex, scaleType))}
-            y={(d) => yScale(getValue(d, yAxisDataIndex))}
-            yScale={yScale}
-            fill={`url(#area-gradient-${plotId})`}
-            defined={(d) => getValue(d, yAxisDataIndex, scaleType) !== null}
-            curve={curveMonotoneX}
-          />
-        )}
         <GridColumns
           scale={xScale}
           height={innerHeight}
@@ -230,6 +213,18 @@ function LinePlot({
           label={yAxisLabel}
           labelOffset={50}
         />
+        <Lines
+          lines={lines}
+          xScale={xScale}
+          yScale={yScale}
+          getXValue={getXValue}
+          getYValue={getYValue}
+          xAxisDataIndex={xAxisDataIndex}
+          yAxisDataIndex={yAxisDataIndex}
+          scaleType={scaleType}
+          plotId={plotId}
+          plotColor={plotColor}
+        />
       </Group>
     </svg>
   );
@@ -260,14 +255,6 @@ LinePlot.propTypes = {
   yAxisNumberOfTicks: PropTypes.number,
   /**
    * Starting part of the gradient that will go under the line
-   */
-  gradientFrom: PropTypes.string,
-  /**
-   * Ending part of the gradient that will go under the line
-   */
-  gradientTo: PropTypes.string,
-  /**
-   * The color of the primary plot items, like the ticks
    */
   axisColor: PropTypes.string,
   /**

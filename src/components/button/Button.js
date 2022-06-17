@@ -35,5 +35,5 @@ Button.defaultProps = {
   primary: false,
   size: 'medium',
   onClick: undefined,
-  color: 'red',
+  color: 'gold',
 };

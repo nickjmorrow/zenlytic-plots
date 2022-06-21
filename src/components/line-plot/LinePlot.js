@@ -20,6 +20,7 @@ import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import { scaleOrdinal } from '@visx/scale';
 import { PLOT_COLOR_PALETTE } from '../../constants/plotConstants';
 import getColorScale from './util/getColorScale';
+import getScaleType from './util/getScaleType';
 
 function LinePlot({
   height = 300,
@@ -162,20 +163,22 @@ function LinePlot({
     fontSize: 10,
   };
 
-  const scaleType = SCALE_TYPES.UTC;
-
   const innerHeight = height - PLOT_MARGIN.top - PLOT_MARGIN.bottom;
   const innerWidth = width - PLOT_MARGIN.left - PLOT_MARGIN.right;
 
   const xMax = Math.max(innerWidth, 0);
   const yMax = Math.max(innerHeight, 0);
 
-  const xScale = getXScale(lines, xAxisDataIndex, xMax, scaleType);
-  const yScale = getYScale(lines, yAxisDataIndex, yMax);
+  const xScaleType = getScaleType(xAxisZenlyticFormat);
+  // Right now this is assuming all y-axis are linear
+  const yScaleType = getScaleType(yAxisZenlyticFormat);
+
+  const xScale = getXScale(lines, xAxisDataIndex, xMax, xScaleType);
+  const yScale = getYScale(lines, yAxisDataIndex, yMax, yScaleType);
   const colorScale = getColorScale(lines, categoryDataIndex);
 
-  const getXValue = (d) => getValue(d, xAxisDataIndex, scaleType);
-  const getYValue = (d) => getValue(d, yAxisDataIndex);
+  const getXValue = (d) => getValue(d, xAxisDataIndex, xScaleType);
+  const getYValue = (d) => getValue(d, yAxisDataIndex, yScaleType);
 
   const yAxisD3Format = getD3DataFormatter(yAxisZenlyticFormat);
   const xAxisD3Format = getD3DataFormatter(xAxisZenlyticFormat);
@@ -236,7 +239,6 @@ function LinePlot({
           getYValue={getYValue}
           xAxisDataIndex={xAxisDataIndex}
           yAxisDataIndex={yAxisDataIndex}
-          scaleType={scaleType}
           plotId={plotId}
           plotColor={plotColor}
           categoryDataIndex={categoryDataIndex}

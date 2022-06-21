@@ -3,10 +3,13 @@ import commonjs from 'rollup-plugin-commonjs';
 import external from 'rollup-plugin-peer-deps-external';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
+import run from '@rollup/plugin-run';
 
 import packageJSON from './package.json';
 const input = './src/index.js';
 const minifyExtension = (pathToFile) => pathToFile.replace(/\.js$/, '.min.js');
+
+const dev = process.env.NODE_ENV !== 'production';
 
 export default [
   // CommonJS
@@ -24,6 +27,7 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      dev && run(),
     ],
   },
   {
@@ -41,6 +45,7 @@ export default [
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
       terser(),
+      dev && run(),
     ],
   },
   // UMD
@@ -92,7 +97,6 @@ export default [
       format: 'es',
       sourcemap: true,
       exports: 'named',
-      sourcemap: true,
     },
     plugins: [
       babel({

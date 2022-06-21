@@ -2,7 +2,6 @@
 /* eslint-disable react/require-default-props */
 import { curveMonotoneX } from '@visx/curve';
 import { AreaClosed } from '@visx/shape';
-import { ScaleType } from '@visx/scale';
 import { LinearGradient } from '@visx/gradient';
 
 import PropTypes from 'prop-types';

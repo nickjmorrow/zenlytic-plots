@@ -7,6 +7,8 @@ import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { bisector, max, min } from 'd3-array';
+import { localPoint } from '@visx/event';
 
 import { PLOT_MARGIN, SCALE_TYPES } from 'constants/plotConstants';
 import PropTypes from 'prop-types';
@@ -17,10 +19,12 @@ import getXScale from './util/getXScale';
 import getYScale from './util/getYScale';
 import Brush from './components/brush/Brush';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
+
 import { scaleOrdinal } from '@visx/scale';
 import { PLOT_COLOR_PALETTE } from '../../constants/plotConstants';
 import getColorScale from './util/getColorScale';
 import getScaleType from './util/getScaleType';
+import formatValue from '../../utils/formatValue';
 
 function LinePlot({
   height = 300,
@@ -152,6 +156,11 @@ function LinePlot({
   xAxisLabel,
   yAxisLabel,
   useBrush = false,
+  updateBrush = () => {},
+  showTooltip = () => {},
+  setIsClickMenuOpen = () => {},
+  isClickMenuOpen = false,
+  hideTooltip = () => {},
 }) {
   const plotId = uuidv4();
 
@@ -182,6 +191,38 @@ function LinePlot({
 
   const yAxisD3Format = getD3DataFormatter(yAxisZenlyticFormat);
   const xAxisD3Format = getD3DataFormatter(xAxisZenlyticFormat);
+
+  const onLineLeaveHover = () => {
+    if (isClickMenuOpen) {
+      return;
+    }
+    hideTooltip();
+  };
+
+  const onLineHover = (line, event) => {
+    if (isClickMenuOpen) {
+      return;
+    }
+    const bisectValue = bisector((d) => getXValue(d)).left;
+    const eventSvgCoords = localPoint(event);
+    const x0 = xScale.invert(eventSvgCoords.x - PLOT_MARGIN.left + PLOT_MARGIN.right);
+    const categoryLineIndex = bisectValue(line, x0, 1) - 1;
+    const closestPoint = line[categoryLineIndex];
+    const newTooltipData = {
+      xLabel: xAxisLabel,
+      xValue: formatValue(xAxisD3Format, closestPoint[xAxisDataIndex]),
+      yLabel: yAxisLabel,
+      yValue: formatValue(yAxisD3Format, closestPoint[yAxisDataIndex]),
+      categoryLabel,
+      category: null,
+      color: plotColor,
+    };
+    showTooltip({
+      tooltipData: newTooltipData,
+      tooltipTop: eventSvgCoords?.y,
+      tooltipLeft: eventSvgCoords?.x,
+    });
+  };
 
   if (width < 10) return null;
   return (
@@ -231,6 +272,18 @@ function LinePlot({
           label={yAxisLabel}
           labelOffset={50}
         />
+        <Brush
+          xAxisZenlyticFormat={xAxisZenlyticFormat}
+          xScale={xScale}
+          yScale={yScale}
+          margin={PLOT_MARGIN}
+          useBrush={useBrush}
+          xMax={xMax}
+          yMax={yMax}
+          updateBrush={updateBrush}
+          showTooltip={showTooltip}
+          setIsClickMenuOpen={setIsClickMenuOpen}
+        />
         <Lines
           lines={lines}
           xScale={xScale}
@@ -243,15 +296,8 @@ function LinePlot({
           plotColor={plotColor}
           categoryDataIndex={categoryDataIndex}
           colorScale={colorScale}
-        />
-        <Brush
-          xAxisZenlyticFormat={xAxisZenlyticFormat}
-          xScale={xScale}
-          yScale={yScale}
-          margin={PLOT_MARGIN}
-          useBrush={useBrush}
-          xMax={xMax}
-          yMax={yMax}
+          onLineHover={onLineHover}
+          onLineLeaveHover={onLineLeaveHover}
         />
       </Group>
     </svg>

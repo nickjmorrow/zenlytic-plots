@@ -20,6 +20,8 @@ function Lines({
   plotColor,
   categoryDataIndex,
   colorScale,
+  onLineHover,
+  onLineLeaveHover,
 }) {
   const isSingleLine = lines.length === 1;
   const curve = curveMonotoneX;
@@ -53,6 +55,8 @@ function Lines({
           getXValue={getXValue}
           getYValue={getYValue}
           lineColor={getLineColor(line, categoryDataIndex, colorScale, plotColor)}
+          onLineHover={onLineHover}
+          onLineLeaveHover={onLineLeaveHover}
         />
       ))}
     </>

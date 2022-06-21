@@ -4,7 +4,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { LinePath } from '@visx/shape';
 
-function Line({ line, xScale, yScale, curve, lineColor, getXValue, getYValue }) {
+function Line({
+  line,
+  xScale,
+  yScale,
+  curve,
+  lineColor,
+  getXValue,
+  getYValue,
+  isClickMenuOpen,
+  hideTooltip,
+  showTooltip,
+  onLineHover,
+  onLineLeaveHover,
+}) {
   return (
     <LinePath
       data={line}
@@ -17,6 +30,12 @@ function Line({ line, xScale, yScale, curve, lineColor, getXValue, getYValue }) 
       fill="none"
       defined={(d) => getYValue(d) !== null}
       curve={curve}
+      onMouseLeave={() => {
+        onLineLeaveHover();
+      }}
+      onMouseMove={(event) => {
+        onLineHover(line, event);
+      }}
     />
   );
 }

@@ -14,7 +14,6 @@ function Lines({
   lines = [[]],
   xScale,
   yScale,
-  plotId,
   getXValue,
   getYValue,
   plotColor,
@@ -22,45 +21,21 @@ function Lines({
   colorScale,
   onLineHover,
   onLineLeaveHover,
+  curve,
 }) {
-  const isSingleLine = lines.length === 1;
-  const curve = curveMonotoneX;
-
-  return (
-    <>
-      <LinearGradient
-        id={`area-gradient-${plotId}`}
-        from={plotColor}
-        to={null}
-        fromOpacity={1}
-        toOpacity={0.0}
-      />
-      {isSingleLine && (
-        <AreaClosed
-          data={lines[0]}
-          x={(d) => xScale(getXValue(d))}
-          y={(d) => yScale(getYValue(d))}
-          yScale={yScale}
-          fill={`url(#area-gradient-${plotId})`}
-          defined={(d) => getYValue(d) !== null}
-          curve={curve}
-        />
-      )}
-      {lines.map((line) => (
-        <Line
-          line={line}
-          xScale={xScale}
-          yScale={yScale}
-          curve={curve}
-          getXValue={getXValue}
-          getYValue={getYValue}
-          lineColor={getLineColor(line, categoryDataIndex, colorScale, plotColor)}
-          onLineHover={onLineHover}
-          onLineLeaveHover={onLineLeaveHover}
-        />
-      ))}
-    </>
-  );
+  return lines?.map((line) => (
+    <Line
+      line={line}
+      xScale={xScale}
+      yScale={yScale}
+      curve={curve}
+      getXValue={getXValue}
+      getYValue={getYValue}
+      lineColor={getLineColor(line, categoryDataIndex, colorScale, plotColor)}
+      onLineHover={onLineHover}
+      onLineLeaveHover={onLineLeaveHover}
+    />
+  ));
 }
 
 export default Lines;
@@ -70,7 +45,6 @@ Lines.propTypes = {
    * Each line is an array of points to draw on the plot.
    */
   lines: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)),
-  plotId: PropTypes.string,
   getXValue: PropTypes.func,
   getYValue: PropTypes.func,
   plotColor: PropTypes.string,

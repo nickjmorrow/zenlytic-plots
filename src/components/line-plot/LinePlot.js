@@ -25,6 +25,9 @@ import { PLOT_COLOR_PALETTE } from '../../constants/plotConstants';
 import getColorScale from './util/getColorScale';
 import getScaleType from './util/getScaleType';
 import formatValue from '../../utils/formatValue';
+import { AreaClosed } from '@visx/shape';
+import { curveMonotoneX } from '@visx/curve';
+import { LegendItem, LegendLabel, LegendOrdinal } from '@visx/legend';
 
 function LinePlot({
   height = 300,
@@ -157,10 +160,13 @@ function LinePlot({
   yAxisLabel,
   useBrush = false,
   updateBrush = () => {},
-  showTooltip = () => {},
-  setIsClickMenuOpen = () => {},
-  isClickMenuOpen = false,
-  hideTooltip = () => {},
+  // showTooltip = () => {},
+  // setIsClickMenuOpen = () => {},
+  // isClickMenuOpen = false,
+  // hideTooltip = () => {},
+  onLineHover = () => {},
+  onLineLeaveHover = () => {},
+  svgRef = null,
 }) {
   const plotId = uuidv4();
 
@@ -192,115 +198,156 @@ function LinePlot({
   const yAxisD3Format = getD3DataFormatter(yAxisZenlyticFormat);
   const xAxisD3Format = getD3DataFormatter(xAxisZenlyticFormat);
 
-  const onLineLeaveHover = () => {
-    if (isClickMenuOpen) {
-      return;
-    }
-    hideTooltip();
+  const isSingleLine = lines.length === 1;
+  const curve = curveMonotoneX;
+
+  const handleOnLineLeaveHover = () => {
+    // if (isClickMenuOpen) {
+    //   return;
+    // }
+    // hideTooltip();
+    onLineLeaveHover();
   };
 
-  const onLineHover = (line, event) => {
-    if (isClickMenuOpen) {
-      return;
-    }
+  const handleOnLineHover = (line, event) => {
     const bisectValue = bisector((d) => getXValue(d)).left;
     const eventSvgCoords = localPoint(event);
     const x0 = xScale.invert(eventSvgCoords.x - PLOT_MARGIN.left + PLOT_MARGIN.right);
     const categoryLineIndex = bisectValue(line, x0, 1) - 1;
     const closestPoint = line[categoryLineIndex];
-    const newTooltipData = {
-      xLabel: xAxisLabel,
-      xValue: formatValue(xAxisD3Format, closestPoint[xAxisDataIndex]),
-      yLabel: yAxisLabel,
-      yValue: formatValue(yAxisD3Format, closestPoint[yAxisDataIndex]),
-      categoryLabel,
-      category: null,
-      color: plotColor,
-    };
-    showTooltip({
-      tooltipData: newTooltipData,
-      tooltipTop: eventSvgCoords?.y,
-      tooltipLeft: eventSvgCoords?.x,
-    });
+    onLineHover(closestPoint, eventSvgCoords);
+    // const newTooltipData = {
+    //   xLabel: xAxisLabel,
+    //   xValue: formatValue(xAxisD3Format, closestPoint[xAxisDataIndex]),
+    //   yLabel: yAxisLabel,
+    //   yValue: formatValue(yAxisD3Format, closestPoint[yAxisDataIndex]),
+    //   categoryLabel,
+    //   category: null,
+    //   color: plotColor,
+    // };
+    // showTooltip({
+    //   tooltipData: newTooltipData,
+    //   tooltipTop: eventSvgCoords?.y,
+    //   tooltipLeft: eventSvgCoords?.x,
+    // });
   };
 
   if (width < 10) return null;
   return (
-    <svg
-      width={width}
-      height={height}
-      xmlns="http://www.w3.org/2000/svg"
-      version="1.1"
-      style={{ overflow: 'visible' }}>
-      <Group left={PLOT_MARGIN.left} top={PLOT_MARGIN.top}>
-        <LinearGradient
-          id="area-background-gradient"
-          from={backgroundColor}
-          to={backgroundColor}
-          rotate={45}
-        />
-        <GridColumns
-          scale={xScale}
-          height={innerHeight}
-          stroke={accentColor}
-          strokeOpacity={0.2}
-          pointerEvents="none"
-        />
-        <PatternLines
-          id={PATTERN_ID}
-          height={8}
-          width={8}
-          stroke={axisColor}
-          strokeWidth={2}
-          orientation={['diagonal']}
-        />
-        <AxisBottom
-          top={yMax}
-          scale={xScale}
-          numTicks={width < 700 ? 4 : null}
-          stroke={axisColor}
-          tickStroke={axisColor}
-          tickLabelProps={() => axisBottomTickLabelProps}
-          label={xAxisLabel}
-        />
-        <AxisLeft
-          scale={yScale}
-          numTicks={yAxisNumberOfTicks}
-          stroke={axisColor}
-          tickStroke={axisColor}
-          tickFormat={yScale.tickFormat(6, yAxisD3Format)}
-          label={yAxisLabel}
-          labelOffset={50}
-        />
-        <Brush
-          xAxisZenlyticFormat={xAxisZenlyticFormat}
-          xScale={xScale}
-          yScale={yScale}
-          margin={PLOT_MARGIN}
-          useBrush={useBrush}
-          xMax={xMax}
-          yMax={yMax}
-          updateBrush={updateBrush}
-          showTooltip={showTooltip}
-          setIsClickMenuOpen={setIsClickMenuOpen}
-        />
-        <Lines
-          lines={lines}
-          xScale={xScale}
-          yScale={yScale}
-          getXValue={getXValue}
-          getYValue={getYValue}
-          xAxisDataIndex={xAxisDataIndex}
-          yAxisDataIndex={yAxisDataIndex}
-          plotId={plotId}
-          plotColor={plotColor}
-          categoryDataIndex={categoryDataIndex}
-          colorScale={colorScale}
-          onLineHover={onLineHover}
-          onLineLeaveHover={onLineLeaveHover}
-        />
-      </Group>
-    </svg>
+    <>
+      <svg
+        width={width}
+        height={height}
+        ref={svgRef}
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        style={{ overflow: 'visible' }}>
+        <Group left={PLOT_MARGIN.left} top={PLOT_MARGIN.top}>
+          <LinearGradient
+            id="area-background-gradient"
+            from={backgroundColor}
+            to={backgroundColor}
+            rotate={45}
+          />
+          <GridColumns
+            scale={xScale}
+            height={innerHeight}
+            stroke={accentColor}
+            strokeOpacity={0.2}
+            pointerEvents="none"
+          />
+          <PatternLines
+            id={PATTERN_ID}
+            height={8}
+            width={8}
+            stroke={axisColor}
+            strokeWidth={2}
+            orientation={['diagonal']}
+          />
+          <AxisBottom
+            top={yMax}
+            scale={xScale}
+            numTicks={width < 700 ? 4 : null}
+            stroke={axisColor}
+            tickStroke={axisColor}
+            tickLabelProps={() => axisBottomTickLabelProps}
+            label={xAxisLabel}
+          />
+          <AxisLeft
+            scale={yScale}
+            numTicks={yAxisNumberOfTicks}
+            stroke={axisColor}
+            tickStroke={axisColor}
+            tickFormat={yScale.tickFormat(6, yAxisD3Format)}
+            label={yAxisLabel}
+            labelOffset={50}
+          />
+          {isSingleLine && (
+            <>
+              <LinearGradient
+                id={`area-gradient-${plotId}`}
+                from={plotColor}
+                to={null}
+                fromOpacity={1}
+                toOpacity={0.0}
+              />
+              <AreaClosed
+                data={lines[0]}
+                x={(d) => xScale(getXValue(d))}
+                y={(d) => yScale(getYValue(d))}
+                yScale={yScale}
+                fill={`url(#area-gradient-${plotId})`}
+                defined={(d) => getYValue(d) !== null}
+                curve={curve}
+              />
+            </>
+          )}
+
+          <Brush
+            xAxisZenlyticFormat={xAxisZenlyticFormat}
+            xScale={xScale}
+            yScale={yScale}
+            margin={PLOT_MARGIN}
+            useBrush={useBrush}
+            xMax={xMax}
+            yMax={yMax}
+            updateBrush={updateBrush}
+          />
+          <Lines
+            lines={lines}
+            xScale={xScale}
+            yScale={yScale}
+            getXValue={getXValue}
+            getYValue={getYValue}
+            xAxisDataIndex={xAxisDataIndex}
+            yAxisDataIndex={yAxisDataIndex}
+            plotId={plotId}
+            plotColor={plotColor}
+            categoryDataIndex={categoryDataIndex}
+            colorScale={colorScale}
+            onLineHover={handleOnLineHover}
+            onLineLeaveHover={handleOnLineLeaveHover}
+            curve={curve}
+          />
+        </Group>
+        <LegendOrdinal scale={colorScale} labelFormat={(label) => `${label.toUpperCase()}`}>
+          {(labels) => (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              {labels.map((label, i) => (
+                <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                  <svg width={15} height={15}>
+                    <rect fill={label.value} width={15} height={15} />
+                  </svg>
+                  <LegendLabel align="left" margin="0 0 0 4px">
+                    {label.text}
+                  </LegendLabel>
+                </LegendItem>
+              ))}
+            </div>
+          )}
+        </LegendOrdinal>
+      </svg>
+    </>
   );
 }
 

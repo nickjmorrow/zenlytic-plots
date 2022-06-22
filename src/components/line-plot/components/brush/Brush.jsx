@@ -17,8 +17,6 @@ function Brush({
   xMax,
   yMax,
   updateBrush = () => {},
-  showTooltip = () => {},
-  setIsClickMenuOpen = () => {},
 }) {
   const PATTERN_ID = 'brush_pattern';
 
@@ -30,25 +28,16 @@ function Brush({
 
   const brushRef = useRef();
 
-  const selectPeriod = (period, left, top) => {
-    updateBrush(period);
-    setIsClickMenuOpen(true);
-    showTooltip({
-      tooltipData: period,
-      tooltipLeft: left,
-      tooltipTop: top,
-    });
-  };
-
   const onBrushEnd = (domain = null) => {
     if (!domain) return;
     const { x0, x1, y1 } = domain;
+    const coords = { x: xScale(x1), y: yScale(y1) };
     if (DATE_AXIS_TYPES.includes(xAxisZenlyticFormat)) {
-      const startDate = moment(x0).utc().format();
-      const endDate = moment(x1).utc().format();
-      selectPeriod({ startDate, endDate }, xScale(x1), yScale(y1));
+      const start = moment(x0).utc().format();
+      const end = moment(x1).utc().format();
+      updateBrush({ start, end }, coords);
     } else {
-      selectPeriod({ start: x0, end: x1 }, xScale(x1), yScale(y1));
+      updateBrush({ start: x0, end: x1 }, coords);
     }
   };
 

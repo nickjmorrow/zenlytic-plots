@@ -1,30 +1,29 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Label,
-  ReferenceArea,
-  Tooltip,
+  BarChart,
+  Bar,
+  Cell,
   XAxis,
   YAxis,
+  CartesianGrid,
+  Tooltip,
+  ReferenceLine,
+  ReferenceArea,
+  Label,
 } from 'recharts';
-
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
 
-function LinePlot({
+function HistogramPlot({
   plotColor = '#8a8a8a',
   width = 300,
   height = 300,
-  tickCount = 5,
-  minTickGap = 100,
-  interval = 'preserveEnd',
   xAxis = {},
   yAxis = {},
-  data: lines,
+  data = [],
   margin = {
     top: 32,
     left: 24,
@@ -36,12 +35,13 @@ function LinePlot({
   onUpdateBrush = () => {},
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisKey } = xAxis;
-  console.log('🚀 ~ file: LinePlot.js ~ line 39 ~ xAxis', xAxis);
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
-  console.log('🚀 ~ file: LinePlot.js ~ line 41 ~ yAxis', yAxis);
 
   const [refAreaLeft, setRefAreaLeft] = useState('');
+  const [refAreaValueLeft, setRefAreaValueLeft] = useState('');
   const [refAreaRight, setRefAreaRight] = useState('');
+  const [refAreaValueRight, setRefAreaValueRight] = useState('');
+
   const [isDragging, setIsDragging] = useState(false);
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
@@ -49,6 +49,8 @@ function LinePlot({
   const closeClickTooltip = () => {
     setRefAreaLeft('');
     setRefAreaRight('');
+    setRefAreaValueLeft('');
+    setRefAreaValueRight('');
     setIsClickTooltipVisible(false);
     setClickTooltipCoords(null);
   };
@@ -56,71 +58,97 @@ function LinePlot({
   const onBrushEnd = () => {
     setIsDragging(false);
 
-    if (isClickTooltipVisible) {
+    if (
+      isClickTooltipVisible ||
+      !refAreaLeft ||
+      !refAreaValueLeft ||
+      !refAreaRight ||
+      !refAreaValueRight
+    ) {
       return;
     }
 
     setIsClickTooltipVisible(true);
-    if (refAreaLeft === refAreaRight || refAreaRight === '') {
+    if (refAreaLeft === refAreaRight || refAreaRight === '' || refAreaValueRight === '') {
       closeClickTooltip();
       return;
     }
-    if (refAreaLeft > refAreaRight) {
+    if (refAreaValueLeft > refAreaValueRight) {
       setRefAreaLeft(refAreaRight);
+      setRefAreaValueLeft(refAreaValueRight);
       setRefAreaRight(refAreaLeft);
-      onUpdateBrush({ start: refAreaRight, end: refAreaLeft });
+      setRefAreaValueRight(refAreaValueLeft);
+      onUpdateBrush({ start: refAreaValueRight, end: refAreaValueLeft });
     } else {
-      onUpdateBrush({ start: refAreaLeft, end: refAreaRight });
+      onUpdateBrush({ start: refAreaValueLeft, end: refAreaValueRight });
     }
   };
 
-  const data = lines[0];
   return (
-    // <ResponsiveContainer width={300} height={100}>
     <div style={{ userSelect: 'none' }}>
-      <AreaChart
+      <BarChart
         height={height}
         width={width}
         data={data}
         margin={margin}
+        barCategoryGap={10}
         onMouseDown={(e) => {
-          if (isClickTooltipVisible) return false;
+          if (isClickTooltipVisible) return;
+          if (!e?.activeLabel) return;
+          if (!e?.activePayload) return;
+
+          if (isDragging) return;
           setIsDragging(true);
           setRefAreaLeft(e.activeLabel);
+          setRefAreaValueLeft(e.activePayload[0].payload?.rangeBottom);
         }}
         onMouseMove={(e) => {
-          if (refAreaLeft && isDragging) {
+          if (refAreaLeft && isDragging && e.activeLabel && e.activeCoordinate) {
             setRefAreaRight(e.activeLabel);
+            setRefAreaValueRight(e.activePayload[0].payload?.rangeTop);
             setClickTooltipCoords(e.activeCoordinate);
+          }
+        }}
+        onMouseLeave={(e) => {
+          setIsDragging(false);
+          if (
+            refAreaLeft &&
+            refAreaValueLeft &&
+            refAreaRight &&
+            refAreaValueRight &&
+            !isClickTooltipVisible
+          ) {
+            onBrushEnd();
           }
         }}
         // eslint-disable-next-line react/jsx-no-bind
         onMouseUp={onBrushEnd}>
-        <defs>
-          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor={plotColor} stopOpacity={0.8} />
-            <stop offset="95%" stopColor={plotColor} stopOpacity={0} />
-          </linearGradient>
-        </defs>
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
-          // height={70}
-          domain={['dataMin', 'dataMax']}
-          // tickCount={tickCount}
+          padding={{ left: 20, right: 20 }}
+          allowDuplicatedCategory={false}
+          interval="preserveStartEnd"
           name={xAxisLabel}
-          minTickGap={minTickGap}
-          dataKey={xAxisKey}
-          interval={interval}
-          tickFormatter={(timeStr) =>
-            formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
-          }>
+          dataKey={(ev) =>
+            `${formatValue(
+              getD3DataFormatter(xAxisFormat, ev.rangeBottom),
+              ev.rangeBottom
+            )} to ${formatValue(getD3DataFormatter(xAxisFormat, ev.rangeTop), ev.rangeTop)}`
+          }
+          type="category"
+          // tickFormatter={(timeStr) =>
+          //   formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
+          // }
+        >
           <Label value={xAxisLabel} offset={-10} position="insideBottom" />
         </XAxis>
         <YAxis
+          name={yAxisLabel}
+          width={80}
+          dataKey="value"
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
-          }
-          name={yAxisLabel}>
+          }>
           <Label
             value={yAxisLabel}
             position="insideLeft"
@@ -141,23 +169,10 @@ function LinePlot({
             />
           }
           formatter={(value) => formatValue(getD3DataFormatter(yAxisFormat, value), value)}
-          labelFormatter={(value) => formatValue(getD3DataFormatter(xAxisFormat, value), value)}
+          // labelFormatter={(value) => formatValue(getD3DataFormatter(xAxisFormat, value), value)}
         />
-        {/* <Tooltip content={<CustomHoverTooltip />} />
-            <Tooltip position={clickTooltipCoords} content={<CustomTooltip />} /> */}
-        {/* <Brush dataKey={xAxisZenlyticFormat} height={30} stroke={plotColor} /> */}
         {/* <Legend /> */}
-        <Area
-          type="monotone"
-          dataKey={yAxisKey}
-          stroke={plotColor}
-          strokeWidth={2}
-          activeDot={isClickTooltipVisible ? false : { r: 8 }}
-          fillOpacity={1}
-          fill="url(#colorUv)"
-          name={yAxisLabel}
-          dot
-        />
+        <Bar dataKey="value" fill={plotColor} name={yAxisLabel} />
         <ReferenceArea
           x1={refAreaRight}
           x2={refAreaLeft}
@@ -166,12 +181,11 @@ function LinePlot({
           stroke="gray"
           alwaysShow
         />
-      </AreaChart>
+      </BarChart>
     </div>
-    // </ResponsiveContainer>
   );
 }
 
-LinePlot.propTypes = {};
+HistogramPlot.propTypes = {};
 
-export default LinePlot;
+export default HistogramPlot;

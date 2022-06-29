@@ -10,3 +10,5 @@ npm-debug.log*
 
 guide.sh
 /dist-docs
+
+*yalc*

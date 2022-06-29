@@ -16,12 +16,11 @@ export default {
 const Template = (args) => <LinePlot {...args} />;
 
 export const Normal = Template.bind({});
-export const Empty = Template.bind({});
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Normal.args = {
-  height: 500,
-  width: 900,
+  height: 400,
+  width: 1000,
   lines: [
     [
       {
@@ -134,10 +133,10 @@ Normal.args = {
       },
     ],
   ],
-  yAxisFormat: '$.3~s',
+  yAxisZenlyticFormat: '$.3~s',
+  xAxisZenlyticFormat: 'date',
   backgroundColor: 'red',
-  gradientTo: 'red',
-  gradientFrom: 'blue',
+  plotColor: 'blue',
   accentColor: 'lightgray',
   axisColor: '#8A8A8A',
   yAxisNumberOfTicks: 4,
@@ -145,6 +144,5 @@ Normal.args = {
   yAxisDataIndex: 'ORDERS_TOTAL_REVENUE',
   xAxisLabel: 'Order Created At Date',
   yAxisLabel: 'Total Revenue',
+  minTickGap: 100,
 };
-
-Empty.args = {};

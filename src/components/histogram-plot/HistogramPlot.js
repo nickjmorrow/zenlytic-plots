@@ -17,6 +17,11 @@ import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
 
+function HistogramBarLabel(props) {
+  console.log('🚀 ~ file: HistogramPlot.js ~ line 22 ~ HistogramBarLabel ~ props', props);
+  return 'methol';
+}
+
 function HistogramPlot({
   plotColor = '#8a8a8a',
   width = 300,
@@ -38,19 +43,21 @@ function HistogramPlot({
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
 
   const [refAreaLeft, setRefAreaLeft] = useState('');
-  const [refAreaValueLeft, setRefAreaValueLeft] = useState('');
   const [refAreaRight, setRefAreaRight] = useState('');
-  const [refAreaValueRight, setRefAreaValueRight] = useState('');
 
   const [isDragging, setIsDragging] = useState(false);
+  const [focusBar, setFocusBar] = useState(null);
+  const [mouseLeave, setMouseLeave] = useState(true);
+
+  console.log('🚀 ~ file: HistogramPlot.js ~ line 47 ~ focusBar', focusBar);
+
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
 
   const closeClickTooltip = () => {
     setRefAreaLeft('');
     setRefAreaRight('');
-    setRefAreaValueLeft('');
-    setRefAreaValueRight('');
+
     setIsClickTooltipVisible(false);
     setClickTooltipCoords(null);
   };
@@ -58,29 +65,21 @@ function HistogramPlot({
   const onBrushEnd = () => {
     setIsDragging(false);
 
-    if (
-      isClickTooltipVisible ||
-      !refAreaLeft ||
-      !refAreaValueLeft ||
-      !refAreaRight ||
-      !refAreaValueRight
-    ) {
+    if (isClickTooltipVisible || !refAreaLeft || !refAreaRight) {
       return;
     }
 
     setIsClickTooltipVisible(true);
-    if (refAreaLeft === refAreaRight || refAreaRight === '' || refAreaValueRight === '') {
+    if (refAreaLeft === refAreaRight || refAreaRight === '') {
       closeClickTooltip();
       return;
     }
-    if (refAreaValueLeft > refAreaValueRight) {
+    if (refAreaLeft > refAreaRight) {
       setRefAreaLeft(refAreaRight);
-      setRefAreaValueLeft(refAreaValueRight);
       setRefAreaRight(refAreaLeft);
-      setRefAreaValueRight(refAreaValueLeft);
-      onUpdateBrush({ start: refAreaValueRight, end: refAreaValueLeft });
+      onUpdateBrush({ start: refAreaRight, end: refAreaLeft });
     } else {
-      onUpdateBrush({ start: refAreaValueLeft, end: refAreaValueRight });
+      onUpdateBrush({ start: refAreaLeft, end: refAreaRight });
     }
   };
 
@@ -91,7 +90,7 @@ function HistogramPlot({
         width={width}
         data={data}
         margin={margin}
-        barCategoryGap={10}
+        barCategoryGap={'10%'}
         onMouseDown={(e) => {
           if (isClickTooltipVisible) return;
           if (!e?.activeLabel) return;
@@ -100,24 +99,24 @@ function HistogramPlot({
           if (isDragging) return;
           setIsDragging(true);
           setRefAreaLeft(e.activeLabel);
-          setRefAreaValueLeft(e.activePayload[0].payload?.rangeBottom);
         }}
         onMouseMove={(e) => {
+          console.log('🚀 ~ file: HistogramPlot.js ~ line 108 ~ e', e);
+          if (e.isTooltipActive) {
+            setFocusBar(e.activeTooltipIndex);
+            setMouseLeave(false);
+          } else {
+            setFocusBar(null);
+            setMouseLeave(true);
+          }
           if (refAreaLeft && isDragging && e.activeLabel && e.activeCoordinate) {
             setRefAreaRight(e.activeLabel);
-            setRefAreaValueRight(e.activePayload[0].payload?.rangeTop);
             setClickTooltipCoords(e.activeCoordinate);
           }
         }}
         onMouseLeave={(e) => {
           setIsDragging(false);
-          if (
-            refAreaLeft &&
-            refAreaValueLeft &&
-            refAreaRight &&
-            refAreaValueRight &&
-            !isClickTooltipVisible
-          ) {
+          if (refAreaLeft && refAreaRight && !isClickTooltipVisible) {
             onBrushEnd();
           }
         }}
@@ -125,26 +124,19 @@ function HistogramPlot({
         onMouseUp={onBrushEnd}>
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
-          padding={{ left: 20, right: 20 }}
-          allowDuplicatedCategory={false}
+          // padding={{ left: 20, right: 20 }}
           interval="preserveStartEnd"
           name={xAxisLabel}
-          dataKey={(ev) =>
-            `${formatValue(
-              getD3DataFormatter(xAxisFormat, ev.rangeBottom),
-              ev.rangeBottom
-            )} to ${formatValue(getD3DataFormatter(xAxisFormat, ev.rangeTop), ev.rangeTop)}`
-          }
-          type="category"
-          // tickFormatter={(timeStr) =>
-          //   formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
-          // }
-        >
+          dataKey={'rangeBottom'}
+          type="number"
+          tickFormatter={(timeStr) =>
+            formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
+          }>
           <Label value={xAxisLabel} offset={-10} position="insideBottom" />
         </XAxis>
         <YAxis
           name={yAxisLabel}
-          width={80}
+          // width={80}
           dataKey="value"
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
@@ -156,8 +148,24 @@ function HistogramPlot({
             style={{ textAnchor: 'middle' }}
           />
         </YAxis>
+        <Bar dataKey="value" fill={plotColor} name={yAxisLabel}>
+          {data.map((entry, index) => (
+            <Cell
+              fill={plotColor}
+              fillOpacity={focusBar === index || mouseLeave || isClickTooltipVisible ? 1.0 : 0.3}
+            />
+          ))}
+        </Bar>
+        <ReferenceArea
+          x1={refAreaRight}
+          x2={refAreaLeft}
+          strokeOpacity={0.3}
+          isFront
+          stroke="gray"
+          alwaysShow
+        />
         <Tooltip
-          cursor={!isClickTooltipVisible}
+          cursor={false}
           wrapperStyle={{ visibility: 'visible' }}
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={
@@ -169,18 +177,21 @@ function HistogramPlot({
             />
           }
           formatter={(value) => formatValue(getD3DataFormatter(yAxisFormat, value), value)}
-          // labelFormatter={(value) => formatValue(getD3DataFormatter(xAxisFormat, value), value)}
+          labelFormatter={(value, payload) => {
+            const hoveredBar = payload[0] || {};
+            const { payload: hoveredBarPayload = {} } = hoveredBar;
+            console.log(
+              '🚀 ~ file: HistogramPlot.js ~ line 180 ~ hoveredBarPayload',
+              hoveredBarPayload
+            );
+            const { rangeTop, rangeBottom } = hoveredBarPayload;
+            return `${formatValue(
+              getD3DataFormatter(xAxisFormat, rangeBottom),
+              rangeBottom
+            )} - ${formatValue(getD3DataFormatter(xAxisFormat, rangeTop), rangeTop)}`;
+          }}
         />
         {/* <Legend /> */}
-        <Bar dataKey="value" fill={plotColor} name={yAxisLabel} />
-        <ReferenceArea
-          x1={refAreaRight}
-          x2={refAreaLeft}
-          strokeOpacity={0.3}
-          isFront
-          stroke="gray"
-          alwaysShow
-        />
       </BarChart>
     </div>
   );

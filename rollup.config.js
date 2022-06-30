@@ -88,39 +88,39 @@ export default [
       terser(),
     ],
   },
-  {
-    input,
-    output: {
-      file: packageJSON.module,
-      format: 'es',
-      sourcemap: true,
-      exports: 'named',
-    },
-    plugins: [
-      babel({
-        exclude: 'node_modules/**',
-      }),
-      external(),
-      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-      commonjs(),
-    ],
-  },
-  {
-    input,
-    output: {
-      file: minifyExtension(packageJSON.module),
-      format: 'es',
-      sourcemap: true,
-      exports: 'named',
-    },
-    plugins: [
-      babel({
-        exclude: 'node_modules/**',
-      }),
-      external(),
-      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-      commonjs(),
-      terser(),
-    ],
-  },
+  // {
+  //   input,
+  //   output: {
+  //     file: packageJSON.module,
+  //     format: 'es',
+  //     sourcemap: true,
+  //     exports: 'named',
+  //   },
+  //   plugins: [
+  //     babel({
+  //       exclude: 'node_modules/**',
+  //     }),
+  //     external(),
+  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+  //     commonjs(),
+  //   ],
+  // },
+  // {
+  //   input,
+  //   output: {
+  //     file: minifyExtension(packageJSON.module),
+  //     format: 'es',
+  //     sourcemap: true,
+  //     exports: 'named',
+  //   },
+  //   plugins: [
+  //     babel({
+  //       exclude: 'node_modules/**',
+  //     }),
+  //     external(),
+  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+  //     commonjs(),
+  //     terser(),
+  //   ],
+  // },
 ];

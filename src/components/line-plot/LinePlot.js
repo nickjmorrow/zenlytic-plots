@@ -17,6 +17,7 @@ import TooltipHandler from '../tooltip-handler/TooltipHandler';
 
 function LinePlot({
   plotColor = '#8a8a8a',
+  plotSecondaryColor = '#8a8a8a',
   width = 300,
   height = 300,
   tickCount = 5,
@@ -29,7 +30,7 @@ function LinePlot({
     top: 32,
     left: 24,
     bottom: 40,
-    right: 32,
+    right: 40,
   },
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
@@ -98,8 +99,8 @@ function LinePlot({
         onMouseUp={onBrushEnd}>
         <defs>
           <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor={plotColor} stopOpacity={0.8} />
-            <stop offset="95%" stopColor={plotColor} stopOpacity={0} />
+            <stop offset="10%" stopColor={plotSecondaryColor} stopOpacity={1.0} />
+            <stop offset="90%" stopColor={plotSecondaryColor} stopOpacity={0.1} />
           </linearGradient>
         </defs>
         <CartesianGrid stroke="#f5f5f5" />
@@ -117,6 +118,7 @@ function LinePlot({
           <Label value={xAxisLabel} offset={-10} position="insideBottom" />
         </XAxis>
         <YAxis
+          width={80}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }

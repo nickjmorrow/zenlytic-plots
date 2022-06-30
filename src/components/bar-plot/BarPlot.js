@@ -7,6 +7,7 @@ import TooltipHandler from '../tooltip-handler/TooltipHandler';
 
 function BarPlot({
   plotColor = '#8a8a8a',
+  plotSecondaryColor = '#8a8a8a',
   xAxis = {},
   yAxis = {},
   data = [],
@@ -105,7 +106,14 @@ function BarPlot({
             )
           }
         />
-        <Bar dataKey="value" name={xAxisLabel} fill={plotColor} />
+        <Bar
+          dataKey="value"
+          name={xAxisLabel}
+          fill={plotSecondaryColor}
+          stroke={plotColor}
+          radius={[0, 5, 5, 0]}
+          strokeWidth={2}
+        />
       </BarChart>
     </div>
   );

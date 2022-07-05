@@ -54,7 +54,7 @@ function WaterfallPlot({
     const verticalOffset = height >= 0 ? 10 : -10;
     const textColor = height >= 0 ? 'green' : 'red';
 
-    if (index === 0 || index === data.length - 1 || index === data.length - 2) return null;
+    if (index === 0 || index === data.length - 1) return null;
     return (
       <g>
         <text
@@ -64,7 +64,7 @@ function WaterfallPlot({
           fill={textColor}
           textAnchor="middle"
           dominantBaseline="middle">
-          {value}
+          {formatValue(getD3DataFormatter(yAxisFormat, value), value)}
         </text>
       </g>
     );
@@ -79,14 +79,13 @@ function WaterfallPlot({
         data={data}
         onClick={(a) => console.log(a)}>
         <CartesianGrid stroke="#f5f5f5" />
-        <XAxis dataKey="name">
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
-        </XAxis>
+        <XAxis dataKey="name" axisLine={false} tickLine={false} />
         <YAxis
           type="number"
           width={80}
-          // tickFormatter={(timeStr) => formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)}
-        >
+          tickFormatter={(timeStr) =>
+            formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
+          }>
           <Label
             value={yAxisLabel}
             position="insideLeft"

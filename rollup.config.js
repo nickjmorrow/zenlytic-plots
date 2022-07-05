@@ -29,24 +29,24 @@ export default [
       // dev && run(),
     ],
   },
-  {
-    input,
-    output: {
-      file: minifyExtension(packageJSON.main),
-      format: 'cjs',
-      sourcemap: true,
-    },
-    plugins: [
-      babel({
-        exclude: 'node_modules/**',
-      }),
-      external(),
-      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-      commonjs(),
-      terser(),
-      // dev && run(),
-    ],
-  },
+  // {
+  //   input,
+  //   output: {
+  //     file: minifyExtension(packageJSON.main),
+  //     format: 'cjs',
+  //     sourcemap: true,
+  //   },
+  //   plugins: [
+  //     babel({
+  //       exclude: 'node_modules/**',
+  //     }),
+  //     external(),
+  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+  //     commonjs(),
+  //     terser(),
+  //     // dev && run(),
+  //   ],
+  // },
   {
     input,
     output: {
@@ -67,27 +67,27 @@ export default [
       commonjs(),
     ],
   },
-  {
-    input,
-    output: {
-      file: minifyExtension(packageJSON.browser),
-      format: 'umd',
-      sourcemap: true,
-      name: 'zenlyticPlots',
-      globals: {
-        react: 'React',
-      },
-    },
-    plugins: [
-      babel({
-        exclude: 'node_modules/**',
-      }),
-      external(),
-      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-      commonjs(),
-      terser(),
-    ],
-  },
+  // {
+  //   input,
+  //   output: {
+  //     file: minifyExtension(packageJSON.browser),
+  //     format: 'umd',
+  //     sourcemap: true,
+  //     name: 'zenlyticPlots',
+  //     globals: {
+  //       react: 'React',
+  //     },
+  //   },
+  //   plugins: [
+  //     babel({
+  //       exclude: 'node_modules/**',
+  //     }),
+  //     external(),
+  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+  //     commonjs(),
+  //     terser(),
+  //   ],
+  // },
   // {
   //   input,
   //   output: {

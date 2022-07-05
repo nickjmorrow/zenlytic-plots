@@ -51,7 +51,7 @@ function MultiLinePlot({
   const [refAreaRight, setRefAreaRight] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
-  const [activePayloadAtBrush, setActivePayloadAtBrush] = useState([]);
+  const [activePayloadAtBrush, setActivePayloadAtBrush] = useState(null);
 
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
 
@@ -60,7 +60,7 @@ function MultiLinePlot({
     setRefAreaRight('');
     setIsClickTooltipVisible(false);
     setClickTooltipCoords(null);
-    setActivePayloadAtBrush([]);
+    setActivePayloadAtBrush(null);
   };
 
   const onBrushEnd = (event) => {

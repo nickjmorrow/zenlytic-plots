@@ -57,7 +57,6 @@ function HistogramPlot({
   const closeClickTooltip = () => {
     setRefAreaLeft('');
     setRefAreaRight('');
-
     setIsClickTooltipVisible(false);
     setClickTooltipCoords(null);
   };

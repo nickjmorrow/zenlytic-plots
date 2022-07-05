@@ -24,7 +24,7 @@ function TooltipHandler(props) {
     );
   }
   if (!active) return false;
-  return <CustomHoverTooltip {...props} />;
+  return <CustomHoverTooltip {...props} payload={customPayload || payload} />;
 }
 
 export default TooltipHandler;

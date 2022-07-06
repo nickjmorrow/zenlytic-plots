@@ -79,7 +79,6 @@ function GroupedBarPlot({
     setClickTooltipCoords(null);
   };
   const handleBarClick = (event) => {
-    console.log('🚀 ~ file: GroupedBarPlot.js ~ line 81 ~ handleBarClick ~ event', event);
     if (isClickTooltipVisible) {
       return;
     }

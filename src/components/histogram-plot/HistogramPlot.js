@@ -18,7 +18,6 @@ import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
 
 function HistogramBarLabel(props) {
-  console.log('🚀 ~ file: HistogramPlot.js ~ line 22 ~ HistogramBarLabel ~ props', props);
   return 'methol';
 }
 
@@ -48,8 +47,6 @@ function HistogramPlot({
   const [isDragging, setIsDragging] = useState(false);
   const [focusBar, setFocusBar] = useState(null);
   const [mouseLeave, setMouseLeave] = useState(true);
-
-  console.log('🚀 ~ file: HistogramPlot.js ~ line 47 ~ focusBar', focusBar);
 
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
@@ -100,7 +97,6 @@ function HistogramPlot({
           setRefAreaLeft(e.activeLabel);
         }}
         onMouseMove={(e) => {
-          console.log('🚀 ~ file: HistogramPlot.js ~ line 108 ~ e', e);
           if (e.isTooltipActive) {
             setFocusBar(e.activeTooltipIndex);
             setMouseLeave(false);
@@ -179,10 +175,6 @@ function HistogramPlot({
           labelFormatter={(value, payload) => {
             const hoveredBar = payload[0] || {};
             const { payload: hoveredBarPayload = {} } = hoveredBar;
-            console.log(
-              '🚀 ~ file: HistogramPlot.js ~ line 180 ~ hoveredBarPayload',
-              hoveredBarPayload
-            );
             const { rangeTop, rangeBottom } = hoveredBarPayload;
             return `${formatValue(
               getD3DataFormatter(xAxisFormat, rangeBottom),

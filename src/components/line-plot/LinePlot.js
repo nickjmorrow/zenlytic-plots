@@ -37,9 +37,7 @@ function LinePlot({
   onUpdateBrush = () => {},
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisKey } = xAxis;
-  console.log('🚀 ~ file: LinePlot.js ~ line 39 ~ xAxis', xAxis);
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
-  console.log('🚀 ~ file: LinePlot.js ~ line 41 ~ yAxis', yAxis);
 
   const [refAreaLeft, setRefAreaLeft] = useState('');
   const [refAreaRight, setRefAreaRight] = useState('');

@@ -112,13 +112,6 @@ function ScatterPlot({
         height={height}
         width={width}
         onMouseDown={(e) => {
-          console.log('🚀 ~ file: ScatterPlot.js ~ line 108 ~ e', e);
-          console.log(
-            '🚀 ~ file: ScatterPlot.js ~ line 103 ~ isClickTooltipVisible',
-            isClickTooltipVisible
-          );
-          console.log('🚀 ~ file: ScatterPlot.js ~ line 105 ~ e?.xValue', e?.xValue);
-
           if (isClickTooltipVisible) return;
           if (!e?.xValue || !e?.yValue) return;
           // if (!e?.activePayload) return;

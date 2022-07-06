@@ -10,6 +10,7 @@ function TooltipHandler(props) {
     closeClickTooltip = () => {},
     customPayload = undefined,
     payload,
+    isHidden,
   } = props;
 
   const handleOutsideClick = () => {
@@ -23,7 +24,7 @@ function TooltipHandler(props) {
       </OutsideClickHandler>
     );
   }
-  if (!active) return false;
+  if (!active || isHidden) return false;
   return <CustomHoverTooltip {...props} payload={customPayload || payload} />;
 }
 

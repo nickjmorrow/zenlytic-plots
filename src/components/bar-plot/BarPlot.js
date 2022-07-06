@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useEffect, useState } from 'react';
-import { Bar, BarChart, CartesianGrid, Label, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Cell, Label, Tooltip, XAxis, YAxis } from 'recharts';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -23,8 +23,8 @@ function BarPlot({
   height = 300,
   layout = 'vertical',
 }) {
-  const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisKey } = xAxis;
-  const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
+  const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisDataKey } = xAxis;
+  const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisDataKey } = yAxis;
 
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
@@ -60,7 +60,7 @@ function BarPlot({
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
           type="number"
-          dataKey={'value'}
+          dataKey={xAxisDataKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
@@ -69,7 +69,7 @@ function BarPlot({
         </XAxis>
         <YAxis
           type="category"
-          dataKey={'label'}
+          dataKey={yAxisDataKey}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
@@ -106,14 +106,26 @@ function BarPlot({
             )
           }
         />
+
         <Bar
-          dataKey="value"
+          dataKey={xAxisDataKey}
           name={xAxisLabel}
-          fill={plotSecondaryColor}
-          stroke={plotColor}
+          // fill={plotSecondaryColor}
+          // stroke={plotColor}
+
           radius={[0, 5, 5, 0]}
-          strokeWidth={2}
-        />
+          strokeWidth={2}>
+          {data.map((entry, index) => {
+            console.log('🚀 ~ file: BarPlot.js ~ line 118 ~ {data.map ~ entry', entry);
+            return (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.fill || plotSecondaryColor}
+                stroke={entry.stroke || plotColor}
+              />
+            );
+          })}
+        </Bar>
       </BarChart>
     </div>
   );

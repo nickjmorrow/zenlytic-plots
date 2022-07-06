@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   BarChart,
@@ -30,7 +30,9 @@ function WaterfallPlot({
   },
   width = 300,
   height = 300,
+  onBarClick = () => {},
   CustomHoverTooltip = undefined,
+  CustomClickTooltip = undefined,
 }) {
   const { label: xAxisLabel = 'X-Axis', format: xAxisFormat, dataKey: xAxisKey } = xAxis;
   const { label: yAxisLabel = 'Y-Axis', format: yAxisFormat, dataKey: yAxisKey } = yAxis;
@@ -38,16 +40,16 @@ function WaterfallPlot({
   const renderCustomizedLabel = (props) => {
     const { x, y, width, height, value, fill, label, index } = props;
 
-    const [refAreaLeft, setRefAreaLeft] = useState('');
-    const [refAreaRight, setRefAreaRight] = useState('');
-    const [isDragging, setIsDragging] = useState(false);
-    const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
-    const [clickTooltipCoords, setClickTooltipCoords] = useState();
+    // const [refAreaLeft, setRefAreaLeft] = useState('');
+    // const [refAreaRight, setRefAreaRight] = useState('');
+    // const [isDragging, setIsDragging] = useState(false);
+    // const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
+    // const [clickTooltipCoords, setClickTooltipCoords] = useState();
 
-    const closeClickTooltip = () => {
-      setIsClickTooltipVisible(false);
-      setClickTooltipCoords(null);
-    };
+    // const closeClickTooltip = () => {
+    //   setIsClickTooltipVisible(false);
+    //   setClickTooltipCoords(null);
+    // };
 
     // const radius = 10;
 
@@ -70,6 +72,37 @@ function WaterfallPlot({
     );
   };
 
+  const [activePayload, setActivePayload] = useState(null);
+  const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
+  const [clickTooltipCoords, setClickTooltipCoords] = useState();
+
+  const closeTooltip = () => {
+    setClickTooltipCoords(null);
+  };
+  const handleBarClick = (event) => {
+    if (isClickTooltipVisible) {
+      return;
+    }
+    const { activePayload: eventPayload = [] } = event;
+    const visibleBarPayload = eventPayload.find(
+      (barPayload) => (barPayload.dataKey = 'valueChange')
+    );
+    if (!visibleBarPayload) {
+      return;
+    }
+    if (!event) return;
+    setClickTooltipCoords(event.activeCoordinate);
+    onBarClick(visibleBarPayload?.payload);
+  };
+
+  useEffect(() => {
+    if (clickTooltipCoords) {
+      setIsClickTooltipVisible(true);
+    } else {
+      setIsClickTooltipVisible(false);
+    }
+  }, [clickTooltipCoords]);
+
   return (
     <div style={{ userSelect: 'none' }}>
       <BarChart
@@ -77,7 +110,20 @@ function WaterfallPlot({
         height={height}
         width={width}
         data={data}
-        onClick={(a) => console.log(a)}>
+        onClick={handleBarClick}
+        onMouseMove={(event) => {
+          const { activePayload: eventPayload = [] } = event;
+          console.log('🚀 ~ file: WaterfallPlot.js ~ line 85 ~ activePayload', activePayload);
+          const visibleBarPayload = eventPayload.find(
+            (barPayload) => (barPayload.dataKey = 'valueChange')
+          );
+          console.log(
+            '🚀 ~ file: WaterfallPlot.js ~ line 89 ~ visibleBarPayload',
+            visibleBarPayload
+          );
+          setActivePayload(visibleBarPayload?.payload);
+        }}
+        onMouseLeave={() => setActivePayload(null)}>
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis dataKey="name" axisLine={false} tickLine={false} />
         <YAxis
@@ -93,7 +139,21 @@ function WaterfallPlot({
             style={{ textAnchor: 'middle' }}
           />
         </YAxis>
-        <Tooltip content={<TooltipHandler CustomHoverTooltip={CustomHoverTooltip} />} />
+        <Tooltip
+          position={isClickTooltipVisible ? clickTooltipCoords : undefined}
+          cursor={!isClickTooltipVisible}
+          wrapperStyle={{ visibility: 'visible' }}
+          content={
+            <TooltipHandler
+              CustomHoverTooltip={CustomHoverTooltip}
+              CustomClickTooltip={CustomClickTooltip}
+              isClickTooltipVisible={isClickTooltipVisible}
+              closeClickTooltip={closeTooltip}
+              customPayload={activePayload}
+              isHidden={!activePayload}
+            />
+          }
+        />
         {/* <Legend /> */}
         <Bar dataKey="startValue" stackId="a" fill="transparent" />
         <Bar dataKey="valueChange" stackId="a" radius={2}>

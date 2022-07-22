@@ -2,7 +2,7 @@ import React from 'react';
 import { Rectangle, Layer } from 'recharts';
 
 export default function SankeyPlotNode(props) {
-  const { x, y, width, height, index, payload, containerWidth, colors } = props;
+  const { x, y, width, height, index, payload, containerWidth, colors, valueFormatter } = props;
   const isOut = x + width + 6 > containerWidth;
 
   return (
@@ -12,7 +12,7 @@ export default function SankeyPlotNode(props) {
         y={y}
         width={width}
         height={height}
-        fill={colors[index % colors.length]}
+        fill={payload.color || colors[index % colors.length]}
         fillOpacity="1"
       />
       <text
@@ -32,7 +32,7 @@ export default function SankeyPlotNode(props) {
         fontWeight="lighter"
         stroke="#333"
         strokeOpacity="0.5">
-        {payload.value + 'k'}
+        {valueFormatter(payload.value)}
       </text>
     </Layer>
   );

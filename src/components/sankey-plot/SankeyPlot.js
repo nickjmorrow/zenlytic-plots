@@ -24,7 +24,6 @@ function SankeyPlot({
   width = 300,
   height = 300,
 }) {
-  console.log('🚀 ~ file: SankeyPlot.js ~ line 27 ~ width', width);
   const { format: valueAxisFormat } = valueAxis;
 
   const colors = [
@@ -42,10 +41,12 @@ function SankeyPlot({
 
   const colorGradients = data.links.map((link) => {
     return {
-      source: colors[link.source % numColors],
-      target: colors[link.target % numColors],
+      source: data.nodes[link.source].color || colors[link.source % numColors],
+      target: data.nodes[link.target].color || colors[link.target % numColors],
     };
   });
+
+  const valueFormatter = (value) => formatValue(getD3DataFormatter(valueAxisFormat, value), value);
 
   return (
     <div style={{ userSelect: 'none' }}>
@@ -57,11 +58,15 @@ function SankeyPlot({
         nodePadding={50}
         link={<SankeyPlotLink colorGradients={colorGradients} />}
         node={
-          <SankeyPlotNode containerWidth={width - margin.left - margin.right} colors={colors} />
+          <SankeyPlotNode
+            containerWidth={width - margin.left - margin.right}
+            colors={colors}
+            valueFormatter={valueFormatter}
+          />
         }>
         <Tooltip
           content={<TooltipHandler CustomHoverTooltip={CustomHoverTooltip} />}
-          formatter={(value) => formatValue(getD3DataFormatter(valueAxisFormat, value), value)}
+          formatter={valueFormatter}
         />
       </Sankey>
     </div>

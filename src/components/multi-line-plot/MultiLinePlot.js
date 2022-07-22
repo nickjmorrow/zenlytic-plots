@@ -1,19 +1,15 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
-  LineChart,
-  Line,
   CartesianGrid,
+  Label,
+  Legend,
+  Line,
+  LineChart,
+  ReferenceArea,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  Brush,
-  Label,
-  Area,
-  ReferenceArea,
 } from 'recharts';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
@@ -29,6 +25,8 @@ function MultiLinePlot({
   xAxis = {},
   yAxis = {},
   categoryAxis = {},
+  onUpdateBrush = () => {},
+  disableBrush = false,
   data,
   margin = {
     top: 32,
@@ -38,6 +36,7 @@ function MultiLinePlot({
   },
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
+  isServerSide,
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisDataKey } = xAxis;
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisDataKey } = yAxis;
@@ -51,7 +50,7 @@ function MultiLinePlot({
   const [refAreaRight, setRefAreaRight] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
-  const [activePayloadAtBrush, setActivePayloadAtBrush] = useState([]);
+  const [activePayloadAtBrush, setActivePayloadAtBrush] = useState(null);
 
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
 
@@ -60,7 +59,7 @@ function MultiLinePlot({
     setRefAreaRight('');
     setIsClickTooltipVisible(false);
     setClickTooltipCoords(null);
-    setActivePayloadAtBrush([]);
+    setActivePayloadAtBrush(null);
   };
 
   const onBrushEnd = (event) => {
@@ -79,9 +78,9 @@ function MultiLinePlot({
     if (refAreaLeft > refAreaRight) {
       setRefAreaLeft(refAreaRight);
       setRefAreaRight(refAreaLeft);
-      // onUpdateBrush({ start: refAreaRight, end: refAreaLeft });
+      onUpdateBrush({ start: refAreaRight, end: refAreaLeft });
     } else {
-      // onUpdateBrush({ start: refAreaLeft, end: refAreaRight });
+      onUpdateBrush({ start: refAreaLeft, end: refAreaRight });
     }
   };
 
@@ -118,6 +117,7 @@ function MultiLinePlot({
         // data={lines[0]}
         // margin={PLOT_MARGIN}
         onMouseDown={(e) => {
+          if (disableBrush) return;
           if (isClickTooltipVisible) return;
           if (!e?.activeLabel) return;
           if (!e?.activePayload) return;
@@ -176,7 +176,7 @@ function MultiLinePlot({
         {/* <Brush dataKey={xAxisZenlyticFormat} height={30} stroke={plotColor} /> */}
         <Tooltip
           cursor={!isClickTooltipVisible}
-          wrapperStyle={{ visibility: 'visible' }}
+          wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={
             <TooltipHandler
@@ -193,7 +193,7 @@ function MultiLinePlot({
         <Legend
           layout="vertical"
           align="right"
-          verticalAlign="middle"
+          verticalAlign={isServerSide ? 'top' : 'middle'}
           iconType="circle"
           iconSize={12}
           wrapperStyle={{
@@ -202,6 +202,7 @@ function MultiLinePlot({
           }}
           onMouseEnter={onLegendItemHover}
           onMouseLeave={onLegendItemLeave}
+          isAnimationActive={!isServerSide}
         />
         {/* <Line dataKey={categoryAxisDataKey} /> */}
         {/* <Line dataKey={yAxisDataKey} name={lines[0][0][categoryAxisDataKey]} /> */}

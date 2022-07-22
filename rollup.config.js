@@ -4,6 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 // import run from '@rollup/plugin-run';
 import commonjs from '@rollup/plugin-commonjs';
+import postcss from 'rollup-plugin-postcss';
 
 import packageJSON from './package.json';
 const input = './src/index.js';
@@ -26,6 +27,9 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
       // dev && run(),
     ],
   },
@@ -43,6 +47,9 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
       terser(),
       // dev && run(),
     ],
@@ -65,6 +72,9 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
     ],
   },
   {
@@ -85,6 +95,9 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
       terser(),
     ],
   },
@@ -103,6 +116,9 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
     ],
   },
   {
@@ -120,6 +136,9 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
       terser(),
     ],
   },

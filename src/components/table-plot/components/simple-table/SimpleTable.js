@@ -5,7 +5,6 @@ import React, { useMemo } from 'react';
 import { useTable } from 'react-table';
 import formatValue from '../../../../utils/formatValue';
 import getD3DataFormatter from '../../../../utils/getD3DataFormatter';
-import './styles.css';
 
 function CellRenderer(props) {
   return (

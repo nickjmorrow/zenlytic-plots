@@ -26,6 +26,7 @@ function LinePlot({
   xAxis = {},
   yAxis = {},
   data: lines,
+  plotId = 'linePlot',
   margin = {
     top: 32,
     left: 24,
@@ -35,6 +36,8 @@ function LinePlot({
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   onUpdateBrush = () => {},
+  disableBrush = false,
+  disableFollowUps = false,
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisKey } = xAxis;
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
@@ -53,12 +56,11 @@ function LinePlot({
   };
 
   const onBrushEnd = () => {
+    if (!isDragging) return;
+    if (disableFollowUps) return;
+    if (isClickTooltipVisible) return;
+
     setIsDragging(false);
-
-    if (isClickTooltipVisible) {
-      return;
-    }
-
     setIsClickTooltipVisible(true);
     if (refAreaLeft === refAreaRight || refAreaRight === '') {
       closeClickTooltip();
@@ -73,6 +75,8 @@ function LinePlot({
     }
   };
 
+  const gradientId = `colorUv${plotId}`;
+
   const data = lines[0];
   return (
     // <ResponsiveContainer width={300} height={100}>
@@ -83,7 +87,8 @@ function LinePlot({
         data={data}
         margin={margin}
         onMouseDown={(e) => {
-          if (isClickTooltipVisible) return false;
+          if (disableBrush) return;
+          if (isClickTooltipVisible) return;
           setIsDragging(true);
           setRefAreaLeft(e.activeLabel);
         }}
@@ -96,16 +101,15 @@ function LinePlot({
         // eslint-disable-next-line react/jsx-no-bind
         onMouseUp={onBrushEnd}>
         <defs>
-          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="10%" stopColor={plotSecondaryColor} stopOpacity={1.0} />
-            <stop offset="90%" stopColor={plotSecondaryColor} stopOpacity={0.1} />
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={plotSecondaryColor} stopOpacity={1.0} />
+            <stop offset="30%" stopColor={plotSecondaryColor} stopOpacity={0.8} />
+            <stop offset="100%" stopColor={plotSecondaryColor} stopOpacity={0.1} />
           </linearGradient>
         </defs>
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
-          // height={70}
           domain={['dataMin', 'dataMax']}
-          // tickCount={tickCount}
           name={xAxisLabel}
           minTickGap={minTickGap}
           dataKey={xAxisKey}
@@ -130,7 +134,7 @@ function LinePlot({
         </YAxis>
         <Tooltip
           cursor={!isClickTooltipVisible}
-          wrapperStyle={{ visibility: 'visible' }}
+          wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={
             <TooltipHandler
@@ -143,10 +147,6 @@ function LinePlot({
           formatter={(value) => formatValue(getD3DataFormatter(yAxisFormat, value), value)}
           labelFormatter={(value) => formatValue(getD3DataFormatter(xAxisFormat, value), value)}
         />
-        {/* <Tooltip content={<CustomHoverTooltip />} />
-            <Tooltip position={clickTooltipCoords} content={<CustomTooltip />} /> */}
-        {/* <Brush dataKey={xAxisZenlyticFormat} height={30} stroke={plotColor} /> */}
-        {/* <Legend /> */}
         <Area
           type="monotone"
           dataKey={yAxisKey}
@@ -154,7 +154,7 @@ function LinePlot({
           strokeWidth={2}
           activeDot={isClickTooltipVisible ? false : { r: 8 }}
           fillOpacity={1}
-          fill="url(#colorUv)"
+          fill={`url(#${gradientId})`}
           name={yAxisLabel}
           dot
         />

@@ -23,6 +23,8 @@ function ScatterPlot({
   categoryAxis = {},
   data = [],
   onUpdateBrush = () => {},
+  disableBrush = false,
+  disableFollowUps = false,
   margin = {
     top: 32,
     left: 24,
@@ -46,9 +48,6 @@ function ScatterPlot({
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
 
-  const [refAreaLeft, setRefAreaLeft] = useState('');
-  const [refAreaRight, setRefAreaRight] = useState('');
-
   const [brushAreaPoint1, setBrushAreaPoint1] = useState({});
   const [brushAreaPoint2, setBrushAreaPoint2] = useState({});
 
@@ -60,8 +59,10 @@ function ScatterPlot({
   };
 
   const onBrushEnd = () => {
-    setIsDragging(false);
+    if (!isDragging) return;
+    if (disableFollowUps) return;
 
+    setIsDragging(false);
     if (
       isClickTooltipVisible ||
       !brushAreaPoint1?.x ||
@@ -112,12 +113,14 @@ function ScatterPlot({
         height={height}
         width={width}
         onMouseDown={(e) => {
+          if (disableBrush) return;
           if (isClickTooltipVisible) return;
           if (!e?.xValue || !e?.yValue) return;
           // if (!e?.activePayload) return;
           if (isDragging) return;
           setIsDragging(true);
           setBrushAreaPoint1({ x: e?.xValue, y: e?.yValue });
+          setBrushAreaPoint2({ x: e?.xValue, y: e?.yValue });
         }}
         onMouseMove={(e) => {
           if (brushAreaPoint1?.x && brushAreaPoint1?.y && isDragging && e?.xValue && e?.yValue) {
@@ -126,6 +129,7 @@ function ScatterPlot({
           }
         }}
         onMouseLeave={(e) => {
+          if (!isDragging) return;
           setIsDragging(false);
           if (brushAreaPoint1 && brushAreaPoint1 && !isClickTooltipVisible) {
             onBrushEnd();
@@ -171,7 +175,7 @@ function ScatterPlot({
         />
         <Tooltip
           cursor={!isClickTooltipVisible}
-          wrapperStyle={{ visibility: 'visible' }}
+          wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={
             <TooltipHandler

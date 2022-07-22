@@ -37,6 +37,8 @@ function GroupedBarPlot({
   width = 300,
   height = 300,
   layout = 'horizontal',
+  disableFollowUps = false,
+  isServerSide = false,
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisKey } = xAxis;
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
@@ -90,6 +92,7 @@ function GroupedBarPlot({
   };
 
   useEffect(() => {
+    if (disableFollowUps) return;
     if (clickTooltipCoords) {
       setIsClickTooltipVisible(true);
       onBarClick(activePayload);
@@ -145,7 +148,7 @@ function GroupedBarPlot({
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           cursor={!isClickTooltipVisible}
-          wrapperStyle={{ visibility: 'visible' }}
+          wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler
               CustomHoverTooltip={CustomHoverTooltip}
@@ -161,7 +164,7 @@ function GroupedBarPlot({
         <Legend
           layout="vertical"
           align="right"
-          verticalAlign="middle"
+          verticalAlign={isServerSide ? 'top' : 'middle'}
           iconType="circle"
           iconSize={12}
           wrapperStyle={{

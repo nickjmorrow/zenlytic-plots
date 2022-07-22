@@ -31,6 +31,7 @@ function WaterfallPlot({
   width = 300,
   height = 300,
   onBarClick = () => {},
+  disableFollowUps = false,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
 }) {
@@ -80,6 +81,7 @@ function WaterfallPlot({
     setClickTooltipCoords(null);
   };
   const handleBarClick = (event) => {
+    if (disableFollowUps) return;
     if (isClickTooltipVisible) {
       return;
     }
@@ -96,6 +98,7 @@ function WaterfallPlot({
   };
 
   useEffect(() => {
+    if (disableFollowUps) return;
     if (clickTooltipCoords) {
       setIsClickTooltipVisible(true);
     } else {
@@ -113,13 +116,8 @@ function WaterfallPlot({
         onClick={handleBarClick}
         onMouseMove={(event) => {
           const { activePayload: eventPayload = [] } = event;
-          console.log('🚀 ~ file: WaterfallPlot.js ~ line 85 ~ activePayload', activePayload);
           const visibleBarPayload = eventPayload.find(
             (barPayload) => (barPayload.dataKey = 'valueChange')
-          );
-          console.log(
-            '🚀 ~ file: WaterfallPlot.js ~ line 89 ~ visibleBarPayload',
-            visibleBarPayload
           );
           setActivePayload(visibleBarPayload?.payload);
         }}
@@ -142,7 +140,7 @@ function WaterfallPlot({
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           cursor={!isClickTooltipVisible}
-          wrapperStyle={{ visibility: 'visible' }}
+          wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler
               CustomHoverTooltip={CustomHoverTooltip}

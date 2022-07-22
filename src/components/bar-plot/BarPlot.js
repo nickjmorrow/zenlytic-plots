@@ -22,6 +22,7 @@ function BarPlot({
   width = 300,
   height = 300,
   layout = 'vertical',
+  disableFollowUps = false,
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisDataKey } = xAxis;
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisDataKey } = yAxis;
@@ -41,6 +42,7 @@ function BarPlot({
   };
 
   useEffect(() => {
+    if (disableFollowUps) return;
     if (clickTooltipCoords) {
       setIsClickTooltipVisible(true);
     } else {
@@ -83,7 +85,7 @@ function BarPlot({
         </YAxis>
         <Tooltip
           cursor={!isClickTooltipVisible}
-          wrapperStyle={{ visibility: 'visible' }}
+          wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={
             <TooltipHandler
@@ -116,7 +118,6 @@ function BarPlot({
           radius={[0, 5, 5, 0]}
           strokeWidth={2}>
           {data.map((entry, index) => {
-            console.log('🚀 ~ file: BarPlot.js ~ line 118 ~ {data.map ~ entry', entry);
             return (
               <Cell
                 key={`cell-${index}`}

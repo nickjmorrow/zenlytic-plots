@@ -4,6 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 // import run from '@rollup/plugin-run';
 import commonjs from '@rollup/plugin-commonjs';
+import postcss from 'rollup-plugin-postcss';
 
 import packageJSON from './package.json';
 const input = './src/index.js';
@@ -26,27 +27,33 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
       // dev && run(),
     ],
   },
-  // {
-  //   input,
-  //   output: {
-  //     file: minifyExtension(packageJSON.main),
-  //     format: 'cjs',
-  //     sourcemap: true,
-  //   },
-  //   plugins: [
-  //     babel({
-  //       exclude: 'node_modules/**',
-  //     }),
-  //     external(),
-  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-  //     commonjs(),
-  //     terser(),
-  //     // dev && run(),
-  //   ],
-  // },
+  {
+    input,
+    output: {
+      file: minifyExtension(packageJSON.main),
+      format: 'cjs',
+      sourcemap: true,
+    },
+    plugins: [
+      babel({
+        exclude: 'node_modules/**',
+      }),
+      external(),
+      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+      commonjs(),
+      postcss({
+        plugins: [],
+      }),
+      terser(),
+      // dev && run(),
+    ],
+  },
   {
     input,
     output: {
@@ -65,62 +72,74 @@ export default [
       external(),
       nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
       commonjs(),
+      postcss({
+        plugins: [],
+      }),
     ],
   },
-  // {
-  //   input,
-  //   output: {
-  //     file: minifyExtension(packageJSON.browser),
-  //     format: 'umd',
-  //     sourcemap: true,
-  //     name: 'zenlyticPlots',
-  //     globals: {
-  //       react: 'React',
-  //     },
-  //   },
-  //   plugins: [
-  //     babel({
-  //       exclude: 'node_modules/**',
-  //     }),
-  //     external(),
-  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-  //     commonjs(),
-  //     terser(),
-  //   ],
-  // },
-  // {
-  //   input,
-  //   output: {
-  //     file: packageJSON.module,
-  //     format: 'es',
-  //     sourcemap: true,
-  //     exports: 'named',
-  //   },
-  //   plugins: [
-  //     babel({
-  //       exclude: 'node_modules/**',
-  //     }),
-  //     external(),
-  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-  //     commonjs(),
-  //   ],
-  // },
-  // {
-  //   input,
-  //   output: {
-  //     file: minifyExtension(packageJSON.module),
-  //     format: 'es',
-  //     sourcemap: true,
-  //     exports: 'named',
-  //   },
-  //   plugins: [
-  //     babel({
-  //       exclude: 'node_modules/**',
-  //     }),
-  //     external(),
-  //     nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
-  //     commonjs(),
-  //     terser(),
-  //   ],
-  // },
+  {
+    input,
+    output: {
+      file: minifyExtension(packageJSON.browser),
+      format: 'umd',
+      sourcemap: true,
+      name: 'zenlyticPlots',
+      globals: {
+        react: 'React',
+      },
+    },
+    plugins: [
+      babel({
+        exclude: 'node_modules/**',
+      }),
+      external(),
+      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+      commonjs(),
+      postcss({
+        plugins: [],
+      }),
+      terser(),
+    ],
+  },
+  {
+    input,
+    output: {
+      file: packageJSON.module,
+      format: 'es',
+      sourcemap: true,
+      exports: 'named',
+    },
+    plugins: [
+      babel({
+        exclude: 'node_modules/**',
+      }),
+      external(),
+      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+      commonjs(),
+      postcss({
+        plugins: [],
+      }),
+    ],
+  },
+  {
+    input,
+    output: {
+      file: minifyExtension(packageJSON.module),
+      format: 'es',
+      sourcemap: true,
+      exports: 'named',
+    },
+    plugins: [
+      babel({
+        exclude: 'node_modules/**',
+      }),
+      external(),
+      nodeResolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+      commonjs(),
+      postcss({
+        plugins: [],
+      }),
+      terser(),
+    ],
+  },
 ];

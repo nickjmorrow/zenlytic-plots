@@ -37,6 +37,8 @@ function HistogramPlot({
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   onUpdateBrush = () => {},
+  disableBrush = false,
+  disableFollowUps = false,
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisKey } = xAxis;
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
@@ -59,12 +61,12 @@ function HistogramPlot({
   };
 
   const onBrushEnd = () => {
+    if (!isDragging) return;
+    if (disableFollowUps) return;
     setIsDragging(false);
-
     if (isClickTooltipVisible || !refAreaLeft || !refAreaRight) {
       return;
     }
-
     setIsClickTooltipVisible(true);
     if (refAreaLeft === refAreaRight || refAreaRight === '') {
       closeClickTooltip();
@@ -88,10 +90,10 @@ function HistogramPlot({
         margin={margin}
         barCategoryGap={'10%'}
         onMouseDown={(e) => {
+          if (disableBrush) return;
           if (isClickTooltipVisible) return;
           if (!e?.activeLabel) return;
           if (!e?.activePayload) return;
-
           if (isDragging) return;
           setIsDragging(true);
           setRefAreaLeft(e.activeLabel);
@@ -161,7 +163,7 @@ function HistogramPlot({
         />
         <Tooltip
           cursor={false}
-          wrapperStyle={{ visibility: 'visible' }}
+          wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={
             <TooltipHandler

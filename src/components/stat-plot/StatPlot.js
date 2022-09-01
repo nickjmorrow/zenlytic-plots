@@ -5,6 +5,7 @@ import { BiCaretUp, BiCaretDown } from "react-icons/bi";
 import React from "react";
 import formatValue from "../../utils/formatValue";
 import getD3DataFormatter from "../../utils/getD3DateFormatter";
+import "./styles.css";
 
 const getNumberType = (number) => (number >= 0 ? "positive" : "negative");
 const getColor = (type) => {
@@ -229,6 +230,12 @@ function StatPlot({
   isServerSide = false,
 }) {
   const statSize = getStatSize(data.length);
+
+  return (
+    <div className='coma' id='think'>
+      <p className='coma'>pull through</p>
+    </div>
+  );
 
   return (
     <div

@@ -77,19 +77,19 @@ function BarPlot({
         layout={layout}
         onClick={handleBarClick}
       >
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke='#f5f5f5' />
         <XAxis
-          type="number"
+          type='number'
           dataKey={xAxisDataKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }
         >
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label value={xAxisLabel} offset={-10} position='insideBottom' />
         </XAxis>
         <YAxis
-          type="category"
+          type='category'
           dataKey={yAxisDataKey}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>

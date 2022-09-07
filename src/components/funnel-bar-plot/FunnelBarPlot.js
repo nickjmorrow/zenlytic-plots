@@ -11,7 +11,15 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { AXIS_COLOR, GRID_COLOR, LABEL_COLOR } from '../../constants/plotConstants';
+import {
+  AXIS_COLOR,
+  DEFAULT_FUNNEL_X_AXIS_HEIGHT,
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+  GRID_COLOR,
+  LABEL_COLOR,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -26,12 +34,7 @@ function FunnelBarPlot({
   categoryAxis = {},
   onBarClick = () => {},
   data = {},
-  margin = {
-    top: 32,
-    left: 32,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   width = 300,
@@ -108,6 +111,7 @@ function FunnelBarPlot({
         }}>
         <CartesianGrid stroke={GRID_COLOR} vertical={false} />
         <XAxis
+          height={DEFAULT_FUNNEL_X_AXIS_HEIGHT}
           dataKey={xAxisKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) => timeStr}
@@ -117,6 +121,7 @@ function FunnelBarPlot({
           stroke={AXIS_COLOR}
         />
         <YAxis
+          width={DEFAULT_Y_AXIS_WIDTH}
           stroke={GRID_COLOR}
           tick={{ fill: '#A6A6A6', fontWeight: 'medium', fontSize: '10px' }}
           tickLine={{ stroke: GRID_COLOR }}
@@ -127,7 +132,7 @@ function FunnelBarPlot({
           <Label
             fill={AXIS_COLOR}
             value={yAxisLabel}
-            position="insideLeft"
+            position="left"
             fontSize="12px"
             angle={-90}
             style={{ textAnchor: 'middle' }}

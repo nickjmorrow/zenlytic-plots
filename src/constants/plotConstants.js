@@ -9,6 +9,20 @@ export const PLOT_MARGIN = {
   right: 30,
 };
 
+export const DEFAULT_PLOT_MARGIN = {
+  top: 40,
+  left: 32,
+  bottom: 40,
+  right: 48,
+};
+
+export const DEFAULT_Y_AXIS_WIDTH = 80;
+export const DEFAULT_X_AXIS_HEIGHT = 40;
+
+export const DEFAULT_BAR_Y_AXIS_WIDTH = 120;
+export const DEFAULT_FUNNEL_X_AXIS_HEIGHT = 10;
+export const DEFAULT_WATERFALL_X_AXIS_HEIGHT = 10;
+
 export const PLOT_TYPES = {
   BAR: 'bar',
   LINE: 'line',

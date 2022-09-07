@@ -1,6 +1,12 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, Label, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+  DEFAULT_BAR_Y_AXIS_WIDTH,
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -11,12 +17,7 @@ function BarPlot({
   xAxis = {},
   yAxis = {},
   data = [],
-  margin = {
-    top: 32,
-    left: 112,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   width = 300,
@@ -61,15 +62,17 @@ function BarPlot({
         onClick={handleBarClick}>
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
+          height={DEFAULT_X_AXIS_HEIGHT}
           type="number"
           dataKey={xAxisDataKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          width={DEFAULT_BAR_Y_AXIS_WIDTH}
           type="category"
           dataKey={yAxisDataKey}
           name={yAxisLabel}

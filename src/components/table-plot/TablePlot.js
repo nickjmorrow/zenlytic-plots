@@ -35,7 +35,7 @@ function TablePlot({
   data = [],
   columns = [],
   margin = {
-    top: '32px',
+    top: '40px',
     left: '32px',
     bottom: '16px',
     right: '32px',

@@ -138,12 +138,7 @@ function HistogramPlot({
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label
-            value={yAxisLabel}
-            position="insideLeft"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
         </YAxis>
         <Bar dataKey="value" fill={plotColor} name={yAxisLabel} radius={[2, 2, 0, 0]}>
           {data.map((entry, index) => (

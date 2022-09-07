@@ -12,6 +12,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 import formatValue, { formatUnixValue, TIME_FORMATS } from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -29,12 +34,7 @@ function MultiLinePlot({
   onUpdateBrush = () => {},
   disableBrush = false,
   data,
-  margin = {
-    top: 32,
-    left: 32,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   isServerSide,
@@ -167,8 +167,7 @@ function MultiLinePlot({
         </defs>
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
-          // height={70}
-          // tickCount={tickCount}
+          height={DEFAULT_X_AXIS_HEIGHT}
           domain={['dataMin', 'dataMax']}
           type="number"
           minTickGap={minTickGap}
@@ -176,9 +175,10 @@ function MultiLinePlot({
           tickFormatter={xAxisTickFormatter}
           dataKey={newXAxisDataKey}
           interval={interval}>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          width={DEFAULT_Y_AXIS_WIDTH}
           type="number"
           dataKey={yAxisDataKey}
           tickFormatter={(timeStr) =>

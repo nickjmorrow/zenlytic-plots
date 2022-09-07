@@ -1,6 +1,11 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Label, Legend, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -13,12 +18,7 @@ function GroupedBarPlot({
   categoryAxis = {},
   onBarClick = () => {},
   data = [],
-  margin = {
-    top: 32,
-    left: 32,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   width = 300,
@@ -113,24 +113,21 @@ function GroupedBarPlot({
         }}>
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
+          height={DEFAULT_X_AXIS_HEIGHT}
           dataKey={xAxisKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          width={DEFAULT_Y_AXIS_WIDTH}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label
-            value={yAxisLabel}
-            position="insideLeft"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
         </YAxis>
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}

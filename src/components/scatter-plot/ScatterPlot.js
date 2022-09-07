@@ -12,6 +12,11 @@ import {
   YAxis,
   ZAxis,
 } from 'recharts';
+import {
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -25,12 +30,7 @@ function ScatterPlot({
   onUpdateBrush = () => {},
   disableBrush = false,
   disableFollowUps = false,
-  margin = {
-    top: 32,
-    left: 24,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   width = 300,
   height = 300,
   CustomHoverTooltip = undefined,
@@ -140,27 +140,24 @@ function ScatterPlot({
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
           type="number"
+          height={DEFAULT_X_AXIS_HEIGHT}
           dataKey={xAxisDataKey}
           name={xAxisLabel}
           allowDecimals={false}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          width={DEFAULT_Y_AXIS_WIDTH}
           dataKey={yAxisDataKey}
           allowDecimals={false}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label
-            value={yAxisLabel}
-            position="insideLeft"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
         </YAxis>
         <ZAxis dataKey={categoryAxisDataKey} name={categoryAxisLabel} />
         <ReferenceArea

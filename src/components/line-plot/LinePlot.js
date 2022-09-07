@@ -11,6 +11,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 
 import formatValue, { formatUnixValue, TIME_FORMATS } from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
@@ -28,12 +33,7 @@ function LinePlot({
   yAxis = {},
   data: lines,
   plotId = 'linePlot',
-  margin = {
-    top: 32,
-    left: 24,
-    bottom: 40,
-    right: 40,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   onUpdateBrush = () => {},
@@ -126,25 +126,21 @@ function LinePlot({
         <XAxis
           domain={['dataMin', 'dataMax']}
           name={xAxisLabel}
+          height={DEFAULT_X_AXIS_HEIGHT}
           type="number"
           minTickGap={minTickGap}
           dataKey={newXAxisDataKey}
           interval={interval}
           tickFormatter={xAxisTickFormatter}>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
-          width={80}
+          width={DEFAULT_Y_AXIS_WIDTH}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }
           name={yAxisLabel}>
-          <Label
-            value={yAxisLabel}
-            position="insideLeft"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
         </YAxis>
         <Tooltip
           cursor={!isClickTooltipVisible}

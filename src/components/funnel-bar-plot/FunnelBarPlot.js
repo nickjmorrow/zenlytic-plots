@@ -13,8 +13,12 @@ import {
 } from 'recharts';
 import {
   AXIS_COLOR,
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
   DEFAULT_FUNNEL_X_AXIS_HEIGHT,
+  DEFAULT_LABEL_PROPS,
   DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
   GRID_COLOR,
@@ -109,34 +113,26 @@ function FunnelBarPlot({
         onMouseLeave={(e) => {
           setActivePayload([]);
         }}>
-        <CartesianGrid stroke={GRID_COLOR} vertical={false} />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} vertical={false} />
         <XAxis
-          height={DEFAULT_FUNNEL_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          height={DEFAULT_X_AXIS_HEIGHT}
           dataKey={xAxisKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) => timeStr}
           tickLine={false}
           axisLine={false}
-          tick={{ fill: '#A6A6A6', fontWeight: 'medium', fontSize: '10px' }}
-          stroke={AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
         />
         <YAxis
           width={DEFAULT_Y_AXIS_WIDTH}
-          stroke={GRID_COLOR}
-          tick={{ fill: '#A6A6A6', fontWeight: 'medium', fontSize: '10px' }}
-          tickLine={{ stroke: GRID_COLOR }}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label
-            fill={AXIS_COLOR}
-            value={yAxisLabel}
-            position="left"
-            fontSize="12px"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label {...DEFAULT_LABEL_PROPS} value={yAxisLabel} position="left" angle={-90} />
         </YAxis>
         <Tooltip
           cursor

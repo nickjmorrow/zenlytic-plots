@@ -17,7 +17,11 @@ import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
 import {
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
   DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
   DEFAULT_WATERFALL_X_AXIS_HEIGHT,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
@@ -123,20 +127,24 @@ function WaterfallPlot({
           setActivePayload(visibleBarPayload?.payload);
         }}
         onMouseLeave={() => setActivePayload(null)}>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <XAxis
           dataKey="name"
           axisLine={false}
           tickLine={false}
+          tick={DEFAULT_TICK_PROPS}
           height={DEFAULT_WATERFALL_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
         />
         <YAxis
           type="number"
           width={DEFAULT_Y_AXIS_WIDTH}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
+          <Label {...DEFAULT_LABEL_PROPS} value={yAxisLabel} position="left" angle={-90} />
         </YAxis>
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}

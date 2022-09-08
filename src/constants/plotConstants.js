@@ -23,6 +23,23 @@ export const DEFAULT_BAR_Y_AXIS_WIDTH = 120;
 export const DEFAULT_FUNNEL_X_AXIS_HEIGHT = 10;
 export const DEFAULT_WATERFALL_X_AXIS_HEIGHT = 10;
 
+export const DEFAULT_LABEL_PROPS = {
+  style: { textAnchor: 'middle' },
+  fill: '#595959',
+  fontWeight: 500,
+  fontSize: '0.75rem',
+};
+
+export const DEFAULT_TICK_PROPS = {
+  fill: '#8C8C8C',
+  fontWeight: 300,
+  fontSize: '0.75rem',
+};
+
+export const DEFAULT_AXIS_COLOR = '#A6A6A6';
+
+export const DEFAULT_CARTESIAN_GRID_COLOR = '#F0F0F0';
+
 export const PLOT_TYPES = {
   BAR: 'bar',
   LINE: 'line',

@@ -1,3 +1,5 @@
+import colors from './colors';
+
 export const SCALE_TYPES = {
   UTC: 'UTC',
 };
@@ -57,6 +59,9 @@ export const AXIS_TYPES = {
   YEAR: 'year',
 };
 
+export const COLOR_SUCCESS = colors.green[600];
+export const COLOR_FAIL = colors.red[600];
+
 export const DATE_AXIS_TYPES = [
   AXIS_TYPES.DATE,
   AXIS_TYPES.WEEK,
@@ -75,6 +80,19 @@ export const PLOT_COLOR_PALETTE = {
   LIGHT_BLUE_MARK: 'lightblue',
 };
 
+export const PLOT_COLORS = [
+  colors.dark_blue[300],
+  colors.mint[300],
+  colors.red[300],
+  colors.green[300],
+  colors.orange[300],
+  colors.pink[300],
+  colors.light_blue[300],
+  colors.yellow[300],
+];
+
 export const AXIS_COLOR = '#A6A6A6';
 export const GRID_COLOR = '#F0F0F0';
 export const LABEL_COLOR = '#737373';
+
+export const HIGHTLIGHT_BAR_COLOR = colors.gray[30];

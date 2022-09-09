@@ -130,13 +130,13 @@ function LinePlot({
         <XAxis
           domain={['dataMin', 'dataMax']}
           name={xAxisLabel}
-          height={DEFAULT_X_AXIS_HEIGHT}
           type="number"
+          height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           minTickGap={minTickGap}
           dataKey={newXAxisDataKey}
           interval={interval}
-          stroke={DEFAULT_AXIS_COLOR}
-          tick={DEFAULT_TICK_PROPS}
           tickFormatter={xAxisTickFormatter}>
           <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>

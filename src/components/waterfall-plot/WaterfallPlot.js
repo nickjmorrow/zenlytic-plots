@@ -17,6 +17,8 @@ import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
 import {
+  COLOR_FAIL,
+  COLOR_SUCCESS,
   DEFAULT_AXIS_COLOR,
   DEFAULT_CARTESIAN_GRID_COLOR,
   DEFAULT_LABEL_PROPS,
@@ -25,7 +27,10 @@ import {
   DEFAULT_WATERFALL_X_AXIS_HEIGHT,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
+  HIGHTLIGHT_BAR_COLOR,
 } from '../../constants/plotConstants';
+import fontSizes from '../../constants/fontSizes';
+import fontWeights from '../../constants/fontWeights';
 
 function WaterfallPlot({
   plotColor = '#8a8a8a',
@@ -59,8 +64,8 @@ function WaterfallPlot({
 
     // const radius = 10;
 
-    const verticalOffset = height >= 0 ? 10 : -10;
-    const textColor = height >= 0 ? 'green' : 'red';
+    const verticalOffset = height >= 0 ? 16 : -16;
+    const textColor = height >= 0 ? COLOR_SUCCESS : COLOR_FAIL;
 
     if (index === 0 || index === data.length - 1) return null;
     return (
@@ -71,6 +76,8 @@ function WaterfallPlot({
           position="top"
           fill={textColor}
           textAnchor="middle"
+          fontSize={fontSizes.xs}
+          fontWeight={fontWeights.medium}
           dominantBaseline="middle">
           {formatValue(getD3DataFormatter(yAxisFormat, value), value)}
         </text>
@@ -148,7 +155,7 @@ function WaterfallPlot({
         </YAxis>
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
-          cursor={!isClickTooltipVisible}
+          cursor={isClickTooltipVisible ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler

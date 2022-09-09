@@ -13,7 +13,11 @@ import {
   ZAxis,
 } from 'recharts';
 import {
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
   DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
 } from '../../constants/plotConstants';
@@ -137,27 +141,37 @@ function ScatterPlot({
         }}
         // eslint-disable-next-line react/jsx-no-bind
         onMouseUp={onBrushEnd}>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <XAxis
           type="number"
           height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           dataKey={xAxisDataKey}
           name={xAxisLabel}
           allowDecimals={false}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} position="bottom" />
+          <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          stroke={DEFAULT_AXIS_COLOR}
           width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           dataKey={yAxisDataKey}
           allowDecimals={false}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
+          <Label
+            {...DEFAULT_LABEL_PROPS}
+            value={yAxisLabel}
+            position="left"
+            angle={-90}
+            style={{ textAnchor: 'middle' }}
+          />
         </YAxis>
         <ZAxis dataKey={categoryAxisDataKey} name={categoryAxisLabel} />
         <ReferenceArea

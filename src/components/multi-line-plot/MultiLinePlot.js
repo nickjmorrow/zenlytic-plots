@@ -13,13 +13,23 @@ import {
   YAxis,
 } from 'recharts';
 import {
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
   DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
+  PLOT_COLORS,
 } from '../../constants/plotConstants';
 import formatValue, { formatUnixValue, TIME_FORMATS } from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
+import colors from '../../constants/colors';
+import fontSizes from '../../constants/fontSizes';
+import fontWeights from '../../constants/fontWeights';
+import space from '../../constants/space';
+import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function MultiLinePlot({
   plotColor = '#8a8a8a',
@@ -105,17 +115,6 @@ function MultiLinePlot({
     }
   };
 
-  const colors = [
-    '#F355F6',
-    '#FFAD4D',
-    '#F6E655',
-    '#A6F556',
-    '#68E3CD',
-    '#4DBFFF',
-    '#5B4DFF',
-    '#FA5252',
-  ];
-
   const [hoveredLineDataKey, setHoveredLineDataKey] = useState(null);
 
   const onLegendItemHover = (item) => {
@@ -165,9 +164,11 @@ function MultiLinePlot({
             <stop offset="95%" stopColor={plotColor} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <XAxis
           height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           domain={['dataMin', 'dataMax']}
           type="number"
           minTickGap={minTickGap}
@@ -175,16 +176,24 @@ function MultiLinePlot({
           tickFormatter={xAxisTickFormatter}
           dataKey={newXAxisDataKey}
           interval={interval}>
-          <Label value={xAxisLabel} position="bottom" />
+          <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          stroke={DEFAULT_AXIS_COLOR}
           width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           type="number"
           dataKey={yAxisDataKey}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
+          <Label
+            {...DEFAULT_LABEL_PROPS}
+            value={yAxisLabel}
+            position="left"
+            angle={-90}
+            style={{ textAnchor: 'middle' }}
+          />
         </YAxis>
 
         <Tooltip
@@ -203,20 +212,13 @@ function MultiLinePlot({
           formatter={(value) => formatValue(getD3DataFormatter(yAxisFormat, value), value)}
           labelFormatter={xAxisTickFormatter}
         />
-        <Legend
-          layout="vertical"
-          align="right"
-          verticalAlign={isServerSide ? 'top' : 'middle'}
-          iconType="circle"
-          iconSize={12}
-          wrapperStyle={{
-            paddingLeft: '16px',
-            paddingBottom: margin.bottom,
-          }}
-          onMouseEnter={onLegendItemHover}
-          onMouseLeave={onLegendItemLeave}
-          isAnimationActive={!isServerSide}
-        />
+        {ZenlyticLegend({
+          margin,
+          onMouseEnter: onLegendItemHover,
+          onMouseLeave: onLegendItemLeave,
+          isServerSide,
+        })}
+
         {/* <Line dataKey={categoryAxisDataKey} /> */}
         {/* <Line dataKey={yAxisDataKey} name={lines[0][0][categoryAxisDataKey]} /> */}
         {data.map((line, index) => {
@@ -225,7 +227,7 @@ function MultiLinePlot({
               activeDot={!isClickTooltipVisible}
               dot
               data={line.data}
-              stroke={colors[index % colors.length]}
+              stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
               dataKey={yAxisDataKey}
               type="monotone"
               strokeWidth={2}

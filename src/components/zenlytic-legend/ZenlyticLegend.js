@@ -1,40 +1,65 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/function-component-definition */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Legend } from 'recharts';
 import colors from '../../constants/colors';
-import { PLOT_MARGIN } from '../../constants/plotConstants';
-import space from '../../constants/space';
 import fontSizes from '../../constants/fontSizes';
 import fontWeights from '../../constants/fontWeights';
-
-const legendItem = (value, entry) => {
-  return (
-    <span
-      style={{
-        color: colors.gray[500],
-        fontSize: fontSizes.xs,
-        fontWeight: fontWeights.normal,
-      }}>
-      {value}
-    </span>
-  );
-};
+import space from '../../constants/space';
 
 const ZenlyticLegend = ({
   isServerSide = false,
-  onLegendItemHover,
-  onLegendItemLeave,
+  onLegendItemHover = () => {},
+  onLegendItemLeave = () => {},
   margin,
+  iconType = undefined,
+  useStrokeColorShape,
   ...restProps
 }) => {
+  const legendItem = (value, entry) => {
+    const strokeColor = entry?.payload?.stroke;
+
+    if (useStrokeColorShape) {
+      return (
+        <span>
+          <span
+            style={{
+              color: strokeColor,
+              height: '10px',
+              width: '10px',
+              backgroundColor: strokeColor,
+              display: 'inline-block',
+            }}
+          />
+          <span
+            style={{
+              color: colors.gray[500],
+              fontSize: fontSizes.xs,
+              fontWeight: fontWeights.normal,
+            }}>{` ${value}`}</span>
+        </span>
+      );
+    }
+    return (
+      <span>
+        <span
+          style={{
+            color: colors.gray[500],
+            fontSize: fontSizes.xs,
+            fontWeight: fontWeights.normal,
+          }}>{`${value}`}</span>
+      </span>
+    );
+  };
+
   return (
     <Legend
+      iconType={iconType}
       layout="vertical"
       align="right"
       verticalAlign={isServerSide ? 'top' : 'middle'}
-      iconSize={16}
+      iconSize={useStrokeColorShape ? 0 : iconType === 'line' ? 14 : 12}
+      // iconSize={0}
       color={colors.gray[500]}
       wrapperStyle={{
         paddingLeft: space[6],

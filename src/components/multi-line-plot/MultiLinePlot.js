@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import {
   CartesianGrid,
   Label,
-  Legend,
   Line,
   LineChart,
   ReferenceArea,
@@ -13,6 +12,8 @@ import {
   YAxis,
 } from 'recharts';
 import {
+  BRUSH_BORDER_COLOR,
+  BRUSH_COLOR,
   DEFAULT_AXIS_COLOR,
   DEFAULT_CARTESIAN_GRID_COLOR,
   DEFAULT_LABEL_PROPS,
@@ -25,10 +26,6 @@ import {
 import formatValue, { formatUnixValue, TIME_FORMATS } from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
-import colors from '../../constants/colors';
-import fontSizes from '../../constants/fontSizes';
-import fontWeights from '../../constants/fontWeights';
-import space from '../../constants/space';
 import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function MultiLinePlot({
@@ -217,6 +214,7 @@ function MultiLinePlot({
           onMouseEnter: onLegendItemHover,
           onMouseLeave: onLegendItemLeave,
           isServerSide,
+          iconType: 'line',
         })}
 
         {/* <Line dataKey={categoryAxisDataKey} /> */}
@@ -244,27 +242,16 @@ function MultiLinePlot({
             />
           );
         })}
-        {/* <Line dataKey={'ORDERS_TWITTER'} data={line} name={s.name} key={s.name} /> */}
-        {/* <Area
-          type="monotone"
-          dataKey={yAxisDataKey}
-          stroke={plotColor}
-          strokeWidth={2}
-          activeDot={{ r: 8 }}
-          fillOpacity={1}
-          fill="url(#colorUv)"
-        /> */}
         <ReferenceArea
           x1={refAreaRight}
           x2={refAreaLeft}
-          strokeOpacity={0.3}
           isFront
-          stroke="gray"
+          stroke={BRUSH_BORDER_COLOR}
+          fill={BRUSH_COLOR}
           alwaysShow
         />
       </LineChart>
     </div>
-    // </ResponsiveContainer>
   );
 }
 

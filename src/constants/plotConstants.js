@@ -18,6 +18,13 @@ export const DEFAULT_PLOT_MARGIN = {
   right: 48,
 };
 
+export const DEFAULT_NO_X_AXIS_PLOT_MARGIN = {
+  top: 40,
+  left: 32,
+  bottom: 0,
+  right: 48,
+};
+
 export const DEFAULT_Y_AXIS_WIDTH = 80;
 export const DEFAULT_X_AXIS_HEIGHT = 40;
 
@@ -91,8 +98,22 @@ export const PLOT_COLORS = [
   colors.yellow[300],
 ];
 
+export const PLOT_SECONDARY_COLORS = [
+  colors.dark_blue[50],
+  colors.mint[50],
+  colors.red[50],
+  colors.green[50],
+  colors.orange[50],
+  colors.pink[50],
+  colors.light_blue[50],
+  colors.yellow[50],
+];
+
 export const AXIS_COLOR = '#A6A6A6';
 export const GRID_COLOR = '#F0F0F0';
 export const LABEL_COLOR = '#737373';
 
 export const HIGHTLIGHT_BAR_COLOR = colors.gray[30];
+
+export const BRUSH_COLOR = colors.gray[50];
+export const BRUSH_BORDER_COLOR = colors.gray[100];

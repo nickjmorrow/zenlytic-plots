@@ -1,14 +1,22 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useEffect, useState } from 'react';
-import { Bar, BarChart, CartesianGrid, Label, Legend, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Label, Tooltip, XAxis, YAxis } from 'recharts';
 import {
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
   DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
+  HIGHTLIGHT_BAR_COLOR,
+  PLOT_COLORS,
+  PLOT_SECONDARY_COLORS,
 } from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
+import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function GroupedBarPlot({
   plotColor = '#8a8a8a',
@@ -35,29 +43,8 @@ function GroupedBarPlot({
     dataKey: categoryAxisKey,
   } = categoryAxis;
 
-  const colors = [
-    '#0f93e5',
-    '#e6ac00',
-    '#d510d9',
-    '#e57c04',
-    '#dac611',
-    '#74d912',
-    '#2ac2a5',
-    '#1501e5',
-    '#de0c08',
-  ];
-
-  const secondaryColors = [
-    '#4dbfff',
-    '#ffd34b',
-    '#f355f6',
-    '#ffad4d',
-    '#f6e655',
-    '#a6f556',
-    '#68e3cd',
-    '#5b4dff',
-    '#fa5252',
-  ];
+  const colors = PLOT_COLORS;
+  const secondaryColors = PLOT_SECONDARY_COLORS;
 
   const [hoveredBarKey, setHoveredBarKey] = useState(null);
   const [activePayload, setActivePayload] = useState(null);
@@ -111,27 +98,31 @@ function GroupedBarPlot({
         onMouseLeave={(e) => {
           setActivePayload(null);
         }}>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <XAxis
           height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           dataKey={xAxisKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} position="bottom" />
+          <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          stroke={DEFAULT_AXIS_COLOR}
           width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label value={yAxisLabel} position="left" angle={-90} style={{ textAnchor: 'middle' }} />
+          <Label {...DEFAULT_LABEL_PROPS} value={yAxisLabel} position="left" angle={-90} />
         </YAxis>
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
-          cursor={!isClickTooltipVisible}
+          cursor={isClickTooltipVisible ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler
@@ -145,17 +136,12 @@ function GroupedBarPlot({
           formatter={(value) => formatValue(getD3DataFormatter(yAxisFormat, value), value)}
           labelFormatter={(value) => formatValue(getD3DataFormatter(xAxisFormat, value), value)}
         />
-        <Legend
-          layout="vertical"
-          align="right"
-          verticalAlign={isServerSide ? 'top' : 'middle'}
-          iconType="circle"
-          iconSize={12}
-          wrapperStyle={{
-            paddingLeft: '16px',
-            paddingBottom: margin.bottom,
-          }}
-        />
+        {ZenlyticLegend({
+          margin,
+          isServerSide,
+          iconType: 'square',
+          useStrokeColorShape: true,
+        })}
         {/* {data?.map((bar) => {
           <Bar dataKey="value" name={xAxisLabel} fill={plotColor} />;
         })} */}

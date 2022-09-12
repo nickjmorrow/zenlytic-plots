@@ -12,6 +12,8 @@ import {
   YAxis,
 } from 'recharts';
 import {
+  BRUSH_BORDER_COLOR,
+  BRUSH_COLOR,
   DEFAULT_AXIS_COLOR,
   DEFAULT_CARTESIAN_GRID_COLOR,
   DEFAULT_LABEL_PROPS,
@@ -179,9 +181,9 @@ function LinePlot({
         <ReferenceArea
           x1={refAreaRight}
           x2={refAreaLeft}
-          strokeOpacity={0.3}
           isFront
-          stroke="gray"
+          fill={BRUSH_COLOR}
+          stroke={BRUSH_BORDER_COLOR}
           alwaysShow
         />
       </AreaChart>

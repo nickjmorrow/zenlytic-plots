@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Sankey, Tooltip } from 'recharts';
-import { DEFAULT_PLOT_MARGIN } from '../../constants/plotConstants';
+import { DEFAULT_PLOT_MARGIN, PLOT_COLORS } from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -22,17 +22,7 @@ function SankeyPlot({
 }) {
   const { format: valueAxisFormat } = valueAxis;
 
-  const colors = [
-    '#0f93e5',
-    '#e6ac00',
-    '#d510d9',
-    '#e57c04',
-    '#dac611',
-    '#74d912',
-    '#2ac2a5',
-    '#1501e5',
-    '#de0c08',
-  ];
+  const colors = PLOT_COLORS;
   const numColors = colors.length;
 
   const colorGradients = data.links.map((link) => {

@@ -13,6 +13,8 @@ import {
   ZAxis,
 } from 'recharts';
 import {
+  BRUSH_BORDER_COLOR,
+  BRUSH_COLOR,
   DEFAULT_AXIS_COLOR,
   DEFAULT_CARTESIAN_GRID_COLOR,
   DEFAULT_LABEL_PROPS,
@@ -179,9 +181,9 @@ function ScatterPlot({
           y1={brushAreaPoint1?.y}
           x2={brushAreaPoint2?.x}
           y2={brushAreaPoint2?.y}
-          strokeOpacity={0.3}
           isFront
-          stroke="gray"
+          fill={BRUSH_COLOR}
+          stroke={BRUSH_BORDER_COLOR}
           alwaysShow
         />
         <Tooltip

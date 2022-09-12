@@ -1,17 +1,21 @@
 /* eslint-disable react/jsx-filename-extension */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Bar, BarChart, CartesianGrid, Label, LabelList, Tooltip, XAxis, YAxis } from 'recharts';
+import colors from '../../constants/colors';
+import fontSizes from '../../constants/fontSizes';
+import fontWeights from '../../constants/fontWeights';
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Label,
-  LabelList,
-  Legend,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
-import { AXIS_COLOR, GRID_COLOR, LABEL_COLOR } from '../../constants/plotConstants';
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
+  DEFAULT_NO_X_AXIS_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+  HIGHTLIGHT_BAR_COLOR,
+  PLOT_COLORS,
+  PLOT_SECONDARY_COLORS,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -26,12 +30,7 @@ function FunnelBarPlot({
   categoryAxis = {},
   onBarClick = () => {},
   data = {},
-  margin = {
-    top: 32,
-    left: 32,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_NO_X_AXIS_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   width = 300,
@@ -58,27 +57,8 @@ function FunnelBarPlot({
     },
   ];
 
-  const colors = [
-    '#7ED1FF',
-    '#8A80FF',
-    '#FC8283',
-    '#F785FA',
-    '#FFC47F',
-    '#F9ED85',
-    '#BFF885',
-    '#91EBDB',
-  ];
-
-  const secondaryColors = [
-    '#E9FBFF',
-    '#F1EFFF',
-    '#FFEEEE',
-    '#FFEFFF',
-    '#FFF7EA',
-    '#FFFDEB',
-    '#F5FFEC',
-    '#EBFEFB',
-  ];
+  const plotColors = PLOT_COLORS;
+  const secondaryColors = PLOT_SECONDARY_COLORS;
 
   const [hoveredBarKey, setHoveredBarKey] = useState(null);
   const [activePayload, setActivePayload] = useState([]);
@@ -106,35 +86,29 @@ function FunnelBarPlot({
         onMouseLeave={(e) => {
           setActivePayload([]);
         }}>
-        <CartesianGrid stroke={GRID_COLOR} vertical={false} />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} vertical={false} />
         <XAxis
+          height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           dataKey={xAxisKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) => timeStr}
           tickLine={false}
           axisLine={false}
-          tick={{ fill: '#A6A6A6', fontWeight: 'medium', fontSize: '10px' }}
-          stroke={AXIS_COLOR}
         />
         <YAxis
-          stroke={GRID_COLOR}
-          tick={{ fill: '#A6A6A6', fontWeight: 'medium', fontSize: '10px' }}
-          tickLine={{ stroke: GRID_COLOR }}
+          stroke={DEFAULT_AXIS_COLOR}
+          width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label
-            fill={AXIS_COLOR}
-            value={yAxisLabel}
-            position="insideLeft"
-            fontSize="12px"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label {...DEFAULT_LABEL_PROPS} value={yAxisLabel} position="left" angle={-90} />
         </YAxis>
         <Tooltip
-          cursor
+          cursor={{ fill: HIGHTLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler
@@ -169,11 +143,12 @@ function FunnelBarPlot({
               fillOpacity={1.0}
               radius={[0, 0, 3, 3]}>
               <LabelList
+                offset={16}
                 dataKey="CONVERTED"
                 position="top"
-                fill="#737373"
-                fontWeight="medium"
-                fontSize="12px"
+                fill={colors.gray[500]}
+                fontWeight={fontWeights.medium}
+                fontSize={fontSizes.xs}
                 formatter={(value) => {
                   return formatValue(getD3DataFormatter(yAxisFormat, value), value);
                 }}
@@ -216,14 +191,15 @@ function FunnelBarPlot({
                   stackId={category}
                   dataKey={`CONVERTED_${category}`}
                   name={`Converted - ${category}`}
-                  fill={colors[index % colors.length]}
+                  fill={plotColor[index % plotColors.length]}
                   radius={[0, 0, 3, 3]}>
                   <LabelList
+                    offset={16}
                     dataKey={`CONVERTED_${category}`}
                     position="top"
-                    fill="#737373"
-                    fontWeight="medium"
-                    fontSize="12px"
+                    fill={colors.gray[500]}
+                    fontWeight={fontWeights.medium}
+                    fontSize={fontSizes.xs}
                     formatter={(timeStr) =>
                       formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
                     }

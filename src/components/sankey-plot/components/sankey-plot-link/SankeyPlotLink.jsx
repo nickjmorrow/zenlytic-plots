@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Rectangle, Layer } from 'recharts';
+import { Layer } from 'recharts';
+import colors from '../../../../constants/colors';
 
 export default function SankeyPlotLink({
   sourceX,
@@ -12,8 +13,9 @@ export default function SankeyPlotLink({
   index,
   colorGradients,
 }) {
+  const linkColor = colors.gray[50];
   const gradientID = `linkGradient${index}`;
-  const [fill, setFill] = useState('#8a8a8a50');
+  const [fill, setFill] = useState(linkColor);
   return (
     <Layer key={`CustomLink${index}`}>
       <defs>
@@ -23,6 +25,7 @@ export default function SankeyPlotLink({
         </linearGradient>
       </defs>
       <path
+        style={{ mixBlendMode: 'multiply' }}
         d={`
             M${sourceX},${sourceY + linkWidth / 2}
             C${sourceControlX},${sourceY + linkWidth / 2}
@@ -40,7 +43,7 @@ export default function SankeyPlotLink({
           setFill(`url(#${gradientID})`);
         }}
         onMouseLeave={() => {
-          setFill('#8a8a8a50');
+          setFill(linkColor);
         }}
       />
     </Layer>

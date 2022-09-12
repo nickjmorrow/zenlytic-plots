@@ -1,18 +1,27 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Label,
+  ReferenceArea,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ReferenceLine,
-  ReferenceArea,
-  Label,
 } from 'recharts';
+import {
+  BRUSH_BORDER_COLOR,
+  BRUSH_COLOR,
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -28,12 +37,7 @@ function HistogramPlot({
   xAxis = {},
   yAxis = {},
   data = [],
-  margin = {
-    top: 32,
-    left: 24,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   onUpdateBrush = () => {},
@@ -119,31 +123,31 @@ function HistogramPlot({
         }}
         // eslint-disable-next-line react/jsx-no-bind
         onMouseUp={onBrushEnd}>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <XAxis
           // padding={{ left: 20, right: 20 }}
           interval="preserveStartEnd"
+          height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           name={xAxisLabel}
           dataKey={'rangeBottom'}
           type="number"
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
           name={yAxisLabel}
-          // width={80}
+          stroke={DEFAULT_AXIS_COLOR}
+          width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           dataKey="value"
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
-          <Label
-            value={yAxisLabel}
-            position="insideLeft"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label {...DEFAULT_LABEL_PROPS} value={yAxisLabel} position="left" angle={-90} />
         </YAxis>
         <Bar dataKey="value" fill={plotColor} name={yAxisLabel} radius={[2, 2, 0, 0]}>
           {data.map((entry, index) => (
@@ -156,9 +160,9 @@ function HistogramPlot({
         <ReferenceArea
           x1={refAreaRight}
           x2={refAreaLeft}
-          strokeOpacity={0.3}
           isFront
-          stroke="gray"
+          fill={BRUSH_COLOR}
+          stroke={BRUSH_BORDER_COLOR}
           alwaysShow
         />
         <Tooltip

@@ -10,3 +10,4 @@ export { default as ScatterPlot } from 'components/scatter-plot/ScatterPlot';
 export { default as StatPlot } from 'components/stat-plot/StatPlot';
 export { default as TablePlot } from 'components/table-plot/TablePlot';
 export { default as WaterfallPlot } from 'components/waterfall-plot/WaterfallPlot';
+export { default as ZenlyticLegend } from 'components/zenlytic-legend/ZenlyticLegend';

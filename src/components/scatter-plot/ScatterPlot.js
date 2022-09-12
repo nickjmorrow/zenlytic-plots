@@ -12,6 +12,17 @@ import {
   YAxis,
   ZAxis,
 } from 'recharts';
+import {
+  BRUSH_BORDER_COLOR,
+  BRUSH_COLOR,
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -25,12 +36,7 @@ function ScatterPlot({
   onUpdateBrush = () => {},
   disableBrush = false,
   disableFollowUps = false,
-  margin = {
-    top: 32,
-    left: 24,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   width = 300,
   height = 300,
   CustomHoverTooltip = undefined,
@@ -137,18 +143,24 @@ function ScatterPlot({
         }}
         // eslint-disable-next-line react/jsx-no-bind
         onMouseUp={onBrushEnd}>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <XAxis
           type="number"
+          height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           dataKey={xAxisDataKey}
           name={xAxisLabel}
           allowDecimals={false}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          stroke={DEFAULT_AXIS_COLOR}
+          width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           dataKey={yAxisDataKey}
           allowDecimals={false}
           name={yAxisLabel}
@@ -156,8 +168,9 @@ function ScatterPlot({
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }>
           <Label
+            {...DEFAULT_LABEL_PROPS}
             value={yAxisLabel}
-            position="insideLeft"
+            position="left"
             angle={-90}
             style={{ textAnchor: 'middle' }}
           />
@@ -168,9 +181,9 @@ function ScatterPlot({
           y1={brushAreaPoint1?.y}
           x2={brushAreaPoint2?.x}
           y2={brushAreaPoint2?.y}
-          strokeOpacity={0.3}
           isFront
-          stroke="gray"
+          fill={BRUSH_COLOR}
+          stroke={BRUSH_BORDER_COLOR}
           alwaysShow
         />
         <Tooltip

@@ -11,6 +11,17 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  BRUSH_BORDER_COLOR,
+  BRUSH_COLOR,
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+} from '../../constants/plotConstants';
 
 import formatValue, { formatUnixValue, TIME_FORMATS } from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
@@ -28,12 +39,7 @@ function LinePlot({
   yAxis = {},
   data: lines,
   plotId = 'linePlot',
-  margin = {
-    top: 32,
-    left: 24,
-    bottom: 40,
-    right: 40,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   onUpdateBrush = () => {},
@@ -122,29 +128,29 @@ function LinePlot({
             <stop offset="100%" stopColor={plotSecondaryColor} stopOpacity={0.1} />
           </linearGradient>
         </defs>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <XAxis
           domain={['dataMin', 'dataMax']}
           name={xAxisLabel}
           type="number"
+          height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           minTickGap={minTickGap}
           dataKey={newXAxisDataKey}
           interval={interval}
           tickFormatter={xAxisTickFormatter}>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
-          width={80}
+          stroke={DEFAULT_AXIS_COLOR}
+          width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }
           name={yAxisLabel}>
-          <Label
-            value={yAxisLabel}
-            position="insideLeft"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          />
+          <Label {...DEFAULT_LABEL_PROPS} value={yAxisLabel} position="left" angle={-90} />
         </YAxis>
         <Tooltip
           cursor={!isClickTooltipVisible}
@@ -175,9 +181,9 @@ function LinePlot({
         <ReferenceArea
           x1={refAreaRight}
           x2={refAreaLeft}
-          strokeOpacity={0.3}
           isFront
-          stroke="gray"
+          fill={BRUSH_COLOR}
+          stroke={BRUSH_BORDER_COLOR}
           alwaysShow
         />
       </AreaChart>

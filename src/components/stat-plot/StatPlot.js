@@ -206,7 +206,7 @@ function StatItem({
 function StatPlot({
   data = [],
   margin = {
-    top: '32px',
+    top: '40px',
     left: '32px',
     bottom: '16px',
     right: '32px',

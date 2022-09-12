@@ -1,6 +1,26 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useEffect, useState } from 'react';
-import { Bar, BarChart, CartesianGrid, Cell, Label, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Label,
+  ReferenceLine,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import {
+  DEFAULT_AXIS_COLOR,
+  DEFAULT_CARTESIAN_GRID_COLOR,
+  DEFAULT_LABEL_PROPS,
+  DEFAULT_PLOT_MARGIN,
+  DEFAULT_TICK_PROPS,
+  DEFAULT_X_AXIS_HEIGHT,
+  DEFAULT_Y_AXIS_WIDTH,
+  HIGHTLIGHT_BAR_COLOR,
+} from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
 import TooltipHandler from '../tooltip-handler/TooltipHandler';
@@ -11,12 +31,7 @@ function BarPlot({
   xAxis = {},
   yAxis = {},
   data = [],
-  margin = {
-    top: 32,
-    left: 112,
-    bottom: 40,
-    right: 32,
-  },
+  margin = DEFAULT_PLOT_MARGIN,
   CustomHoverTooltip = undefined,
   CustomClickTooltip = undefined,
   width = 300,
@@ -59,32 +74,33 @@ function BarPlot({
         data={data}
         layout={layout}
         onClick={handleBarClick}>
-        <CartesianGrid stroke="#f5f5f5" />
+        <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
+        <ReferenceLine x="0" stroke={DEFAULT_AXIS_COLOR} />
+
         <XAxis
+          height={DEFAULT_X_AXIS_HEIGHT}
+          stroke={DEFAULT_AXIS_COLOR}
+          tick={DEFAULT_TICK_PROPS}
           type="number"
           dataKey={xAxisDataKey}
           name={xAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(xAxisFormat, timeStr), timeStr)
           }>
-          <Label value={xAxisLabel} offset={-10} position="insideBottom" />
+          <Label {...DEFAULT_LABEL_PROPS} value={xAxisLabel} position="bottom" />
         </XAxis>
         <YAxis
+          stroke={DEFAULT_AXIS_COLOR}
+          width={DEFAULT_Y_AXIS_WIDTH}
+          tick={DEFAULT_TICK_PROPS}
           type="category"
           dataKey={yAxisDataKey}
           name={yAxisLabel}
           tickFormatter={(timeStr) =>
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
-          }>
-          {/* <Label
-            value={yAxisLabel}
-            position="insideLeft"
-            angle={-90}
-            style={{ textAnchor: 'middle' }}
-          /> */}
-        </YAxis>
+          }></YAxis>
         <Tooltip
-          cursor={!isClickTooltipVisible}
+          cursor={isClickTooltipVisible ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={

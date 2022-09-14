@@ -38,10 +38,13 @@ function BarPlot({
   height = 300,
   layout = 'vertical',
   disableFollowUps = false,
+  onBarClick = () => {},
 }) {
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisDataKey } = xAxis;
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisDataKey } = yAxis;
 
+  const [hoveredBarKey, setHoveredBarKey] = useState(null);
+  const [activePayload, setActivePayload] = useState(null);
   const [isClickTooltipVisible, setIsClickTooltipVisible] = useState(false);
   const [clickTooltipCoords, setClickTooltipCoords] = useState();
 
@@ -52,6 +55,9 @@ function BarPlot({
     if (isClickTooltipVisible) {
       return;
     }
+    if (!hoveredBarKey) {
+      return;
+    }
     if (!event) return;
     setClickTooltipCoords(event.activeCoordinate);
   };
@@ -60,6 +66,7 @@ function BarPlot({
     if (disableFollowUps) return;
     if (clickTooltipCoords) {
       setIsClickTooltipVisible(true);
+      onBarClick(activePayload);
     } else {
       setIsClickTooltipVisible(false);
     }
@@ -73,7 +80,21 @@ function BarPlot({
         width={width}
         data={data}
         layout={layout}
-        onClick={handleBarClick}>
+        onClick={handleBarClick}
+        onMouseMove={(e) => {
+          const foundPayload = e.activePayload?.filter((bar) => {
+            return bar.dataKey === hoveredBarKey;
+          });
+          if (!foundPayload) return;
+          if (!foundPayload.length) {
+            setActivePayload(e.activePayload);
+            return;
+          }
+          setActivePayload(foundPayload);
+        }}
+        onMouseLeave={(e) => {
+          setActivePayload(null);
+        }}>
         <CartesianGrid stroke={DEFAULT_CARTESIAN_GRID_COLOR} />
         <ReferenceLine x="0" stroke={DEFAULT_AXIS_COLOR} />
 
@@ -100,15 +121,16 @@ function BarPlot({
             formatValue(getD3DataFormatter(yAxisFormat, timeStr), timeStr)
           }></YAxis>
         <Tooltip
+          position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           cursor={isClickTooltipVisible ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
-          position={isClickTooltipVisible ? clickTooltipCoords : undefined}
           content={
             <TooltipHandler
               CustomHoverTooltip={CustomHoverTooltip}
               CustomClickTooltip={CustomClickTooltip}
               isClickTooltipVisible={isClickTooltipVisible}
               closeClickTooltip={closeTooltip}
+              customPayload={activePayload}
             />
           }
           formatter={(value) =>
@@ -128,9 +150,10 @@ function BarPlot({
         <Bar
           dataKey={xAxisDataKey}
           name={xAxisLabel}
-          // fill={plotSecondaryColor}
-          // stroke={plotColor}
-
+          onMouseMove={(bar) => {
+            setHoveredBarKey(bar?.id);
+          }}
+          onMouseLeave={() => setHoveredBarKey(null)}
           radius={[0, 5, 5, 0]}
           strokeWidth={2}>
           {data.map((entry, index) => {

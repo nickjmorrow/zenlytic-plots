@@ -129,14 +129,9 @@ function WaterfallPlot({
         onClick={handleBarClick}
         onMouseMove={(event) => {
           const { activePayload: eventPayload } = event;
-          console.log('🚀 ~ file: WaterfallPlot.js ~ line 131 ~ eventPayload', eventPayload);
           if (!eventPayload) return;
           const visibleBarPayload = eventPayload.find(
             (barPayload) => (barPayload.dataKey = 'valueChange')
-          );
-          console.log(
-            '🚀 ~ file: WaterfallPlot.js ~ line 134 ~ visibleBarPayload',
-            visibleBarPayload
           );
           setActivePayload(visibleBarPayload?.payload);
         }}

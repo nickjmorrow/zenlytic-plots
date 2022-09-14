@@ -39,7 +39,7 @@ function WaterfallPlot({
   data = [],
   margin = DEFAULT_PLOT_MARGIN,
   width = 300,
-  height = 300,Ø
+  height = 300,
   onBarClick = () => {},
   disableFollowUps = false,
   CustomHoverTooltip = undefined,

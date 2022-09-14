@@ -93,6 +93,7 @@ function WaterfallPlot({
     setClickTooltipCoords(null);
   };
   const handleBarClick = (event) => {
+    if (!event) return;
     if (disableFollowUps) return;
     if (isClickTooltipVisible) {
       return;
@@ -101,7 +102,7 @@ function WaterfallPlot({
     const visibleBarPayload = eventPayload.find(
       (barPayload) => (barPayload.dataKey = 'valueChange')
     );
-    if (!visibleBarPayload) {
+    if (!visibleBarPayload || !visibleBarPayload.payload) {
       return;
     }
     if (!event) return;
@@ -127,7 +128,8 @@ function WaterfallPlot({
         data={data}
         onClick={handleBarClick}
         onMouseMove={(event) => {
-          const { activePayload: eventPayload = [] } = event;
+          const { activePayload: eventPayload } = event;
+          if (!eventPayload) return;
           const visibleBarPayload = eventPayload.find(
             (barPayload) => (barPayload.dataKey = 'valueChange')
           );

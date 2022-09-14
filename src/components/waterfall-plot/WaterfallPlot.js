@@ -39,7 +39,7 @@ function WaterfallPlot({
   data = [],
   margin = DEFAULT_PLOT_MARGIN,
   width = 300,
-  height = 300,
+  height = 300,Ø
   onBarClick = () => {},
   disableFollowUps = false,
   CustomHoverTooltip = undefined,
@@ -93,6 +93,7 @@ function WaterfallPlot({
     setClickTooltipCoords(null);
   };
   const handleBarClick = (event) => {
+    if (!event) return;
     if (disableFollowUps) return;
     if (isClickTooltipVisible) {
       return;
@@ -101,7 +102,7 @@ function WaterfallPlot({
     const visibleBarPayload = eventPayload.find(
       (barPayload) => (barPayload.dataKey = 'valueChange')
     );
-    if (!visibleBarPayload) {
+    if (!visibleBarPayload || !visibleBarPayload.payload) {
       return;
     }
     if (!event) return;
@@ -127,9 +128,15 @@ function WaterfallPlot({
         data={data}
         onClick={handleBarClick}
         onMouseMove={(event) => {
-          const { activePayload: eventPayload = [] } = event;
+          const { activePayload: eventPayload } = event;
+          console.log('🚀 ~ file: WaterfallPlot.js ~ line 131 ~ eventPayload', eventPayload);
+          if (!eventPayload) return;
           const visibleBarPayload = eventPayload.find(
             (barPayload) => (barPayload.dataKey = 'valueChange')
+          );
+          console.log(
+            '🚀 ~ file: WaterfallPlot.js ~ line 134 ~ visibleBarPayload',
+            visibleBarPayload
           );
           setActivePayload(visibleBarPayload?.payload);
         }}

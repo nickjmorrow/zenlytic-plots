@@ -58,24 +58,8 @@ export const PLOT_TYPES = {
   STAT: 'stat_plot',
 };
 
-export const AXIS_TYPES = {
-  DATE: 'date',
-  WEEK: 'week',
-  MONTH: 'month',
-  QUARTER: 'quarter',
-  YEAR: 'year',
-};
-
 export const COLOR_SUCCESS = colors.green[600];
 export const COLOR_FAIL = colors.red[600];
-
-export const DATE_AXIS_TYPES = [
-  AXIS_TYPES.DATE,
-  AXIS_TYPES.WEEK,
-  AXIS_TYPES.MONTH,
-  AXIS_TYPES.QUARTER,
-  AXIS_TYPES.YEAR,
-];
 
 export const PLOT_COLOR_PALETTE = {
   RED_MARK: 'red',
@@ -117,3 +101,9 @@ export const HIGHTLIGHT_BAR_COLOR = colors.gray[30];
 
 export const BRUSH_COLOR = colors.gray[50];
 export const BRUSH_BORDER_COLOR = colors.gray[100];
+
+export const AXIS_TYPES = {
+  TIME: 'time',
+  NUMBER: 'number',
+  CATEGORY: 'category',
+};

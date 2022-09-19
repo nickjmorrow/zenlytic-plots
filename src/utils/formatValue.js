@@ -12,6 +12,8 @@ const timeOfDayFormat = 'LLL';
 export const TIME_FORMATS = ['date', 'month', 'week', 'quarter', 'year', 'hour_of_day', 'time'];
 
 export const formatUnixValue = (formatter, value) => {
+  console.log('🚀 ~ file: formatValue.js ~ line 15 ~ formatUnixValue ~ value', value);
+  console.log('🚀 ~ file: formatValue.js ~ line 15 ~ formatUnixValue ~ formatter', formatter);
   switch (formatter) {
     case 'date':
       return moment.unix(value).utc().format(dateFormat);

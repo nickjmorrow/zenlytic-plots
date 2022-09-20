@@ -107,3 +107,9 @@ export const AXIS_TYPES = {
   NUMBER: 'number',
   CATEGORY: 'category',
 };
+
+export const DATA_TYPES = {
+  TIME: 'time',
+  NUMBER: 'number',
+  CATEGORY: 'category',
+};

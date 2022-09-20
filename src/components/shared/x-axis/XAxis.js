@@ -23,13 +23,11 @@ const XAxis = (props) => {
     interval = undefined,
     tickFormatter = undefined,
   } = props;
-  console.log('🚀 ~ file: XAxis.js ~ line 18 ~ XAxis ~ type', type);
-
   return (
     <RechartsXAxis
       domain={domain}
       name={name}
-      type="number"
+      type={type}
       height={height}
       tick={tick}
       stroke={stroke}

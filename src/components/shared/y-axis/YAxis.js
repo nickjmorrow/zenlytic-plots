@@ -17,7 +17,7 @@ const YAxis = ({ name, tickFormatter }) => {
       stroke={DEFAULT_AXIS_COLOR}
       width={DEFAULT_Y_AXIS_WIDTH}
       tick={DEFAULT_TICK_PROPS}
-      //   tickFormatter={tickFormatter}
+      tickFormatter={tickFormatter}
       name={name}>
       <Label {...DEFAULT_LABEL_PROPS} value={name} position="left" angle={-90} />
     </RechartsYAxis>

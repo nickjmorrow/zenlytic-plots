@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { Area, AreaChart, ComposedChart, ResponsiveContainer } from 'recharts';
-import { AXIS_TYPES } from '../../constants/plotConstants';
+import { Line, LineChart, ResponsiveContainer } from 'recharts';
 
 import {
   getData,
@@ -19,13 +18,11 @@ import XAxis from '../shared/x-axis/XAxis';
 import YAxis from '../shared/y-axis/YAxis';
 
 function NewLinePlot({ plotConfig = {} }) {
-  const xAxisType = AXIS_TYPES.TIME;
-  const yAxisType = AXIS_TYPES.NUMBER;
+  const xAxisConfig = getXAxis(plotConfig);
+  const yAxisConfig = getYAxis(plotConfig);
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
 
-  const xAxisConfig = getXAxis(plotConfig, xAxisType);
-  const yAxisConfig = getYAxis(plotConfig, yAxisType);
-  const yAxisKey = getYAxisDataKey(plotConfig, yAxisType);
-  const yAxisName = getYAxisName(plotConfig, yAxisType);
+  const yAxisName = getYAxisName(plotConfig);
 
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
@@ -37,7 +34,7 @@ function NewLinePlot({ plotConfig = {} }) {
 
   return (
     <ResponsiveContainer>
-      <AreaChart data={data} margin={margin}>
+      <LineChart data={data} margin={margin}>
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={seriesFillColor} stopOpacity={1.0} />
@@ -46,10 +43,12 @@ function NewLinePlot({ plotConfig = {} }) {
           </linearGradient>
         </defs>
         {GridLines()}
+        {YAxis({
+          ...yAxisConfig,
+        })}
         {XAxis({
           ...xAxisConfig,
         })}
-        {YAxis({ ...yAxisConfig })}
         {/* {Tooltip({
                 CustomHoverTooltip,
                 CustomClickTooltip,
@@ -59,9 +58,9 @@ function NewLinePlot({ plotConfig = {} }) {
                 yAxisFormat,
                 xAxisTickFormatter,
               })} */}
-        <Area
+        <Line
           type="monotone"
-          dataKey={yAxisKey}
+          dataKey={yAxisDataKey}
           stroke={seriesStrokeColor}
           strokeWidth={2}
           // activeDot={isClickTooltipVisible ? false : { r: 8 }}
@@ -74,7 +73,7 @@ function NewLinePlot({ plotConfig = {} }) {
                   x1: refAreaLeft,
                   x2: refAreaRight,
                 })} */}
-      </AreaChart>
+      </LineChart>
     </ResponsiveContainer>
   );
 }

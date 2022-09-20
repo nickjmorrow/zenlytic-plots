@@ -17,7 +17,7 @@ import GridLines from '../shared/grid-lines/GridLines';
 import XAxis from '../shared/x-axis/XAxis';
 import YAxis from '../shared/y-axis/YAxis';
 
-function NewBarPlot({ plotConfig = {} }) {
+function NewGroupedBar({ plotConfig = {} }) {
   const xAxisConfig = getXAxis(plotConfig);
   const yAxisConfig = getYAxis(plotConfig);
   const yAxisDataKey = getYAxisDataKey(plotConfig);
@@ -53,6 +53,6 @@ function NewBarPlot({ plotConfig = {} }) {
   );
 }
 
-NewBarPlot.propTypes = {};
+NewGroupedBar.propTypes = {};
 
-export default NewBarPlot;
+export default NewGroupedBar;

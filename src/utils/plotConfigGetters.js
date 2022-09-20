@@ -1,24 +1,23 @@
 import moment from 'moment';
 import colors from '../constants/colors';
-import { AXIS_TYPES, DATA_TYPES, DEFAULT_PLOT_MARGIN } from '../constants/plotConstants';
-import formatValue, { formatUnixValue, TIME_FORMATS } from './formatValue';
+import { AXIS_DATA_KEY_KEYS, DEFAULT_PLOT_MARGIN } from '../constants/plotConstants';
+import formatValue, { TIME_FORMATS } from './formatValue';
 import getD3DataFormatter from './getD3DataFormatter';
 
 export const getAxes = (plotConfig = {}) => {
   return plotConfig.axes || [];
 };
-export const getFormatter = (dataType, format) => {
-  if (dataType === DATA_TYPES.TIME) {
-    return (value) => {
-      return formatUnixValue(getD3DataFormatter(format, value), value);
-    };
-  }
-  if (dataType === DATA_TYPES.NUMBER) {
-    return (value) => {
-      return formatValue(getD3DataFormatter(format, value), value);
-    };
-  }
-  return '';
+
+export const getSeries = (plotConfig = {}) => {
+  const { series = [] } = plotConfig;
+  if (!series.length) return null;
+  return series[0];
+};
+
+export const getFormatter = (format) => {
+  return (value) => {
+    return formatValue(getD3DataFormatter(format, value), value);
+  };
 };
 
 const getAdjustedXAxisDataKey = (dataKey, format) => {
@@ -31,49 +30,55 @@ const getAdjustedXAxisDataKey = (dataKey, format) => {
   return adjustedDataKey;
 };
 
-const chooseAxisFromAxes = (plotConfig, type) => {
+// const chooseAxisFromAxes = (plotConfig, type) => {
+//   const axes = getAxes(plotConfig);
+//   switch (type) {
+//     case AXIS_TYPES.TIME:
+//       return axes.find((axis) => axis.dataType === DATA_TYPES.TIME);
+//     case AXIS_TYPES.NUMBER:
+//       return axes.find((axis) => axis.dataType === DATA_TYPES.NUMBER);
+//     case AXIS_TYPES.CATEGORY:
+//     default:
+//       return axes.find(
+//         (axis) => axis.dataType === DATA_TYPES.CATEGORY || axis.dataType === DATA_TYPES.TIME
+//       );
+//   }
+// };
+const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {
+  const series = getSeries(plotConfig);
+  if (!series) return null;
+  const axisDataKey = series[axisDataKeyKey];
+
   const axes = getAxes(plotConfig);
-  switch (type) {
-    case AXIS_TYPES.TIME:
-      return axes.find((axis) => axis.dataType === DATA_TYPES.TIME);
-    case AXIS_TYPES.NUMBER:
-      return axes.find((axis) => axis.dataType === DATA_TYPES.NUMBER);
-    case AXIS_TYPES.CATEGORY:
-    default:
-      return axes.find(
-        (axis) => axis.dataType === DATA_TYPES.CATEGORY || axis.dataType === DATA_TYPES.TIME
-      );
-  }
+  return axes.find((axis) => axis.dataKey === axisDataKey);
 };
 
-export const getXAxis = (plotConfig, type) => {
-  const xAxis = chooseAxisFromAxes(plotConfig, type);
+export const getXAxis = (plotConfig) => {
+  const xAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.X_AXIS_DATA_KEY_KEY);
   if (!xAxis) return null;
   const { dataType, name, dataKey, format } = xAxis || {};
-  const tickFormatter = getFormatter(dataType, format);
-  // We need to cast dates to unix time for recharts
-  // This is because we want it to be a number, not a category
-  const adjustedDataKey = getAdjustedXAxisDataKey(dataKey, format);
-  return { type, name, dataKey: adjustedDataKey, tickFormatter };
+  const tickFormatter = getFormatter(format);
+  return { type: dataType, name, dataKey, tickFormatter };
 };
 
-export const getXAxisKey = (plotConfig, xAxisType) => {
-  const xAxis = getXAxis(plotConfig, xAxisType);
+export const getXAxisDataKey = (plotConfig) => {
+  const xAxis = getXAxis(plotConfig);
   return xAxis?.dataKey;
 };
-export const getYAxis = (plotConfig, type) => {
-  const yAxis = chooseAxisFromAxes(plotConfig, type);
+export const getYAxis = (plotConfig) => {
+  const yAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.Y_AXIS_DATA_KEY_KEY);
   if (!yAxis) return null;
   const { dataType, name, dataKey, format } = yAxis || {};
-  const tickFormatter = getFormatter(dataType, format);
-  return { type, name, dataKey, tickFormatter };
+
+  const tickFormatter = getFormatter(format);
+  return { type: dataType, name, dataKey, tickFormatter };
 };
-export const getYAxisDataKey = (plotConfig, yAxisType) => {
-  const yAxis = getYAxis(plotConfig, yAxisType);
+export const getYAxisDataKey = (plotConfig) => {
+  const yAxis = getYAxis(plotConfig);
   return yAxis?.dataKey;
 };
-export const getYAxisName = (plotConfig, yAxisType) => {
-  const yAxis = getYAxis(plotConfig, yAxisType);
+export const getYAxisName = (plotConfig) => {
+  const yAxis = getYAxis(plotConfig);
   return yAxis?.name;
 };
 
@@ -93,18 +98,14 @@ export const getMargin = (plotConfig = {}) => {
 };
 export const getSeriesFillColor = (plotConfig) => {
   const defaultColor = colors.gray[50];
-  const { series = [] } = plotConfig;
-  if (!series.length) return defaultColor;
-  const subjectSeries = series[0];
-  const { fillColor = defaultColor } = subjectSeries || {};
+  const series = getSeries(plotConfig);
+  const { fillColor = defaultColor } = series || {};
   return fillColor;
 };
 
 export const getSeriesStrokeColor = (plotConfig) => {
   const defaultColor = colors.gray[100];
-  const { series = [] } = plotConfig;
-  if (!series.length) return defaultColor;
-  const subjectSeries = series[0];
-  const { strokeColor = defaultColor } = subjectSeries || {};
+  const series = getSeries(plotConfig);
+  const { strokeColor = defaultColor } = series || {};
   return strokeColor;
 };

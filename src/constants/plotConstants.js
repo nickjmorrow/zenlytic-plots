@@ -113,3 +113,10 @@ export const DATA_TYPES = {
   NUMBER: 'number',
   CATEGORY: 'category',
 };
+
+// This is what is inside the series object that signifies which dataKey goes in which axis.
+// Example: xDataKey: 'ORDERS_ORDER_CREATED_AT_DATE'
+export const AXIS_DATA_KEY_KEYS = {
+  X_AXIS_DATA_KEY_KEY: 'xDataKey',
+  Y_AXIS_DATA_KEY_KEY: 'yDataKey',
+};

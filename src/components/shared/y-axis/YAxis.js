@@ -11,14 +11,17 @@ import {
   DEFAULT_Y_AXIS_WIDTH,
 } from '../../../constants/plotConstants';
 
-const YAxis = ({ name, tickFormatter }) => {
+const YAxis = ({ type, dataKey, name, tickFormatter }) => {
+  // return <RechartsYAxis type="category" dataKey="ORDERS_ORDER_CREATED_AT_DATE" />;
   return (
     <RechartsYAxis
+      dataKey={dataKey}
+      tickFormatter={tickFormatter}
+      name={name}
+      type={type}
       stroke={DEFAULT_AXIS_COLOR}
       width={DEFAULT_Y_AXIS_WIDTH}
-      tick={DEFAULT_TICK_PROPS}
-      tickFormatter={tickFormatter}
-      name={name}>
+      tick={DEFAULT_TICK_PROPS}>
       <Label {...DEFAULT_LABEL_PROPS} value={name} position="left" angle={-90} />
     </RechartsYAxis>
   );

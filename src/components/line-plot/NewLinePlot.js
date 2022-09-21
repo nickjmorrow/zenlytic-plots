@@ -19,21 +19,20 @@ import {
 import GridLines from '../shared/grid-lines/GridLines';
 import XAxis from '../shared/x-axis/XAxis';
 import YAxis from '../shared/y-axis/YAxis';
+import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function NewLinePlot({ plotConfig = {} }) {
-  const xAxisConfig = getXAxis(plotConfig);
-  const yAxisConfig = getYAxis(plotConfig);
+  console.log('🚀 ~ file: NewLinePlot.js ~ line 24 ~ NewLinePlot ~ plotConfig', plotConfig);
   const categoryAxisConfig = getCategoryAxis(plotConfig);
-
-  const yAxisDataKey = getYAxisDataKey(plotConfig);
+  console.log(
+    '🚀 ~ file: NewLinePlot.js ~ line 25 ~ NewLinePlot ~ categoryAxisConfig',
+    categoryAxisConfig
+  );
 
   const yAxisName = getYAxisName(plotConfig);
 
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
-
-  const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
-  const seriesFillColor = getSeriesFillColor(plotConfig);
 
   const categoryValues = getCategoryValues(plotConfig);
   if (!categoryValues || !categoryAxisConfig) return false;
@@ -65,6 +64,9 @@ function NewLinePlot({ plotConfig = {} }) {
             strokeWidth={2}
           />
         ))}
+        {ZenlyticLegend({
+          margin,
+        })}
         {/* <Line
           type="monotone"
           dataKey={yAxisDataKey}

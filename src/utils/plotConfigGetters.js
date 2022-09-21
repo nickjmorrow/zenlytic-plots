@@ -153,7 +153,6 @@ export const getSeriesStrokeColor = (plotConfig) => {
 
 export const getSeriesIsStacked = (plotConfig) => {
   const series = getSeries(plotConfig);
-  console.log('🚀 ~ file: plotConfigGetters.js ~ line 156 ~ getSeriesIsStacked ~ series', series);
   const { isStacked = false } = series || {};
   return isStacked;
 };

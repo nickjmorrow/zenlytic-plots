@@ -44,13 +44,22 @@ const getAdjustedXAxisDataKey = (dataKey, format) => {
 //       );
 //   }
 // };
-const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {
+
+const getSeriesKeyValue = (plotConfig, axisDataKeyKey) => {
   const series = getSeries(plotConfig);
   if (!series) return null;
-  const axisDataKey = series[axisDataKeyKey];
+  return series[axisDataKeyKey];
+};
 
+const getAxisFromDataKey = (plotConfig, axisDataKey) => {
   const axes = getAxes(plotConfig);
   return axes.find((axis) => axis.dataKey === axisDataKey);
+};
+
+const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {
+  const axisDataKey = getSeriesKeyValue(plotConfig, axisDataKeyKey);
+
+  return getAxisFromDataKey(plotConfig, axisDataKey);
 };
 
 export const getXAxis = (plotConfig) => {
@@ -82,6 +91,36 @@ export const getYAxisName = (plotConfig) => {
   return yAxis?.name;
 };
 
+// Used in grouped bar to define the x axis
+export const getCategoryAxis = (plotConfig) => {
+  const categoryAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.CATEGORY_AXIS_DATA_KEY_KEY);
+
+  if (!categoryAxis) return null;
+  const { dataType, name, dataKey, format } = categoryAxis || {};
+  const tickFormatter = getFormatter(format);
+  return { type: dataType, name, dataKey, tickFormatter };
+};
+
+export const getCategoryAxisDataKey = (plotConfig) => {
+  const categoryAxis = getCategoryAxis(plotConfig);
+  return categoryAxis?.dataKey;
+};
+
+// Used in grouped bar plot to get all bars in each group
+export const getCategoryValues = (plotConfig) => {
+  const categoryValueDataKeys = getSeriesKeyValue(
+    plotConfig,
+    AXIS_DATA_KEY_KEYS.CATEGORY_VALUE_DATA_KEYS_KEY
+  );
+  if (!categoryValueDataKeys || !categoryValueDataKeys.length) return null;
+  return categoryValueDataKeys.map((categoryValueDataKey) => {
+    const categoryValue = getAxisFromDataKey(plotConfig, categoryValueDataKey);
+    const { dataType, name, dataKey, format } = categoryValue || {};
+    const tickFormatter = getFormatter(format);
+    return { type: dataType, name, dataKey, tickFormatter };
+  });
+};
+
 export const getData = (plotConfig) => {
   const { data = [] } = plotConfig;
   return data;
@@ -96,6 +135,8 @@ export const getMargin = (plotConfig = {}) => {
   const { margin = DEFAULT_PLOT_MARGIN } = plotConfig;
   return margin;
 };
+
+// Series Getters
 export const getSeriesFillColor = (plotConfig) => {
   const defaultColor = colors.gray[50];
   const series = getSeries(plotConfig);
@@ -108,4 +149,11 @@ export const getSeriesStrokeColor = (plotConfig) => {
   const series = getSeries(plotConfig);
   const { strokeColor = defaultColor } = series || {};
   return strokeColor;
+};
+
+export const getSeriesIsStacked = (plotConfig) => {
+  const series = getSeries(plotConfig);
+  console.log('🚀 ~ file: plotConfigGetters.js ~ line 156 ~ getSeriesIsStacked ~ series', series);
+  const { isStacked = false } = series || {};
+  return isStacked;
 };

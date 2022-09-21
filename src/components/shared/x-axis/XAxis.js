@@ -38,22 +38,6 @@ const XAxis = (props) => {
       <Label {...DEFAULT_LABEL_PROPS} value={name} position="bottom" />
     </RechartsXAxis>
   );
-  //   return (
-  //     <RechartsXAxis
-  //       domain={domain}
-  //       name={name}
-  //       type={type}
-  //       height={height}
-  //       stroke={stroke}
-  //       tick={tick}
-  //       minTickGap={minTickGap}
-  //       dataKey={dataKey}
-  //       interval={interval}
-  //       //   tickFormatter={tickFormatter}
-  //     >
-  //       <Label {...DEFAULT_LABEL_PROPS} value={name} position="bottom" />
-  //     </RechartsXAxis>
-  //   );
 };
 
 XAxis.propTypes = {};

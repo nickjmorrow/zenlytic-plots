@@ -2,8 +2,11 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
+import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
 
 import {
+  getCategoryAxis,
+  getCategoryValues,
   getData,
   getMargin,
   getSeriesFillColor,
@@ -20,6 +23,8 @@ import YAxis from '../shared/y-axis/YAxis';
 function NewLinePlot({ plotConfig = {} }) {
   const xAxisConfig = getXAxis(plotConfig);
   const yAxisConfig = getYAxis(plotConfig);
+  const categoryAxisConfig = getCategoryAxis(plotConfig);
+
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const yAxisName = getYAxisName(plotConfig);
@@ -30,24 +35,16 @@ function NewLinePlot({ plotConfig = {} }) {
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
   const seriesFillColor = getSeriesFillColor(plotConfig);
 
-  const gradientId = `colorUv${`line-plot`}`;
+  const categoryValues = getCategoryValues(plotConfig);
+  if (!categoryValues || !categoryAxisConfig) return false;
 
   return (
     <ResponsiveContainer>
       <LineChart data={data} margin={margin}>
-        <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={seriesFillColor} stopOpacity={1.0} />
-            <stop offset="30%" stopColor={seriesFillColor} stopOpacity={0.8} />
-            <stop offset="100%" stopColor={seriesFillColor} stopOpacity={0.1} />
-          </linearGradient>
-        </defs>
         {GridLines()}
-        {YAxis({
-          ...yAxisConfig,
-        })}
+        {YAxis({})}
         {XAxis({
-          ...xAxisConfig,
+          ...categoryAxisConfig,
         })}
         {/* {Tooltip({
                 CustomHoverTooltip,
@@ -58,7 +55,17 @@ function NewLinePlot({ plotConfig = {} }) {
                 yAxisFormat,
                 xAxisTickFormatter,
               })} */}
-        <Line
+        {categoryValues.map((categoryValue, index) => (
+          <Line
+            type="monotone"
+            dataKey={categoryValue.dataKey}
+            fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
+            stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
+            dot
+            strokeWidth={2}
+          />
+        ))}
+        {/* <Line
           type="monotone"
           dataKey={yAxisDataKey}
           stroke={seriesStrokeColor}
@@ -68,7 +75,7 @@ function NewLinePlot({ plotConfig = {} }) {
           fill={`url(#${gradientId})`}
           name={yAxisName}
           dot
-        />
+        /> */}
         {/* {Brush({
                   x1: refAreaLeft,
                   x2: refAreaRight,

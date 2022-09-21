@@ -1,12 +1,12 @@
 export { default as BarPlot } from 'components/bar-plot/NewBarPlot';
 export { default as FunnelBarPlot } from 'components/funnel-bar-plot/FunnelBarPlot';
-export { default as GroupedBarPlot } from 'components/grouped-bar-plot/GroupedBarPlot';
+export { default as GroupedBarPlot } from 'components/grouped-bar-plot/NewGroupedBarPlot';
 export { default as HistogramPlot } from 'components/histogram-plot/HistogramPlot';
 export { default as LinePlot } from 'components/line-plot/NewLinePlot';
 export { default as MultiLinePlot } from 'components/multi-line-plot/MultiLinePlot';
 export { default as ResponsiveContainer } from 'components/responsive-container/ResponsiveContainer';
 export { default as SankeyPlot } from 'components/sankey-plot/SankeyPlot';
-export { default as ScatterPlot } from 'components/scatter-plot/ScatterPlot';
+export { default as ScatterPlot } from 'components/scatter-plot/NewScatterPlot';
 export { default as StatPlot } from 'components/stat-plot/StatPlot';
 export { default as TablePlot } from 'components/table-plot/TablePlot';
 export { default as WaterfallPlot } from 'components/waterfall-plot/WaterfallPlot';

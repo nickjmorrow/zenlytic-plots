@@ -22,12 +22,11 @@ import YAxis from '../shared/y-axis/YAxis';
 import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function NewLinePlot({ plotConfig = {} }) {
-  console.log('🚀 ~ file: NewLinePlot.js ~ line 24 ~ NewLinePlot ~ plotConfig', plotConfig);
+  const xAxisConfig = getXAxis(plotConfig);
+  const yAxisConfig = getYAxis(plotConfig);
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
+
   const categoryAxisConfig = getCategoryAxis(plotConfig);
-  console.log(
-    '🚀 ~ file: NewLinePlot.js ~ line 25 ~ NewLinePlot ~ categoryAxisConfig',
-    categoryAxisConfig
-  );
 
   const yAxisName = getYAxisName(plotConfig);
 
@@ -35,16 +34,17 @@ function NewLinePlot({ plotConfig = {} }) {
   const margin = getMargin(plotConfig);
 
   const categoryValues = getCategoryValues(plotConfig);
-  if (!categoryValues || !categoryAxisConfig) return false;
+
+  const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
+
+  // if (!categoryValues || !categoryAxisConfig) return false;
 
   return (
     <ResponsiveContainer>
       <LineChart data={data} margin={margin}>
         {GridLines()}
-        {YAxis({})}
-        {XAxis({
-          ...categoryAxisConfig,
-        })}
+        {YAxis({ ...yAxisConfig })}
+        {XAxis({ ...xAxisConfig })}
         {/* {Tooltip({
                 CustomHoverTooltip,
                 CustomClickTooltip,
@@ -54,19 +54,14 @@ function NewLinePlot({ plotConfig = {} }) {
                 yAxisFormat,
                 xAxisTickFormatter,
               })} */}
-        {categoryValues.map((categoryValue, index) => (
-          <Line
-            type="monotone"
-            dataKey={categoryValue.dataKey}
-            fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
-            stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
-            dot
-            strokeWidth={2}
-          />
-        ))}
-        {ZenlyticLegend({
-          margin,
-        })}
+        <Line
+          type="monotone"
+          dataKey={yAxisDataKey}
+          stroke={seriesStrokeColor}
+          dot
+          strokeWidth={2}
+        />
+
         {/* <Line
           type="monotone"
           dataKey={yAxisDataKey}

@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import colors from '../constants/colors';
 import { AXIS_DATA_KEY_KEYS, DEFAULT_PLOT_MARGIN } from '../constants/plotConstants';
@@ -76,7 +77,7 @@ export const getXAxisDataKey = (plotConfig) => {
 };
 export const getYAxis = (plotConfig) => {
   const yAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.Y_AXIS_DATA_KEY_KEY);
-  if (!yAxis) return null;
+  if (!yAxis) return {};
   const { dataType, name, dataKey, format } = yAxis || {};
 
   const tickFormatter = getFormatter(format);
@@ -95,7 +96,7 @@ export const getYAxisName = (plotConfig) => {
 export const getCategoryAxis = (plotConfig) => {
   const categoryAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.CATEGORY_AXIS_DATA_KEY_KEY);
 
-  if (!categoryAxis) return null;
+  if (!categoryAxis) return {};
   const { dataType, name, dataKey, format } = categoryAxis || {};
   const tickFormatter = getFormatter(format);
   return { type: dataType, name, dataKey, tickFormatter };
@@ -121,10 +122,45 @@ export const getCategoryValues = (plotConfig) => {
   });
 };
 
+export const getIsDataPivoted = (plotConfig) => {
+  const categoryAxis = getCategoryAxis(plotConfig);
+  return !isEmpty(categoryAxis);
+};
+
+export const getUniqueValuesOfDataKey = (plotConfig, dataKey) => {
+  const { data = [] } = plotConfig;
+  return [...new Set(data.map((item) => item[dataKey]))];
+};
+
+export const pivotDataByDataKey = (plotConfig, data, dataKey) => {
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
+  const xAxisDataKey = getXAxisDataKey(plotConfig);
+
+  return data.map((d) => {
+    return {
+      [xAxisDataKey]: d[xAxisDataKey],
+      [d[dataKey]]: d[yAxisDataKey],
+    };
+  });
+};
+
 export const getData = (plotConfig) => {
   const { data = [] } = plotConfig;
-  return data;
+  const isDataPivoted = getIsDataPivoted(plotConfig);
+  if (!isDataPivoted) return data;
+  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
+  const pivotedData = pivotDataByDataKey(plotConfig, data, categoryAxisDataKey);
+  return pivotedData;
 };
+
+export const getValuesOfCategoryAxis = (plotConfig) => {
+  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
+  const uniqueValuesOfDataKey = getUniqueValuesOfDataKey(plotConfig, categoryAxisDataKey);
+  return uniqueValuesOfDataKey.map((value) => {
+    return { dataKey: value };
+  });
+};
+
 export const getHeight = (plotConfig) => {
   return 300;
 };

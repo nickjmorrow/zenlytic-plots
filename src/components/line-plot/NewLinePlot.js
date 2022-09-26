@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { Line, LineChart, ResponsiveContainer } from 'recharts';
+import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 import {
   getData,
@@ -31,6 +31,7 @@ function NewLinePlot({ plotConfig = {} }) {
         {GridLines()}
         {YAxis({ ...yAxisConfig })}
         {XAxis({ ...xAxisConfig })}
+        <Tooltip />
         {/* {Tooltip({
                 CustomHoverTooltip,
                 CustomClickTooltip,

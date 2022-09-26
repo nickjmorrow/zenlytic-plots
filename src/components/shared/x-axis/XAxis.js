@@ -23,9 +23,10 @@ const XAxis = (props) => {
     interval = undefined,
     tickFormatter = undefined,
   } = props;
+  console.log('🚀 ~ file: XAxis.js ~ line 26 ~ XAxis ~ props', props);
   return (
     <RechartsXAxis
-      domain={domain}
+      domain={undefined}
       name={name}
       type={type}
       height={height}
@@ -34,6 +35,7 @@ const XAxis = (props) => {
       interval={interval}
       minTickGap={minTickGap}
       tickFormatter={tickFormatter}
+      allowDuplicatedCategory={false}
       dataKey={dataKey}>
       <Label {...DEFAULT_LABEL_PROPS} value={name} position="bottom" />
     </RechartsXAxis>

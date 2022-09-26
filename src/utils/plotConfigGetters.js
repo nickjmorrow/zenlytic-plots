@@ -107,7 +107,39 @@ export const getCategoryAxisDataKey = (plotConfig) => {
   return categoryAxis?.dataKey;
 };
 
-// Used in grouped bar plot to get all bars in each group
+export const getUniqueValuesOfDataKey = (plotConfig, dataKey) => {
+  const { data = [] } = plotConfig;
+  return [...new Set(data.map((item) => item[dataKey]))];
+};
+
+export const getCategoriesOfCategoryAxis = (plotConfig) => {
+  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
+  const categories = getUniqueValuesOfDataKey(plotConfig, categoryAxisDataKey);
+  return categories.map((category) => {
+    return { name: category, dataKey: category };
+  });
+};
+
+export const getCategoryValueAxes = (plotConfig) => {
+  // Used if we should use the categories of a certain axis as the legend items
+
+  if (getCategoryAxisDataKey(plotConfig)) {
+    return getCategoriesOfCategoryAxis(plotConfig);
+  }
+  const categoryValueDataKeys = getSeriesKeyValue(
+    plotConfig,
+    AXIS_DATA_KEY_KEYS.CATEGORY_VALUE_DATA_KEYS_KEY
+  );
+  if (!categoryValueDataKeys || !categoryValueDataKeys.length) return null;
+  return categoryValueDataKeys.map((categoryValueDataKey) => {
+    const categoryValue = getAxisFromDataKey(plotConfig, categoryValueDataKey);
+    const { dataType, name, dataKey, format } = categoryValue || {};
+    const tickFormatter = getFormatter(format);
+    return { type: dataType, name, dataKey, tickFormatter };
+  });
+};
+
+// TODO refactor the bar stuff and anything else using this to use the new function
 export const getCategoryValues = (plotConfig) => {
   const categoryValueDataKeys = getSeriesKeyValue(
     plotConfig,
@@ -127,20 +159,21 @@ export const getIsDataPivoted = (plotConfig) => {
   return !isEmpty(categoryAxis);
 };
 
-export const getUniqueValuesOfDataKey = (plotConfig, dataKey) => {
-  const { data = [] } = plotConfig;
-  return [...new Set(data.map((item) => item[dataKey]))];
-};
-
 export const pivotDataByDataKey = (plotConfig, data, dataKey) => {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
   const xAxisDataKey = getXAxisDataKey(plotConfig);
 
-  return data.map((d) => {
-    return {
-      [xAxisDataKey]: d[xAxisDataKey],
-      [d[dataKey]]: d[yAxisDataKey],
-    };
+  let dataDict = {};
+  data.forEach((item) => {
+    const dataKeyValue = item[dataKey];
+    if (!dataDict[dataKeyValue]) {
+      dataDict[dataKeyValue] = [];
+    }
+    dataDict[dataKeyValue].push(item);
+  });
+
+  return Object.keys(dataDict).map((key) => {
+    return { name: key, data: dataDict[key] };
   });
 };
 

@@ -1,21 +1,19 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { Line, LineChart, ResponsiveContainer } from 'recharts';
+import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
 
 import {
-  getCategoryAxis,
-  getCategoryValues,
+  getCategoriesOfCategoryAxis,
+  getCategoryAxisDataKey,
+  getCategoryValueAxes,
   getData,
+  getIsDataPivoted,
   getMargin,
-  getSeriesFillColor,
-  getSeriesStrokeColor,
-  getValuesOfCategoryAxis,
   getXAxis,
   getYAxis,
   getYAxisDataKey,
-  getYAxisName,
 } from '../../utils/plotConfigGetters';
 import GridLines from '../shared/grid-lines/GridLines';
 import XAxis from '../shared/x-axis/XAxis';
@@ -26,21 +24,20 @@ import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function NewMultiLinePlot({ plotConfig = {} }) {
   const xAxisConfig = getXAxis(plotConfig);
-  console.log(
-    '🚀 ~ file: NewMultiLinePlot.js ~ line 29 ~ NewMultiLinePlot ~ xAxisConfig',
-    xAxisConfig
-  );
+
   const yAxisConfig = getYAxis(plotConfig);
 
+  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
+
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
+
   const data = getData(plotConfig);
-  console.log('🚀 ~ file: NewMultiLinePlot.js ~ line 32 ~ NewMultiLinePlot ~ data', data);
   const margin = getMargin(plotConfig);
 
-  const categoryValues = getValuesOfCategoryAxis(plotConfig);
-  console.log(
-    '🚀 ~ file: NewMultiLinePlot.js ~ line 35 ~ NewMultiLinePlot ~ categoryValues',
-    categoryValues
-  );
+  const categoryValues = getCategoriesOfCategoryAxis(plotConfig);
+
+  const categoryValueAxes = getCategoryValueAxes(plotConfig);
+  const isDataPivoted = getIsDataPivoted(plotConfig);
 
   return (
     <ResponsiveContainer>
@@ -50,17 +47,38 @@ function NewMultiLinePlot({ plotConfig = {} }) {
         {XAxis({ ...xAxisConfig })}
         {YAxis({})}
 
-        {categoryValues &&
-          categoryValues.map((categoryValue, index) => (
+        {isDataPivoted &&
+          data.map((series, index) => {
+            console.log('🚀 ~ file: NewMultiLinePlot.js ~ line 52 ~ data.map ~ series', series);
+            return (
+              <Line
+                dot
+                data={series.data}
+                stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
+                dataKey={yAxisDataKey}
+                type="monotone"
+                strokeWidth={2}
+                name={series.name}
+                key={series.name}
+              />
+            );
+          })}
+
+        {!isDataPivoted &&
+          categoryValueAxes.map((axis, index) => (
             <Line
               type="monotone"
-              dataKey={categoryValue.dataKey}
+              dataKey={axis.dataKey}
+              name={axis.name}
+              key={axis.name}
               fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
               stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
               dot
               strokeWidth={2}
             />
           ))}
+        <Tooltip />
+
         {ZenlyticLegend({
           margin,
         })}

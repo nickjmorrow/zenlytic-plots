@@ -1,3 +1,4 @@
+export { default as AreaPlot } from 'components/area-plot/AreaPlot';
 export { default as BarPlot } from 'components/bar-plot/NewBarPlot';
 export { default as FunnelBarPlot } from 'components/funnel-bar-plot/FunnelBarPlot';
 export { default as GroupedBarPlot } from 'components/grouped-bar-plot/NewGroupedBarPlot';

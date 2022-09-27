@@ -50,6 +50,7 @@ export const DEFAULT_AXIS_COLOR = '#A6A6A6';
 export const DEFAULT_CARTESIAN_GRID_COLOR = '#F0F0F0';
 
 export const PLOT_TYPES = {
+  AREA: 'area',
   BAR: 'bar',
   LINE: 'line',
   LINE_COHORT: 'line_cohort',

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import colors from '../constants/colors';
-import { AXIS_DATA_KEY_KEYS, DEFAULT_PLOT_MARGIN } from '../constants/plotConstants';
+import { AXIS_DATA_KEY_KEYS, DEFAULT_PLOT_MARGIN, PLOT_TYPES } from '../constants/plotConstants';
 import formatValue, { TIME_FORMATS } from './formatValue';
 import getD3DataFormatter from './getD3DataFormatter';
 
@@ -15,36 +15,17 @@ export const getSeries = (plotConfig = {}) => {
   return series[0];
 };
 
+export const getSeriesType = (plotConfig) => {
+  const series = getSeries(plotConfig);
+  const { type } = series || {};
+  return type;
+};
+
 export const getFormatter = (format) => {
   return (value) => {
     return formatValue(getD3DataFormatter(format, value), value);
   };
 };
-
-const getAdjustedXAxisDataKey = (dataKey, format) => {
-  const adjustedDataKey = TIME_FORMATS.includes(format)
-    ? (d) => {
-        if (!d) return null;
-        return moment.utc(d[dataKey]).format('X');
-      }
-    : dataKey;
-  return adjustedDataKey;
-};
-
-// const chooseAxisFromAxes = (plotConfig, type) => {
-//   const axes = getAxes(plotConfig);
-//   switch (type) {
-//     case AXIS_TYPES.TIME:
-//       return axes.find((axis) => axis.dataType === DATA_TYPES.TIME);
-//     case AXIS_TYPES.NUMBER:
-//       return axes.find((axis) => axis.dataType === DATA_TYPES.NUMBER);
-//     case AXIS_TYPES.CATEGORY:
-//     default:
-//       return axes.find(
-//         (axis) => axis.dataType === DATA_TYPES.CATEGORY || axis.dataType === DATA_TYPES.TIME
-//       );
-//   }
-// };
 
 const getSeriesKeyValue = (plotConfig, axisDataKeyKey) => {
   const series = getSeries(plotConfig);
@@ -159,10 +140,30 @@ export const getIsDataPivoted = (plotConfig) => {
   return !isEmpty(categoryAxis);
 };
 
-export const pivotDataByDataKey = (plotConfig, data, dataKey) => {
-  const yAxisDataKey = getYAxisDataKey(plotConfig);
+const flatPivotDataByDataKey = (plotConfig, data, dataKey) => {
   const xAxisDataKey = getXAxisDataKey(plotConfig);
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
 
+  let dataDict = {};
+  data.forEach((item) => {
+    const dataKeyValue = item[dataKey];
+    const xAxisKeyValue = item[xAxisDataKey];
+    const yAxisKeyValue = item[yAxisDataKey];
+
+    if (!dataDict[xAxisKeyValue]) {
+      dataDict[xAxisKeyValue] = {
+        [dataKeyValue]: yAxisKeyValue,
+      };
+    }
+    dataDict[xAxisKeyValue][dataKeyValue] = yAxisKeyValue;
+  });
+
+  return Object.keys(dataDict).map((key) => {
+    return { [xAxisDataKey]: key, ...dataDict[key] };
+  });
+};
+
+const nestedPivotDataByDataKey = (plotConfig, data, dataKey) => {
   let dataDict = {};
   data.forEach((item) => {
     const dataKeyValue = item[dataKey];
@@ -171,15 +172,24 @@ export const pivotDataByDataKey = (plotConfig, data, dataKey) => {
     }
     dataDict[dataKeyValue].push(item);
   });
-
   return Object.keys(dataDict).map((key) => {
     return { name: key, data: dataDict[key] };
   });
 };
 
+export const pivotDataByDataKey = (plotConfig, data, dataKey) => {
+  const plotType = getSeriesType(plotConfig);
+  if (plotType === PLOT_TYPES.AREA) return flatPivotDataByDataKey(plotConfig, data, dataKey);
+  return nestedPivotDataByDataKey(plotConfig, data, dataKey);
+};
+
 export const getData = (plotConfig) => {
   const { data = [] } = plotConfig;
   const isDataPivoted = getIsDataPivoted(plotConfig);
+  console.log(
+    '🚀 ~ file: plotConfigGetters.js ~ line 193 ~ getData ~ isDataPivoted',
+    isDataPivoted
+  );
   if (!isDataPivoted) return data;
   const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
   const pivotedData = pivotDataByDataKey(plotConfig, data, categoryAxisDataKey);
@@ -220,7 +230,7 @@ export const getSeriesStrokeColor = (plotConfig) => {
   return strokeColor;
 };
 
-export const getSeriesIsStacked = (plotConfig) => {
+export const getIsSeriesStacked = (plotConfig) => {
   const series = getSeries(plotConfig);
   const { isStacked = false } = series || {};
   return isStacked;

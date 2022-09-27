@@ -8,9 +8,9 @@ import {
   getCategoryAxis,
   getCategoryValues,
   getData,
+  getIsSeriesStacked,
   getMargin,
   getSeriesFillColor,
-  getSeriesIsStacked,
   getSeriesStrokeColor,
   getXAxis,
   getYAxis,
@@ -32,28 +32,29 @@ function NewBarPlot({ plotConfig = {} }) {
 
   const seriesFillColor = getSeriesFillColor(plotConfig);
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
-  const seriesIsStacked = getSeriesIsStacked(plotConfig);
+  const seriesIsStacked = getIsSeriesStacked(plotConfig);
   const stackId = seriesIsStacked ? 'a' : undefined;
 
   const categoryValues = getCategoryValues(plotConfig);
-  if (!categoryValues || !categoryAxisConfig) return false;
+  // if (!categoryValues || !categoryAxisConfig) return false;
 
   return (
     <ResponsiveContainer>
       <BarChart data={data} margin={margin}>
         {GridLines()}
         {XAxis({
-          ...categoryAxisConfig,
+          ...xAxisConfig,
         })}
-        {YAxis({})}
-        {categoryValues.map((categoryValue, index) => (
+        {YAxis({ ...yAxisConfig })}
+        <Bar dataKey={yAxisDataKey} fill={seriesFillColor} stroke={seriesStrokeColor} />
+        {/* {categoryValues.map((categoryValue, index) => (
           <Bar
             dataKey={categoryValue.dataKey}
             fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
             stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
             stackId={stackId}
           />
-        ))}
+        ))} */}
         {/* <Bar dataKey={yAxisDataKey} fill={seriesFillColor}>
           {data.map((entry, index) => {
             return (

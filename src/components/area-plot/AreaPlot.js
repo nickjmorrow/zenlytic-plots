@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
 
 import {
-  getCategoriesOfCategoryAxis,
   getCategoryAxisDataKey,
   getCategoryValueAxes,
   getData,
   getIsDataPivoted,
   getMargin,
+  getUniqueValuesOfDataKey,
   getXAxis,
-  getYAxis,
+  getXAxisDataKey,
   getYAxisDataKey,
 } from '../../utils/plotConfigGetters';
 import GridLines from '../shared/grid-lines/GridLines';
@@ -21,30 +21,54 @@ import YAxis from '../shared/y-axis/YAxis';
 
 import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
-function NewMultiLinePlot({ plotConfig = {} }) {
+function AreaPlot({ plotConfig = {} }) {
+  console.log('🚀 ~ file: AreaPlot.js ~ line 25 ~ AreaPlot ~ plotConfig', plotConfig);
   const xAxisConfig = getXAxis(plotConfig);
+
+  const xAxisDataKey = getXAxisDataKey(plotConfig);
+  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
+  const uniqueValuesOfCategoryKey = getUniqueValuesOfDataKey(plotConfig, categoryAxisDataKey);
+  console.log(
+    '🚀 ~ file: AreaPlot.js ~ line 31 ~ AreaPlot ~ uniqueValuesOfCategoryKey',
+    uniqueValuesOfCategoryKey
+  );
 
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const data = getData(plotConfig);
+  console.log('🚀 ~ file: AreaPlot.js ~ line 31 ~ AreaPlot ~ data', data);
   const margin = getMargin(plotConfig);
 
   const categoryValueAxes = getCategoryValueAxes(plotConfig);
   const isDataPivoted = getIsDataPivoted(plotConfig);
-
   return (
     <ResponsiveContainer>
-      <LineChart data={data} margin={margin}>
+      <AreaChart margin={margin} data={data}>
         {GridLines()}
 
         {XAxis({ ...xAxisConfig })}
         {YAxis({})}
 
         {isDataPivoted &&
+          uniqueValuesOfCategoryKey.map((uniqueValueOfCategoryKey, index) => {
+            return (
+              <Area
+                stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
+                fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
+                dataKey={uniqueValueOfCategoryKey}
+                type="monotone"
+                strokeWidth={2}
+                name={uniqueValueOfCategoryKey}
+                key={uniqueValueOfCategoryKey}
+                stackId="1"
+              />
+            );
+          })}
+
+        {/* {isDataPivoted &&
           data.map((series, index) => {
             return (
-              <Line
-                dot
+              <Area
                 data={series.data}
                 stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
                 dataKey={yAxisDataKey}
@@ -52,21 +76,22 @@ function NewMultiLinePlot({ plotConfig = {} }) {
                 strokeWidth={2}
                 name={series.name}
                 key={series.name}
+                stackId="1"
               />
             );
-          })}
+          })} */}
 
         {!isDataPivoted &&
           categoryValueAxes.map((axis, index) => (
-            <Line
+            <Area
               type="monotone"
               dataKey={axis.dataKey}
               name={axis.name}
               key={axis.name}
               fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
               stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
-              dot
               strokeWidth={2}
+              stackId="1"
             />
           ))}
         <Tooltip />
@@ -74,11 +99,11 @@ function NewMultiLinePlot({ plotConfig = {} }) {
         {ZenlyticLegend({
           margin,
         })}
-      </LineChart>
+      </AreaChart>
     </ResponsiveContainer>
   );
 }
 
-NewMultiLinePlot.propTypes = {};
+AreaPlot.propTypes = {};
 
-export default NewMultiLinePlot;
+export default AreaPlot;

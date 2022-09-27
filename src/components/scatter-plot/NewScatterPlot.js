@@ -2,9 +2,12 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import { ResponsiveContainer, Scatter, ScatterChart, ZAxis } from 'recharts';
+import { ZenlyticLegend } from '../..';
+import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
 
 import {
   getCategoryAxis,
+  getCategoryValueAxes,
   getData,
   getMargin,
   getSeriesStrokeColor,
@@ -25,16 +28,29 @@ function NewScatterPlot({ plotConfig = {} }) {
 
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
 
+  const categoryValueAxes = getCategoryValueAxes(plotConfig);
+
   return (
     <ResponsiveContainer>
       <ScatterChart margin={margin}>
         {GridLines()}
-        {YAxis({ ...yAxisConfig })}
         {XAxis({
           ...xAxisConfig,
         })}
-        {ZAxis({ ...categoryAxisConfig })}
-        <Scatter data={data} fill={seriesStrokeColor} />
+        {YAxis({ ...yAxisConfig })}
+        {categoryValueAxes.map((categoryValueAxis, index) => {
+          return (
+            <Scatter
+              data={data}
+              fill={PLOT_COLORS[index % PLOT_COLORS.length]}
+              name={categoryValueAxis.name}
+            />
+          );
+        })}
+        {/* {ZAxis({ ...categoryAxisConfig })} */}
+        {/* {ZenlyticLegend({
+          margin,
+        })} */}
       </ScatterChart>
     </ResponsiveContainer>
   );

@@ -183,16 +183,46 @@ export const pivotDataByDataKey = (plotConfig, data, dataKey) => {
   return nestedPivotDataByDataKey(plotConfig, data, dataKey);
 };
 
+const getFunnelSpeicifcData = (plotConfig, data) => {
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
+  const newData = [];
+  let previousValue = 0;
+  data.forEach((d, index) => {
+    console.log('🚀 ~ file: plotConfigGetters.js ~ line 197 ~ data.forEach ~ d', d);
+
+    newData.push({
+      ...d,
+      CONVERTED: d[yAxisDataKey],
+      DROPPED_OFF: index === 0 ? 0 : previousValue - d[yAxisDataKey],
+    });
+    previousValue = d[yAxisDataKey];
+  });
+  return newData;
+};
+
+const getPlotSpeicifcData = (plotConfig, data) => {
+  switch (getSeriesType(plotConfig)) {
+    case PLOT_TYPES.FUNNEL_BAR:
+      return getFunnelSpeicifcData(plotConfig, data);
+    default:
+      return data;
+  }
+};
+
 export const getData = (plotConfig) => {
   const { data = [] } = plotConfig;
   const isDataPivoted = getIsDataPivoted(plotConfig);
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 193 ~ getData ~ isDataPivoted',
-    isDataPivoted
-  );
-  if (!isDataPivoted) return data;
+  // switch (getSeriesType(plotConfig)) {
+  //   case PLOT_TYPES.FUNNEL_BAR:
+  //     return getFunnelSpeicifcData(plotConfig, data);
+  //   default:
+  //     return data;
+  // }
+
+  if (!isDataPivoted) return getPlotSpeicifcData(plotConfig, data);
   const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
   const pivotedData = pivotDataByDataKey(plotConfig, data, categoryAxisDataKey);
+  console.log('🚀 ~ file: plotConfigGetters.js ~ line 225 ~ getData ~ pivotedData', pivotedData);
   return pivotedData;
 };
 

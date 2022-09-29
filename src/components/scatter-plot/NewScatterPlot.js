@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { ResponsiveContainer, Scatter, ScatterChart, ZAxis } from 'recharts';
-import { ZenlyticLegend } from '../..';
-import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
+import { ResponsiveContainer, Scatter, ScatterChart } from 'recharts';
+import { PLOT_COLORS } from '../../constants/plotConstants';
 
 import {
   getCategoryAxis,

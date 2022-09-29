@@ -57,6 +57,8 @@ export const PLOT_TYPES = {
   TABLE_ONLY: 'table_only',
   SCATTER: 'scatter',
   STAT: 'stat_plot',
+  FUNNEL: 'funnel',
+  FUNNEL_BAR: 'funnel_bar',
 };
 
 export const COLOR_SUCCESS = colors.green[600];

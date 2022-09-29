@@ -44,19 +44,6 @@ function FunnelBarPlot({
   const { label: xAxisLabel, format: xAxisFormat, dataKey: xAxisKey } = xAxis;
   const { label: yAxisLabel, format: yAxisFormat, dataKey: yAxisKey } = yAxis;
 
-  const newData = [
-    {
-      STEP: 'Step 1',
-      DROPPED_OFF: 0,
-      CONVERTED: 2342,
-    },
-    {
-      STEP: 'Step 2',
-      DROPPED_OFF: 1342,
-      CONVERTED: 1000,
-    },
-  ];
-
   const plotColors = PLOT_COLORS;
   const secondaryColors = PLOT_SECONDARY_COLORS;
 

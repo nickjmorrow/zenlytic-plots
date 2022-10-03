@@ -21,7 +21,6 @@ import YAxis from '../shared/y-axis/YAxis';
 import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function NewGroupedBar({ plotConfig = {} }) {
-  console.log('🚀 ~ file: NewGroupedBarPlot.js ~ line 20 ~ NewGroupedBar ~ plotConfig', plotConfig);
   const xAxisConfig = getXAxis(plotConfig);
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
@@ -31,10 +30,6 @@ function NewGroupedBar({ plotConfig = {} }) {
   const categoryValueAxes = getCategoryValueAxes(plotConfig);
   const isDataPivoted = getIsDataPivoted(plotConfig);
   const isSeriesStacked = getIsSeriesStacked(plotConfig);
-  console.log(
-    '🚀 ~ file: NewGroupedBarPlot.js ~ line 34 ~ NewGroupedBar ~ isSeriesStacked',
-    isSeriesStacked
-  );
 
   return (
     <ResponsiveContainer>

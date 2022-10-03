@@ -22,21 +22,15 @@ import YAxis from '../shared/y-axis/YAxis';
 import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function AreaPlot({ plotConfig = {} }) {
-  console.log('🚀 ~ file: AreaPlot.js ~ line 25 ~ AreaPlot ~ plotConfig', plotConfig);
   const xAxisConfig = getXAxis(plotConfig);
 
   const xAxisDataKey = getXAxisDataKey(plotConfig);
   const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
   const uniqueValuesOfCategoryKey = getUniqueValuesOfDataKey(plotConfig, categoryAxisDataKey);
-  console.log(
-    '🚀 ~ file: AreaPlot.js ~ line 31 ~ AreaPlot ~ uniqueValuesOfCategoryKey',
-    uniqueValuesOfCategoryKey
-  );
 
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const data = getData(plotConfig);
-  console.log('🚀 ~ file: AreaPlot.js ~ line 31 ~ AreaPlot ~ data', data);
   const margin = getMargin(plotConfig);
 
   const categoryValueAxes = getCategoryValueAxes(plotConfig);

@@ -23,7 +23,6 @@ const XAxis = (props) => {
     interval = undefined,
     tickFormatter = undefined,
   } = props;
-  console.log('🚀 ~ file: XAxis.js ~ line 26 ~ XAxis ~ props', props);
   return (
     <RechartsXAxis
       domain={undefined}

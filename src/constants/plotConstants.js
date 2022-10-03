@@ -59,6 +59,7 @@ export const PLOT_TYPES = {
   STAT: 'stat_plot',
   FUNNEL: 'funnel',
   FUNNEL_BAR: 'funnel_bar',
+  WATERFALL: 'waterfall',
 };
 
 export const COLOR_SUCCESS = colors.green[600];

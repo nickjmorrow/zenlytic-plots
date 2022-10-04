@@ -1,7 +1,17 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { Bar, BarChart, Cell, Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  Cell,
+  LabelList,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+} from 'recharts';
+import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
 
 import {
   getData,
@@ -37,7 +47,19 @@ function NewWaterfallPlot({ plotConfig = {} }) {
         {YAxis({ ...yAxisConfig })}
         {XAxis({ ...xAxisConfig })}
         <Tooltip />
-        <Bar dataKey={yAxisDataKey} />
+        <Bar dataKey={yAxisDataKey}>
+          <LabelList dataKey="yAxisDataKey" />
+          {data.map((item, index) => {
+            return (
+              <Cell
+                key={index}
+                fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
+                stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
+                strokeWidth={2}
+              />
+            );
+          })}
+        </Bar>
         {/* <Bar dataKey="__START" stackId="a" fill="transparent" />
         <Bar dataKey="__END" stackId="a" radius={2}>
           {data.map((item, index) => {

@@ -226,10 +226,33 @@ const getWaterfallSpeicifcData = (plotConfig, data) => {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
   const activeIds = getSeriesActiveIds(plotConfig);
 
-  if (activeIds) {
-    return data.map((d) => activeIds.includes(d.id));
-  }
-  return data;
+  const startDataPoint = data.find((d) => d.id === 'start');
+  const endDataPoint = data.find((d) => d.id === 'end');
+  // If activeIds isnt passed, we assume all are active
+  const activeData = activeIds ? data.filter((d) => activeIds.includes(d.id)) : data;
+
+  // We don't include the start and end bar in this loop
+  // So we must precompute this assuming we've already checked the start bar
+  const startDataPointValueChange =
+    startDataPoint[yAxisDataKey][1] - startDataPoint[yAxisDataKey][0];
+  const endDataPointValueChange = endDataPoint[yAxisDataKey][1] - endDataPoint[yAxisDataKey][0];
+
+  let baseValueAccumulator = startDataPointValueChange;
+  const accumulatedData = activeData.map((d) => {
+    const valueChange = d[yAxisDataKey][1] - d[yAxisDataKey][0];
+    const newYAxisValue = [baseValueAccumulator, valueChange + baseValueAccumulator];
+    baseValueAccumulator += valueChange;
+    return { ...d, [yAxisDataKey]: newYAxisValue };
+  });
+
+  const otherFactorsDataPoint = {
+    [xAxisDataKey]: 'Other Factors',
+    [yAxisDataKey]: [baseValueAccumulator, endDataPoint[yAxisDataKey][0]],
+  };
+
+  return [startDataPoint, ...accumulatedData, otherFactorsDataPoint, endDataPoint];
+
+  // return data;
 
   // Here we reuse the pivot method group the two data values as a single bar
   // const pivotedWaterfallData = pivotDataByDataKey(plotConfig, data, 'id');

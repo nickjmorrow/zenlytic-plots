@@ -142,15 +142,7 @@ export const getCategoryValues = (plotConfig) => {
 };
 
 export const getIsDataPivoted = (plotConfig) => {
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 139 ~ getIsDataPivoted ~ plotConfig',
-    plotConfig
-  );
   const categoryAxis = getCategoryAxis(plotConfig);
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 141 ~ getIsDataPivoted ~ categoryAxis',
-    categoryAxis
-  );
   return !isEmpty(categoryAxis);
 };
 
@@ -178,11 +170,6 @@ const flatPivotDataByDataKey = (plotConfig, data, dataKey) => {
 };
 
 const nestedPivotDataByDataKey = (plotConfig, data, dataKey) => {
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 167 ~ nestedPivotDataByDataKey ~ dataKey',
-    dataKey
-  );
-  console.log('🚀 ~ file: plotConfigGetters.js ~ line 167 ~ nestedPivotDataByDataKey ~ data', data);
   let dataDict = {};
   data.forEach((item) => {
     const dataKeyValue = item[dataKey];
@@ -191,10 +178,7 @@ const nestedPivotDataByDataKey = (plotConfig, data, dataKey) => {
     }
     dataDict[dataKeyValue].push(item);
   });
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 189 ~ returnObject.keys ~ dataDict',
-    dataDict
-  );
+
   return Object.keys(dataDict).map((key) => {
     return { name: key, data: dataDict[key] };
   });
@@ -206,7 +190,51 @@ export const pivotDataByDataKey = (plotConfig, data, dataKey) => {
   return nestedPivotDataByDataKey(plotConfig, data, dataKey);
 };
 
-const getFunnelSpeicifcData = (plotConfig, data) => {
+const getPivotedData = (plotConfig, data) => {
+  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
+  const pivotedData = pivotDataByDataKey(plotConfig, data, categoryAxisDataKey);
+  return pivotedData;
+};
+
+const getPivotedFunnelSpecificData = (plotConfig, data) => {
+  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
+  const xAxisDataKey = getXAxisDataKey(plotConfig);
+
+  const pivotedData = getPivotedData(plotConfig, data);
+
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
+
+  let newNewData = [];
+
+  pivotedData.forEach((series) => {
+    const { name: seriesName, data: seriesData } = series;
+    const calculatedDataPoint = [];
+    let previousValue = 0;
+    seriesData.forEach((d, index) => {
+      calculatedDataPoint.push({
+        [xAxisDataKey]: d[xAxisDataKey],
+        [`CONVERTED_${seriesName}`]: d[yAxisDataKey],
+        [`DROPPED_OFF_${seriesName}`]: index === 0 ? 0 : previousValue - d[yAxisDataKey],
+      });
+      previousValue = d[yAxisDataKey];
+    });
+    newNewData = [...newNewData, ...calculatedDataPoint];
+  });
+  const newNewPivotedData = pivotDataByDataKey(plotConfig, newNewData, xAxisDataKey);
+
+  const flattenedNewNewPivotedData = [];
+  newNewPivotedData.forEach((series) => {
+    const { name: seriesName, data: seriesData } = series;
+    let flattenedSeries = {};
+    seriesData.forEach((d) => {
+      flattenedSeries = { ...flattenedSeries, ...d };
+    });
+    flattenedNewNewPivotedData.push(flattenedSeries);
+  });
+  return flattenedNewNewPivotedData;
+};
+
+const getNonPivotedFunnelSpecificData = (plotConfig, data) => {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
   const newData = [];
   let previousValue = 0;
@@ -219,6 +247,12 @@ const getFunnelSpeicifcData = (plotConfig, data) => {
     previousValue = d[yAxisDataKey];
   });
   return newData;
+};
+
+const getFunnelSpeicifcData = (plotConfig, data, isDataPivoted) => {
+  return isDataPivoted
+    ? getPivotedFunnelSpecificData(plotConfig, data)
+    : getNonPivotedFunnelSpecificData(plotConfig, data);
 };
 
 const getWaterfallSpeicifcData = (plotConfig, data) => {
@@ -235,7 +269,6 @@ const getWaterfallSpeicifcData = (plotConfig, data) => {
   // So we must precompute this assuming we've already checked the start bar
   const startDataPointValueChange =
     startDataPoint[yAxisDataKey][1] - startDataPoint[yAxisDataKey][0];
-  const endDataPointValueChange = endDataPoint[yAxisDataKey][1] - endDataPoint[yAxisDataKey][0];
 
   let baseValueAccumulator = startDataPointValueChange;
   const accumulatedData = activeData.map((d) => {
@@ -251,60 +284,19 @@ const getWaterfallSpeicifcData = (plotConfig, data) => {
   };
 
   return [startDataPoint, ...accumulatedData, otherFactorsDataPoint, endDataPoint];
-
-  // return data;
-
-  // Here we reuse the pivot method group the two data values as a single bar
-  // const pivotedWaterfallData = pivotDataByDataKey(plotConfig, data, 'id');
-
-  // return pivotedWaterfallData
-  //   .filter((bar) => bar.data.length === 2)
-  //   .map((bar) => {
-  //     const barData1 = bar.data[0] || {};
-  //     const barData2 = bar.data[1] || {};
-  //     return {
-  //       [xAxisDataKey]: barData1[xAxisDataKey],
-  //       [yAxisDataKey]: [barData1[yAxisDataKey], barData2[yAxisDataKey]],
-  //     };
-  //   });
-};
-
-const getPlotSpeicifcData = (plotConfig, data) => {
-  console.log('🚀 ~ file: plotConfigGetters.js ~ line 241 ~ getPlotSpeicifcData ~ data', data);
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 241 ~ getPlotSpeicifcData ~ plotConfig',
-    plotConfig
-  );
-  switch (getSeriesType(plotConfig)) {
-    case PLOT_TYPES.FUNNEL_BAR:
-      return getFunnelSpeicifcData(plotConfig, data);
-    case PLOT_TYPES.WATERFALL:
-      return getWaterfallSpeicifcData(plotConfig, data);
-    default:
-      return data;
-  }
 };
 
 export const getData = (plotConfig) => {
   const { data = [] } = plotConfig;
   const isDataPivoted = getIsDataPivoted(plotConfig);
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 213 ~ dasdsagetData ~ isDataPivoted',
-    isDataPivoted
-  );
-
-  // switch (getSeriesType(plotConfig)) {
-  //   case PLOT_TYPES.FUNNEL_BAR:
-  //     return getFunnelSpeicifcData(plotConfig, data);
-  //   default:
-  //     return data;
-  // }
-
-  if (!isDataPivoted) return getPlotSpeicifcData(plotConfig, data);
-  const categoryAxisDataKey = getCategoryAxisDataKey(plotConfig);
-  const pivotedData = pivotDataByDataKey(plotConfig, data, categoryAxisDataKey);
-  console.log('🚀 ~ file: plotConfigGetters.js ~ line 245 ~ getData ~ pivotedData', pivotedData);
-  return pivotedData;
+  switch (getSeriesType(plotConfig)) {
+    case PLOT_TYPES.FUNNEL_BAR:
+      return getFunnelSpeicifcData(plotConfig, data, isDataPivoted);
+    case PLOT_TYPES.WATERFALL:
+      return getWaterfallSpeicifcData(plotConfig, data, isDataPivoted);
+    default:
+      return isDataPivoted ? getPivotedData(plotConfig, data) : data;
+  }
 };
 
 export const getValuesOfCategoryAxis = (plotConfig) => {

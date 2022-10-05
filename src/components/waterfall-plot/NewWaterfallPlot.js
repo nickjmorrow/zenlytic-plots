@@ -35,7 +35,6 @@ function NewWaterfallPlot({ plotConfig = {} }) {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const data = getData(plotConfig);
-  console.log('🚀 ~ file: NewWaterfallPlot.js ~ line 24 ~ NewWaterfallPlot ~ data', data);
   const margin = getMargin(plotConfig);
 
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);

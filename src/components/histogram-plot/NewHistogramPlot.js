@@ -8,6 +8,7 @@ import {
   getCategoryAxis,
   getCategoryValues,
   getData,
+  getFormatter,
   getIsSeriesStacked,
   getMargin,
   getSeriesFillColor,
@@ -20,7 +21,7 @@ import GridLines from '../shared/grid-lines/GridLines';
 import XAxis from '../shared/x-axis/XAxis';
 import YAxis from '../shared/y-axis/YAxis';
 
-function NewBarPlot({ plotConfig = {} }) {
+function NewHistogramPlot({ plotConfig = {} }) {
   const xAxisConfig = getXAxis(plotConfig);
   const yAxisConfig = getYAxis(plotConfig);
   const categoryAxisConfig = getCategoryAxis(plotConfig);
@@ -35,6 +36,8 @@ function NewBarPlot({ plotConfig = {} }) {
   const seriesIsStacked = getIsSeriesStacked(plotConfig);
   const stackId = seriesIsStacked ? 'a' : undefined;
 
+  const yAxisTickFormatter = getFormatter('decimal');
+
   const categoryValues = getCategoryValues(plotConfig);
   // if (!categoryValues || !categoryAxisConfig) return false;
 
@@ -44,14 +47,21 @@ function NewBarPlot({ plotConfig = {} }) {
         {GridLines()}
         {XAxis({
           ...xAxisConfig,
+          type: 'number',
+          dataKey: 'rangeBottom',
         })}
-        {YAxis({ ...yAxisConfig })}
-        <Bar dataKey={yAxisDataKey} fill={seriesFillColor} stroke={seriesStrokeColor} />
+        {YAxis({
+          name: 'Frequency',
+          type: 'number',
+          dataKey: 'value',
+          tickFormatter: yAxisTickFormatter,
+        })}
+        <Bar dataKey={'value'} fill={seriesFillColor} stroke={seriesStrokeColor} />
       </BarChart>
     </ResponsiveContainer>
   );
 }
 
-NewBarPlot.propTypes = {};
+NewHistogramPlot.propTypes = {};
 
-export default NewBarPlot;
+export default NewHistogramPlot;

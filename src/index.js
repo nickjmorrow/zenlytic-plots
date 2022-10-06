@@ -9,7 +9,7 @@ export { default as WaterfallPlot } from 'components/waterfall-plot/NewWaterfall
 export { default as FunnelBarPlot } from 'components/funnel-bar-plot/NewFunnelBarPlot';
 
 // TODO
-export { default as HistogramPlot } from 'components/histogram-plot/HistogramPlot';
+export { default as HistogramPlot } from 'components/histogram-plot/NewHistogramPlot';
 export { default as SankeyPlot } from 'components/sankey-plot/NewSankeyPlot';
 
 // DONT NEED TO DO RIGHT NOW

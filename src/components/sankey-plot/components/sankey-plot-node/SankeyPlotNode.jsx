@@ -16,16 +16,11 @@ export default function SankeyPlotNode(props) {
     valueFormatter,
     xAxisDataKey,
   } = props;
-  console.log(
-    '🚀 ~ file: SankeyPlotNode.jsx ~ line 19 ~ SankeyPlotNode ~ xAxisDataKey',
-    xAxisDataKey
-  );
+
   const { depth } = payload || {};
-  console.log('🚀 ~ file: SankeyPlotNode.jsx ~ line 9 ~ SankeyPlotNode ~ payload', payload);
-  const isOut = depth > 1;
+  const isOut = depth > 0;
 
   const name = payload[xAxisDataKey];
-  console.log('🚀 ~ file: SankeyPlotNode.jsx ~ line 28 ~ SankeyPlotNode ~ name', name);
 
   return (
     <Layer key={`CustomNode${index}`}>

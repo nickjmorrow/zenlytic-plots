@@ -13,6 +13,7 @@ import {
   getXAxisTickFormatter,
   getYAxis,
   getYAxisDataKey,
+  getYAxisTickFormatter,
 } from '../../utils/plotConfigGetters';
 import GridLines from '../shared/grid-lines/GridLines';
 import XAxis from '../shared/x-axis/XAxis';
@@ -28,7 +29,7 @@ function NewLinePlot({ plotConfig = {} }) {
   const xAxisDataKey = getXAxisDataKey(plotConfig);
   console.log('🚀 ~ file: NewSankeyPlot.js ~ line 29 ~ NewLinePlot ~ xAxisDataKey', xAxisDataKey);
 
-  const xAxisTickFormatter = getXAxisTickFormatter(plotConfig);
+  const yAxisTickFormatter = getYAxisTickFormatter(plotConfig);
 
   const colorGradients = data.links.map((link) => {
     return {
@@ -49,7 +50,7 @@ function NewLinePlot({ plotConfig = {} }) {
             // containerWidth={width - margin.left - margin.right}
             xAxisDataKey={xAxisDataKey}
             colors={PLOT_COLORS}
-            valueFormatter={xAxisTickFormatter}
+            valueFormatter={yAxisTickFormatter}
           />
         }
       />

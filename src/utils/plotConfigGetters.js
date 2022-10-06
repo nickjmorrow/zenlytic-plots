@@ -75,6 +75,12 @@ export const getYAxis = (plotConfig) => {
   const tickFormatter = getFormatter(format);
   return { type: dataType, name, dataKey, tickFormatter };
 };
+
+export const getYAxisTickFormatter = (plotConfig) => {
+  const yAxis = getYAxis(plotConfig);
+  return yAxis.tickFormatter;
+};
+
 export const getYAxisDataKey = (plotConfig) => {
   const yAxis = getYAxis(plotConfig);
   return yAxis?.dataKey;

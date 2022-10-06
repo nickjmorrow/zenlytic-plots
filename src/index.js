@@ -7,10 +7,8 @@ export { default as ScatterPlot } from 'components/scatter-plot/NewScatterPlot';
 export { default as MultiLinePlot } from 'components/multi-line-plot/NewMultiLinePlot';
 export { default as WaterfallPlot } from 'components/waterfall-plot/NewWaterfallPlot';
 export { default as FunnelBarPlot } from 'components/funnel-bar-plot/NewFunnelBarPlot';
-
-// TODO
-export { default as HistogramPlot } from 'components/histogram-plot/NewHistogramPlot';
 export { default as SankeyPlot } from 'components/sankey-plot/NewSankeyPlot';
+export { default as HistogramPlot } from 'components/histogram-plot/NewHistogramPlot';
 
 // DONT NEED TO DO RIGHT NOW
 export { default as ResponsiveContainer } from 'components/responsive-container/ResponsiveContainer';

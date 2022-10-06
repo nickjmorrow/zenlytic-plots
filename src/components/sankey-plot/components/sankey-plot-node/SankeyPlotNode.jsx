@@ -4,8 +4,28 @@ import fontSizes from '../../../../constants/fontSizes';
 import fontWeights from '../../../../constants/fontWeights';
 
 export default function SankeyPlotNode(props) {
-  const { x, y, width, height, index, payload, containerWidth, colors, valueFormatter } = props;
-  const isOut = x + width + 6 > containerWidth;
+  const {
+    x,
+    y,
+    width,
+    height,
+    index,
+    payload,
+    containerWidth,
+    colors,
+    valueFormatter,
+    xAxisDataKey,
+  } = props;
+  console.log(
+    '🚀 ~ file: SankeyPlotNode.jsx ~ line 19 ~ SankeyPlotNode ~ xAxisDataKey',
+    xAxisDataKey
+  );
+  const { depth } = payload || {};
+  console.log('🚀 ~ file: SankeyPlotNode.jsx ~ line 9 ~ SankeyPlotNode ~ payload', payload);
+  const isOut = depth > 1;
+
+  const name = payload[xAxisDataKey];
+  console.log('🚀 ~ file: SankeyPlotNode.jsx ~ line 28 ~ SankeyPlotNode ~ name', name);
 
   return (
     <Layer key={`CustomNode${index}`}>
@@ -25,7 +45,7 @@ export default function SankeyPlotNode(props) {
         fontWeight={fontWeights.medium}
         strokeWidth={0}
         stroke="#333">
-        {payload.name}
+        {name}
       </text>
       <text
         textAnchor={isOut ? 'end' : 'start'}

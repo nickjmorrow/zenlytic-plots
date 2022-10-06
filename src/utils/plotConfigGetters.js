@@ -58,6 +58,11 @@ export const getXAxis = (plotConfig) => {
   return { type: dataType, name, dataKey, tickFormatter };
 };
 
+export const getXAxisTickFormatter = (plotConfig) => {
+  const xAxis = getXAxis(plotConfig);
+  return xAxis.tickFormatter;
+};
+
 export const getXAxisDataKey = (plotConfig) => {
   const xAxis = getXAxis(plotConfig);
   return xAxis?.dataKey;

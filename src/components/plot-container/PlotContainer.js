@@ -6,10 +6,7 @@ import { ResponsiveContainer } from 'recharts';
 function PlotContainer({ children }) {
   return (
     <div style={{ userSelect: 'none', width: '100%', height: '100%' }}>
-      <ResponsiveContainer>
-        {children}
-        {/* <div style={{ userSelect: 'none', width: '100%', height: '100%' }}>{children}</div> */}
-      </ResponsiveContainer>
+      <ResponsiveContainer>{children}</ResponsiveContainer>
     </div>
   );
 }

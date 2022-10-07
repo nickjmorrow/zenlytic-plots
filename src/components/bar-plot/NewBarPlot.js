@@ -1,53 +1,43 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { Bar, BarChart, Cell, ResponsiveContainer } from 'recharts';
-import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
+import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts';
 
 import {
-  getCategoryAxis,
-  getCategoryValues,
   getData,
-  getIsSeriesStacked,
   getMargin,
   getSeriesFillColor,
   getSeriesStrokeColor,
-  getXAxis,
-  getYAxis,
+  getXAxisDataKey,
+  getXAxisName,
   getYAxisDataKey,
+  getYAxisName,
 } from '../../utils/plotConfigGetters';
-import GridLines from '../shared/grid-lines/GridLines';
-import XAxis from '../shared/x-axis/XAxis';
-import YAxis from '../shared/y-axis/YAxis';
+import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
+import PlotContainer from '../plot-container/PlotContainer';
 
-function NewBarPlot({ plotConfig = {} }) {
-  const xAxisConfig = getXAxis(plotConfig);
-  const yAxisConfig = getYAxis(plotConfig);
-
+function NewBarPlot({ plotConfig = {}, tooltipContent = false }) {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
+  const xAxisName = getXAxisName(plotConfig);
 
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
 
   const seriesFillColor = getSeriesFillColor(plotConfig);
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
-  const seriesIsStacked = getIsSeriesStacked(plotConfig);
-  const stackId = seriesIsStacked ? 'a' : undefined;
-
-  const categoryValues = getCategoryValues(plotConfig);
-  // if (!categoryValues || !categoryAxisConfig) return false;
 
   return (
-    <ResponsiveContainer>
+    <PlotContainer>
       <BarChart data={data} margin={margin}>
-        {GridLines()}
-        {XAxis({
-          ...xAxisConfig,
-        })}
-        {YAxis({ ...yAxisConfig })}
-        <Bar dataKey={yAxisDataKey} fill={seriesFillColor} stroke={seriesStrokeColor} />
+        {GeneralChartComponents({ plotConfig, tooltipContent })}
+        <Bar
+          dataKey={yAxisDataKey}
+          name={xAxisName}
+          fill={seriesFillColor}
+          stroke={seriesStrokeColor}
+        />
       </BarChart>
-    </ResponsiveContainer>
+    </PlotContainer>
   );
 }
 

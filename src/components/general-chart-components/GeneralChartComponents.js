@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import PropTypes from 'prop-types';
+import { getMargin, getXAxis, getYAxis, getZAxis } from '../../utils/plotConfigGetters';
+import Brush from '../shared/brush/Brush';
 import GridLines from '../shared/grid-lines/GridLines';
+import Tooltip from '../shared/tooltip/Tooltip';
 import XAxis from '../shared/x-axis/XAxis';
 import YAxis from '../shared/y-axis/YAxis';
-import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
-import Brush from '../shared/brush/Brush';
-import Tooltip from '../shared/tooltip/Tooltip';
 import ZAxis from '../shared/z-axis/ZAxis';
-import { getMargin, getXAxis, getYAxis, getZAxis } from '../../utils/plotConfigGetters';
+import ZenlyticLegend from '../zenlytic-legend/ZenlyticLegend';
 
 function GeneralChartComponents({
   plotConfig = {},

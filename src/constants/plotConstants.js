@@ -52,6 +52,7 @@ export const DEFAULT_CARTESIAN_GRID_COLOR = '#F0F0F0';
 export const PLOT_TYPES = {
   AREA: 'area',
   BAR: 'bar',
+  GROUPED_BAR: 'grouped_bar',
   LINE: 'line',
   LINE_COHORT: 'line_cohort',
   TABLE_ONLY: 'table_only',

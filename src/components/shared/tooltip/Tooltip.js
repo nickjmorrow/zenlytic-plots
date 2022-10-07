@@ -19,7 +19,6 @@ function Tooltip({
   const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
   const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
   const { dataKey: xAxisDataKey } = xAxisConfig || {};
-  console.log('🚀 ~ file: Tooltip.js ~ line 14 ~ Tooltip ~ yAxisTickFormatter', yAxisTickFormatter);
 
   const labelFormatter = (value, payload) => {
     if (customLabelFormatter) {
@@ -32,30 +31,11 @@ function Tooltip({
   return (
     <RechartsTooltip
       formatter={(value, dataKey) => {
-        console.log('🚀 ~ file: Tooltip.js ~ line 35 ~ dataKey', dataKey);
         const formatter = getTickFormatterFromDataKey(plotConfig, dataKey);
-        console.log('🚀 ~ file: Tooltip.js ~ line 37 ~ formatter', formatter);
         return formatter(value);
       }}
       labelFormatter={labelFormatter}
       content={tooltipContent}
-    />
-  );
-  return (
-    <RechartsTooltip
-      cursor={!isClickTooltipVisible}
-      wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
-      position={isClickTooltipVisible ? clickTooltipCoords : undefined}
-      content={
-        <TooltipHandler
-          CustomHoverTooltip={CustomHoverTooltip}
-          CustomClickTooltip={CustomClickTooltip}
-          isClickTooltipVisible={isClickTooltipVisible}
-          closeClickTooltip={closeClickTooltip}
-        />
-      }
-      formatter={(value) => formatValue(getD3DataFormatter(yAxisFormat, value), value)}
-      labelFormatter={xAxisTickFormatter}
     />
   );
 }

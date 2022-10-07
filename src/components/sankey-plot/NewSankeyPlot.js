@@ -17,7 +17,6 @@ import SankeyPlotNode from './components/sankey-plot-node/SankeyPlotNode';
 
 function NewLinePlot({ plotConfig = {}, tooltipContent = false }) {
   const data = getData(plotConfig);
-  console.log('🚀 ~ file: NewSankeyPlot.js ~ line 20 ~ NewLinePlot ~ data', data);
   const margin = getMargin(plotConfig);
 
   const xAxisDataKey = getXAxisDataKey(plotConfig);

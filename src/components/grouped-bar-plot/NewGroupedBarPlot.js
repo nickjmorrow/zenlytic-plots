@@ -16,12 +16,7 @@ import GeneralChartComponents from '../general-chart-components/GeneralChartComp
 import PlotContainer from '../plot-container/PlotContainer';
 
 function PivotedGroupedBar({ plotConfig = {} }) {
-  console.log(
-    '🚀 ~ file: NewGroupedBarPlot.js ~ line 19 ~ PivotedGroupedBar ~ plotConfig',
-    plotConfig
-  );
   const data = getData(plotConfig);
-  console.log('🚀 ~ file: NewGroupedBarPlot.js ~ line 24 ~ PivotedGroupedBar ~ data', data);
   const yAxisDataKey = getYAxisDataKey(plotConfig);
   return data.map((series, index) => {
     return (

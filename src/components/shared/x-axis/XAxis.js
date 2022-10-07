@@ -12,25 +12,17 @@ import {
 } from '../../../constants/plotConstants';
 
 const XAxis = (props) => {
-  const {
-    name = undefined,
-    type = 'number',
-    height = DEFAULT_X_AXIS_HEIGHT,
-    stroke = DEFAULT_AXIS_COLOR,
-    tick = DEFAULT_TICK_PROPS,
-    dataKey = undefined,
-    tickFormatter = undefined,
-  } = props;
+  const { name, type = 'number', dataKey, tickFormatter, allowDuplicatedCategory } = props;
   return (
     <RechartsXAxis
       dataKey={dataKey}
       name={name}
       type={type}
       tickFormatter={tickFormatter}
-      allowDuplicatedCategory={type !== AXIS_TYPES.CATEGORY}
-      height={height}
-      tick={tick}
-      stroke={stroke}>
+      allowDuplicatedCategory={allowDuplicatedCategory}
+      stroke={DEFAULT_AXIS_COLOR}
+      height={DEFAULT_X_AXIS_HEIGHT}
+      tick={DEFAULT_TICK_PROPS}>
       <Label {...DEFAULT_LABEL_PROPS} value={name} position="bottom" />
     </RechartsXAxis>
   );

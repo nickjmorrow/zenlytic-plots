@@ -45,15 +45,7 @@ const getAxisFromDataKey = (plotConfig, axisDataKey) => {
 };
 
 export const getTickFormatterFromDataKey = (plotConfig, dataKey) => {
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 48 ~ getTickFormatterFromDataKey ~ dataKey',
-    dataKey
-  );
   const axis = getAxisFromDataKey(plotConfig, dataKey);
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 51 ~ getTickFormatterFromDataKey ~ axis',
-    axis
-  );
   return getFormatter(axis?.format);
 };
 
@@ -64,10 +56,17 @@ const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {
 
 export const getXAxis = (plotConfig) => {
   const xAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.X_AXIS_DATA_KEY_KEY);
+  const seriesType = getSeriesType(plotConfig);
   if (!xAxis) return {};
   const { dataType, name, dataKey, format } = xAxis || {};
   const tickFormatter = getFormatter(format);
-  return { type: dataType, name, dataKey, tickFormatter };
+  return {
+    type: dataType,
+    name,
+    dataKey,
+    tickFormatter,
+    allowDuplicatedCategory: seriesType !== PLOT_TYPES.GROUPED_BAR,
+  };
 };
 
 export const getXAxisTickFormatter = (plotConfig) => {
@@ -78,6 +77,10 @@ export const getXAxisTickFormatter = (plotConfig) => {
 export const getXAxisDataKey = (plotConfig) => {
   const xAxis = getXAxis(plotConfig);
   return xAxis?.dataKey;
+};
+export const getXAxisName = (plotConfig) => {
+  const xAxis = getXAxis(plotConfig);
+  return xAxis?.name;
 };
 export const getYAxis = (plotConfig) => {
   const yAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.Y_AXIS_DATA_KEY_KEY);
@@ -104,7 +107,6 @@ export const getYAxisName = (plotConfig) => {
 
 export const getZAxis = (plotConfig) => {
   const zAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.Z_AXIS_DATA_KEY_KEY);
-  console.log('🚀 ~ file: plotConfigGetters.js ~ line 94 ~ getZAxis ~ zAxis', zAxis);
   if (!zAxis) return {};
   const { dataType, name, dataKey, format } = zAxis || {};
 
@@ -217,12 +219,6 @@ const flatPivotDataByDataKey = (plotConfig, data, dataKey) => {
 };
 
 const nestedPivotDataByDataKey = (plotConfig, data, dataKey) => {
-  console.log('🚀 ~ file: plotConfigGetters.js ~ line 220 ~ nestedPivotDataByDataKey ~ data', data);
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 220 ~ nestedPivotDataByDataKey ~ dataKey',
-    dataKey
-  );
-
   let dataDict = {};
   data.forEach((item) => {
     const dataKeyValue = item[dataKey];
@@ -231,11 +227,6 @@ const nestedPivotDataByDataKey = (plotConfig, data, dataKey) => {
     }
     dataDict[dataKeyValue].push(item);
   });
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 221 ~ nestedPivotDataByDataKey ~ dataDict',
-    dataDict
-  );
-
   return Object.keys(dataDict).map((key) => {
     return { name: key, data: dataDict[key] };
   });
@@ -345,7 +336,6 @@ const getWaterfallSpeicifcData = (plotConfig, data) => {
 
 export const getData = (plotConfig) => {
   const { data = [] } = plotConfig;
-  console.log('🚀 ~ file: plotConfigGetters.js ~ line 348 ~ getData ~ data', data);
   const isDataPivoted = getIsDataPivoted(plotConfig);
   switch (getSeriesType(plotConfig)) {
     case PLOT_TYPES.FUNNEL_BAR:

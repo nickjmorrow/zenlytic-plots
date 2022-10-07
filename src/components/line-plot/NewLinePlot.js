@@ -8,16 +8,12 @@ import {
   getData,
   getMargin,
   getSeriesStrokeColor,
-  getXAxis,
-  getYAxis,
   getYAxisDataKey,
 } from '../../utils/plotConfigGetters';
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
 import PlotContainer from '../plot-container/PlotContainer';
 
-function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {} }) {
-  const xAxisConfig = getXAxis(plotConfig);
-  const yAxisConfig = getYAxis(plotConfig);
+function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {}, tooltipContent = false }) {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const data = getData(plotConfig);
@@ -30,7 +26,7 @@ function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {} }) {
   return (
     <PlotContainer>
       <LineChart data={data} margin={margin} {...brushEvents}>
-        {GeneralChartComponents({ xAxisConfig, yAxisConfig, brush })}
+        {GeneralChartComponents({ plotConfig, brush, tooltipContent })}
         <Line
           type="monotone"
           dataKey={yAxisDataKey}

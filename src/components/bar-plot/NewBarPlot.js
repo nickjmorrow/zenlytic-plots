@@ -23,7 +23,6 @@ import YAxis from '../shared/y-axis/YAxis';
 function NewBarPlot({ plotConfig = {} }) {
   const xAxisConfig = getXAxis(plotConfig);
   const yAxisConfig = getYAxis(plotConfig);
-  const categoryAxisConfig = getCategoryAxis(plotConfig);
 
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 

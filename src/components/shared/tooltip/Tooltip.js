@@ -5,17 +5,34 @@ import { Tooltip as RechartsTooltip } from 'recharts';
 import TooltipHandler from '../../tooltip-handler/TooltipHandler';
 import formatValue from '../../../utils/formatValue';
 import getD3DataFormatter from '../../../utils/getD3DataFormatter';
+import { getFormatter, getTickFormatterFromDataKey } from '../../../utils/plotConfigGetters';
 
 // eslint-disable-next-line react/prop-types
 function Tooltip({
-  CustomHoverTooltip,
-  CustomClickTooltip,
-  isClickTooltipVisible,
-  clickTooltipCoords,
-  closeClickTooltip = () => {},
-  yAxisFormat,
-  xAxisTickFormatter,
+  xAxisConfig = {},
+  yAxisConfig = {},
+  zAxisConfig = {},
+  tooltipContent = false,
+  plotConfig = {},
 }) {
+  const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
+  const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
+  const { dataKey: xAxisDataKey } = xAxisConfig || {};
+  console.log('🚀 ~ file: Tooltip.js ~ line 14 ~ Tooltip ~ yAxisTickFormatter', yAxisTickFormatter);
+
+  return (
+    <RechartsTooltip
+      formatter={(value, dataKey) => {
+        const formatter = getTickFormatterFromDataKey(plotConfig, dataKey);
+        return formatter(value);
+      }}
+      labelFormatter={(value) => {
+        const formatter = getTickFormatterFromDataKey(plotConfig, xAxisDataKey);
+        return formatter(value);
+      }}
+      content={tooltipContent}
+    />
+  );
   return (
     <RechartsTooltip
       cursor={!isClickTooltipVisible}

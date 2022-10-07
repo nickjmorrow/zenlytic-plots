@@ -10,17 +10,7 @@ import {
 } from '../../../constants/plotConstants';
 
 const ZAxis = ({ type, dataKey, name, tickFormatter }) => {
-  return (
-    <RechartsZAxis
-      dataKey={dataKey}
-      tickFormatter={tickFormatter}
-      name={name}
-      type={type}
-      stroke={DEFAULT_AXIS_COLOR}
-      width={DEFAULT_Y_AXIS_WIDTH}
-      tick={DEFAULT_TICK_PROPS}
-    />
-  );
+  return <RechartsZAxis dataKey={dataKey} tickFormatter={tickFormatter} name={name} />;
 };
 
 ZAxis.propTypes = {};

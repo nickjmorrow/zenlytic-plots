@@ -3,6 +3,7 @@
 import React from 'react';
 import { Line, LineChart } from 'recharts';
 import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
+import useBrush from '../../hooks/useBrush';
 
 import {
   getCategoryValueAxes,
@@ -10,6 +11,7 @@ import {
   getIsDataPivoted,
   getMargin,
   getXAxis,
+  getYAxis,
   getYAxisDataKey,
 } from '../../utils/plotConfigGetters';
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
@@ -50,18 +52,24 @@ function NonPivotedMultiLinePlot({ plotConfig }) {
   ));
 }
 
-function NewMultiLinePlot({ plotConfig = {} }) {
+function NewMultiLinePlot({ plotConfig = {}, tooltipContent = false, onBrushUpdate = () => {} }) {
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
   const isDataPivoted = getIsDataPivoted(plotConfig);
-  const xAxisConfig = getXAxis(plotConfig);
+
+  const [brush, brushEvents] = useBrush({ onBrushUpdate });
 
   return (
     <PlotContainer>
-      <LineChart data={data} margin={margin}>
-        {GeneralChartComponents({ xAxisConfig, useLegend: true, margin })}
+      <LineChart data={data} margin={margin} {...brushEvents}>
+        {GeneralChartComponents({
+          plotConfig,
+          useLegend: true,
+          brush,
+          tooltipContent,
+        })}
         {isDataPivoted && PivotedMultiLinePlot({ plotConfig })}
-        {isDataPivoted && NonPivotedMultiLinePlot({ plotConfig })}
+        {!isDataPivoted && NonPivotedMultiLinePlot({ plotConfig })}
       </LineChart>
     </PlotContainer>
   );

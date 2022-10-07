@@ -123,6 +123,7 @@ export const DATA_TYPES = {
 export const AXIS_DATA_KEY_KEYS = {
   X_AXIS_DATA_KEY_KEY: 'xDataKey',
   Y_AXIS_DATA_KEY_KEY: 'yDataKey',
+  Z_AXIS_DATA_KEY_KEY: 'zDataKey',
   CATEGORY_AXIS_DATA_KEY_KEY: 'categoryDataKey',
   CATEGORY_VALUE_DATA_KEYS_KEY: 'categoryValueDataKeys',
 };

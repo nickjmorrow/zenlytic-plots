@@ -44,9 +44,21 @@ const getAxisFromDataKey = (plotConfig, axisDataKey) => {
   return axes.find((axis) => axis.dataKey === axisDataKey);
 };
 
+export const getTickFormatterFromDataKey = (plotConfig, dataKey) => {
+  console.log(
+    '🚀 ~ file: plotConfigGetters.js ~ line 48 ~ getTickFormatterFromDataKey ~ dataKey',
+    dataKey
+  );
+  const axis = getAxisFromDataKey(plotConfig, dataKey);
+  console.log(
+    '🚀 ~ file: plotConfigGetters.js ~ line 51 ~ getTickFormatterFromDataKey ~ axis',
+    axis
+  );
+  return getFormatter(axis.format);
+};
+
 const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {
   const axisDataKey = getSeriesKeyValue(plotConfig, axisDataKeyKey);
-
   return getAxisFromDataKey(plotConfig, axisDataKey);
 };
 
@@ -88,6 +100,30 @@ export const getYAxisDataKey = (plotConfig) => {
 export const getYAxisName = (plotConfig) => {
   const yAxis = getYAxis(plotConfig);
   return yAxis?.name;
+};
+
+export const getZAxis = (plotConfig) => {
+  const zAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.Z_AXIS_DATA_KEY_KEY);
+  console.log('🚀 ~ file: plotConfigGetters.js ~ line 94 ~ getZAxis ~ zAxis', zAxis);
+  if (!zAxis) return {};
+  const { dataType, name, dataKey, format } = zAxis || {};
+
+  const tickFormatter = getFormatter(format);
+  return { type: dataType, name, dataKey, tickFormatter };
+};
+
+export const getZAxisTickFormatter = (plotConfig) => {
+  const zAxis = getZAxis(plotConfig);
+  return zAxis.tickFormatter;
+};
+
+export const getZAxisDataKey = (plotConfig) => {
+  const zAxis = getZAxis(plotConfig);
+  return zAxis?.dataKey;
+};
+export const getZAxisName = (plotConfig) => {
+  const zAxis = getZAxis(plotConfig);
+  return zAxis?.name;
 };
 
 // Used in grouped bar to define the x axis

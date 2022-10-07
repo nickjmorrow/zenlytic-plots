@@ -1,5 +1,4 @@
 // DONE
-export { default as AreaPlot } from 'components/area-plot/AreaPlot';
 export { default as BarPlot } from 'components/bar-plot/NewBarPlot';
 export { default as GroupedBarPlot } from 'components/grouped-bar-plot/NewGroupedBarPlot';
 export { default as LinePlot } from 'components/line-plot/NewLinePlot';
@@ -11,6 +10,7 @@ export { default as SankeyPlot } from 'components/sankey-plot/NewSankeyPlot';
 export { default as HistogramPlot } from 'components/histogram-plot/NewHistogramPlot';
 
 // DONT NEED TO DO RIGHT NOW
+export { default as AreaPlot } from 'components/area-plot/AreaPlot';
 export { default as ResponsiveContainer } from 'components/responsive-container/ResponsiveContainer';
 export { default as FunnelPlot } from 'components/funnel-plot/FunnelPlot';
 export { default as TablePlot } from 'components/table-plot/TablePlot';

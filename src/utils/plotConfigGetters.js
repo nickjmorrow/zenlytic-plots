@@ -217,6 +217,12 @@ const flatPivotDataByDataKey = (plotConfig, data, dataKey) => {
 };
 
 const nestedPivotDataByDataKey = (plotConfig, data, dataKey) => {
+  console.log('🚀 ~ file: plotConfigGetters.js ~ line 220 ~ nestedPivotDataByDataKey ~ data', data);
+  console.log(
+    '🚀 ~ file: plotConfigGetters.js ~ line 220 ~ nestedPivotDataByDataKey ~ dataKey',
+    dataKey
+  );
+
   let dataDict = {};
   data.forEach((item) => {
     const dataKeyValue = item[dataKey];
@@ -225,6 +231,10 @@ const nestedPivotDataByDataKey = (plotConfig, data, dataKey) => {
     }
     dataDict[dataKeyValue].push(item);
   });
+  console.log(
+    '🚀 ~ file: plotConfigGetters.js ~ line 221 ~ nestedPivotDataByDataKey ~ dataDict',
+    dataDict
+  );
 
   return Object.keys(dataDict).map((key) => {
     return { name: key, data: dataDict[key] };
@@ -335,6 +345,7 @@ const getWaterfallSpeicifcData = (plotConfig, data) => {
 
 export const getData = (plotConfig) => {
   const { data = [] } = plotConfig;
+  console.log('🚀 ~ file: plotConfigGetters.js ~ line 348 ~ getData ~ data', data);
   const isDataPivoted = getIsDataPivoted(plotConfig);
   switch (getSeriesType(plotConfig)) {
     case PLOT_TYPES.FUNNEL_BAR:

@@ -1,60 +1,66 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
-import React, { useLayoutEffect, useRef, useState } from 'react';
-import { Line, LineChart, ResponsiveContainer, Sankey, Tooltip } from 'recharts';
+import React from 'react';
+import { Sankey } from 'recharts';
 import { PLOT_COLORS } from '../../constants/plotConstants';
 
 import {
   getData,
   getMargin,
-  getSeriesStrokeColor,
-  getXAxis,
   getXAxisDataKey,
-  getXAxisTickFormatter,
-  getYAxis,
-  getYAxisDataKey,
   getYAxisTickFormatter,
 } from '../../utils/plotConfigGetters';
-import GridLines from '../shared/grid-lines/GridLines';
-import XAxis from '../shared/x-axis/XAxis';
-import YAxis from '../shared/y-axis/YAxis';
+import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
+import PlotContainer from '../plot-container/PlotContainer';
 import SankeyPlotLink from './components/sankey-plot-link/SankeyPlotLink';
 import SankeyPlotNode from './components/sankey-plot-node/SankeyPlotNode';
 
-function NewLinePlot({ plotConfig = {} }) {
+function NewLinePlot({ plotConfig = {}, tooltipContent = false }) {
   const data = getData(plotConfig);
-  console.log('🚀 ~ file: NewSankeyPlot.js ~ line 24 ~ NewLinePlot ~ data', data);
+  console.log('🚀 ~ file: NewSankeyPlot.js ~ line 20 ~ NewLinePlot ~ data', data);
   const margin = getMargin(plotConfig);
 
   const xAxisDataKey = getXAxisDataKey(plotConfig);
-  console.log('🚀 ~ file: NewSankeyPlot.js ~ line 29 ~ NewLinePlot ~ xAxisDataKey', xAxisDataKey);
 
   const yAxisTickFormatter = getYAxisTickFormatter(plotConfig);
 
+  let categories = [];
+  // categories = data ? [...new Set(data.map((d) => d[xAxisDataKey]))] : [];
+  categories = [...new Set(data?.nodes?.map((d) => d[xAxisDataKey]))];
+  const nodeColors = {};
+  categories.forEach((category, index) => {
+    nodeColors[category] = PLOT_COLORS[index % PLOT_COLORS.length];
+  });
+
   const colorGradients = data.links.map((link) => {
     return {
-      source: data.nodes[link.source].color || PLOT_COLORS[link.source % PLOT_COLORS.length],
-      target: data.nodes[link.target].color || PLOT_COLORS[link.target % PLOT_COLORS.length],
+      source: data.nodes[link.source].color || nodeColors[data.nodes[link.source][xAxisDataKey]],
+      target: data.nodes[link.target].color || nodeColors[data.nodes[link.target][xAxisDataKey]],
     };
   });
 
   return (
-    <ResponsiveContainer>
+    <PlotContainer>
       <Sankey
         margin={margin}
         data={data}
         nodePadding={50}
         link={<SankeyPlotLink colorGradients={colorGradients} />}
+        nameKey={xAxisDataKey}
         node={
           <SankeyPlotNode
-            // containerWidth={width - margin.left - margin.right}
             xAxisDataKey={xAxisDataKey}
-            colors={PLOT_COLORS}
             valueFormatter={yAxisTickFormatter}
+            nodeColors={nodeColors}
           />
-        }
-      />
-    </ResponsiveContainer>
+        }>
+        {GeneralChartComponents({
+          plotConfig,
+          tooltipContent,
+          useGridLines: false,
+        })}
+      </Sankey>
+    </PlotContainer>
   );
 }
 

@@ -23,8 +23,6 @@ function GeneralChartComponents({
   legendConfig = {},
   customLabelFormatter = null,
 }) {
-  console.log('🚀 ~ file: GeneralChartComponents.js ~ line 25 ~ yAxisConfig', yAxisConfig);
-  console.log('🚀 ~ file: GeneralChartComponents.js ~ line 25 ~ xAxisConfig', xAxisConfig);
   return (
     <>
       {XAxis({ ...xAxisConfig })}

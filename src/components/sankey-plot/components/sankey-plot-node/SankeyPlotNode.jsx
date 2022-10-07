@@ -12,9 +12,9 @@ export default function SankeyPlotNode(props) {
     index,
     payload,
     containerWidth,
-    colors,
     valueFormatter,
     xAxisDataKey,
+    nodeColors = [],
   } = props;
 
   const { depth } = payload || {};
@@ -29,7 +29,7 @@ export default function SankeyPlotNode(props) {
         y={y}
         width={width}
         height={height}
-        fill={payload.color || colors[index % colors.length]}
+        fill={payload.color || nodeColors[payload[xAxisDataKey]]}
         fillOpacity="1"
       />
       <text
@@ -40,7 +40,7 @@ export default function SankeyPlotNode(props) {
         fontWeight={fontWeights.medium}
         strokeWidth={0}
         stroke="#333">
-        {name}
+        {`${name} (${depth + 1})`}
       </text>
       <text
         textAnchor={isOut ? 'end' : 'start'}

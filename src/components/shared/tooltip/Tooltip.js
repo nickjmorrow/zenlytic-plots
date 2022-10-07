@@ -14,11 +14,20 @@ function Tooltip({
   zAxisConfig = {},
   tooltipContent = false,
   plotConfig = {},
+  customLabelFormatter = null,
 }) {
   const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
   const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
   const { dataKey: xAxisDataKey } = xAxisConfig || {};
   console.log('🚀 ~ file: Tooltip.js ~ line 14 ~ Tooltip ~ yAxisTickFormatter', yAxisTickFormatter);
+
+  const labelFormatter = (value, payload) => {
+    if (customLabelFormatter) {
+      return customLabelFormatter(value, payload);
+    }
+    const formatter = getTickFormatterFromDataKey(plotConfig, xAxisDataKey);
+    return formatter(value);
+  };
 
   return (
     <RechartsTooltip
@@ -26,10 +35,7 @@ function Tooltip({
         const formatter = getTickFormatterFromDataKey(plotConfig, dataKey);
         return formatter(value);
       }}
-      labelFormatter={(value) => {
-        const formatter = getTickFormatterFromDataKey(plotConfig, xAxisDataKey);
-        return formatter(value);
-      }}
+      labelFormatter={labelFormatter}
       content={tooltipContent}
     />
   );

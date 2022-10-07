@@ -1,64 +1,72 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { Bar, BarChart, Cell, ResponsiveContainer } from 'recharts';
-import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
+import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts';
+import useBrush from '../../hooks/useBrush';
 
 import {
-  getCategoryAxis,
-  getCategoryValues,
   getData,
   getFormatter,
-  getIsSeriesStacked,
   getMargin,
   getSeriesFillColor,
   getSeriesStrokeColor,
+  getTickFormatterFromDataKey,
   getXAxis,
-  getYAxis,
-  getYAxisDataKey,
+  getXAxisDataKey,
+  getXAxisTickFormatter,
+  getYAxisName,
 } from '../../utils/plotConfigGetters';
-import GridLines from '../shared/grid-lines/GridLines';
-import XAxis from '../shared/x-axis/XAxis';
-import YAxis from '../shared/y-axis/YAxis';
+import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
+import PlotContainer from '../plot-container/PlotContainer';
 
-function NewHistogramPlot({ plotConfig = {} }) {
+function NewHistogramPlot({ plotConfig = {}, onBrushUpdate = () => {}, tooltipContent = false }) {
   const xAxisConfig = getXAxis(plotConfig);
-  const yAxisConfig = getYAxis(plotConfig);
-  const categoryAxisConfig = getCategoryAxis(plotConfig);
-
-  const yAxisDataKey = getYAxisDataKey(plotConfig);
+  const xAxisDataKey = getXAxisDataKey(plotConfig);
 
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
 
   const seriesFillColor = getSeriesFillColor(plotConfig);
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
-  const seriesIsStacked = getIsSeriesStacked(plotConfig);
-  const stackId = seriesIsStacked ? 'a' : undefined;
 
   const yAxisTickFormatter = getFormatter('decimal');
 
-  const categoryValues = getCategoryValues(plotConfig);
-  // if (!categoryValues || !categoryAxisConfig) return false;
+  const [brush, brushEvents] = useBrush({ onBrushUpdate });
+  // <XAxis dataKey={'rangeBottom'} name="MEMMMM" category="number" />
+  // <YAxis dataKey="value" name="Freq" category="number" />
+
+  const customLabelFormatter = (value, payload) => {
+    const hoveredBar = payload[0] || {};
+    const { payload: hoveredBarPayload = {} } = hoveredBar;
+    const { rangeTop, rangeBottom } = hoveredBarPayload;
+    const formatter = getTickFormatterFromDataKey(plotConfig, xAxisDataKey);
+    return `${formatter(rangeBottom)} - ${formatter(rangeTop)}`;
+  };
 
   return (
-    <ResponsiveContainer>
-      <BarChart data={data} margin={margin}>
-        {GridLines()}
-        {XAxis({
-          ...xAxisConfig,
-          type: 'number',
-          dataKey: 'rangeBottom',
+    <PlotContainer>
+      <BarChart data={data} margin={margin} {...brushEvents}>
+        {GeneralChartComponents({
+          plotConfig,
+          brush,
+          tooltipContent,
+          xAxisConfig: {
+            ...xAxisConfig,
+            type: 'number',
+            dataKey: 'rangeBottom',
+          },
+          yAxisConfig: {
+            name: 'Frequency',
+            type: 'number',
+            dataKey: 'value',
+            tickFormatter: yAxisTickFormatter,
+          },
+          customLabelFormatter,
         })}
-        {YAxis({
-          name: 'Frequency',
-          type: 'number',
-          dataKey: 'value',
-          tickFormatter: yAxisTickFormatter,
-        })}
-        <Bar dataKey={'value'} fill={seriesFillColor} stroke={seriesStrokeColor} />
+
+        <Bar dataKey="value" fill={seriesFillColor} stroke={seriesStrokeColor} name="Frequency" />
       </BarChart>
-    </ResponsiveContainer>
+    </PlotContainer>
   );
 }
 

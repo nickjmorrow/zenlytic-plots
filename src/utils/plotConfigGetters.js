@@ -54,7 +54,7 @@ export const getTickFormatterFromDataKey = (plotConfig, dataKey) => {
     '🚀 ~ file: plotConfigGetters.js ~ line 51 ~ getTickFormatterFromDataKey ~ axis',
     axis
   );
-  return getFormatter(axis.format);
+  return getFormatter(axis?.format);
 };
 
 const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {
@@ -72,7 +72,7 @@ export const getXAxis = (plotConfig) => {
 
 export const getXAxisTickFormatter = (plotConfig) => {
   const xAxis = getXAxis(plotConfig);
-  return xAxis.tickFormatter;
+  return xAxis?.tickFormatter;
 };
 
 export const getXAxisDataKey = (plotConfig) => {

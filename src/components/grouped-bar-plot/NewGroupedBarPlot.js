@@ -59,7 +59,13 @@ function NewGroupedBar({ plotConfig = {}, tooltipContent = false }) {
   return (
     <PlotContainer>
       <BarChart data={data} margin={margin}>
-        {GeneralChartComponents({ plotConfig, useLegend: true, yAxisConfig: {}, tooltipContent })}
+        {GeneralChartComponents({
+          plotConfig,
+          useLegend: true,
+          yAxisConfig: {},
+          tooltipContent,
+          legendConfig: { useStrokeColorShape: true, iconType: 'square' },
+        })}
         {isDataPivoted && PivotedGroupedBar({ plotConfig })}
         {!isDataPivoted && NonPivotedGroupedBar({ plotConfig })}
       </BarChart>

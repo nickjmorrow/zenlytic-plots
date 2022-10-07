@@ -20,7 +20,11 @@ function GeneralChartComponents({
   margin = getMargin(plotConfig),
   brush = {},
   tooltipContent = false,
+  legendConfig = {},
+  customLabelFormatter = null,
 }) {
+  console.log('🚀 ~ file: GeneralChartComponents.js ~ line 25 ~ yAxisConfig', yAxisConfig);
+  console.log('🚀 ~ file: GeneralChartComponents.js ~ line 25 ~ xAxisConfig', xAxisConfig);
   return (
     <>
       {XAxis({ ...xAxisConfig })}
@@ -30,9 +34,17 @@ function GeneralChartComponents({
       {useLegend &&
         ZenlyticLegend({
           margin,
+          ...legendConfig,
         })}
       {Brush({ ...brush })}
-      {Tooltip({ plotConfig, xAxisConfig, yAxisConfig, zAxisConfig, tooltipContent })}
+      {Tooltip({
+        plotConfig,
+        xAxisConfig,
+        yAxisConfig,
+        zAxisConfig,
+        tooltipContent,
+        customLabelFormatter,
+      })}
     </>
   );
 }

@@ -31,6 +31,8 @@ function Tooltip({
   return (
     <RechartsTooltip
       formatter={(value, dataKey) => {
+        console.log('🚀 ~ file: Tooltip.js ~ line 34 ~ dataKey', dataKey);
+        console.log('🚀 ~ file: Tooltip.js ~ line 34 ~ value', value);
         const formatter = getTickFormatterFromDataKey(plotConfig, dataKey);
         return formatter(value);
       }}

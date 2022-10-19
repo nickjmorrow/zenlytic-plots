@@ -3,17 +3,25 @@
 import React from 'react';
 import { Line, LineChart } from 'recharts';
 import useBrush from '../../hooks/useBrush';
+import useTooltip from '../../hooks/useTooltip';
 
 import {
+  getAxisFormat,
   getData,
   getMargin,
   getSeriesStrokeColor,
+  getXAxisDataKey,
+  getXAxisName,
   getYAxisDataKey,
 } from '../../utils/plotConfigGetters';
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
 import PlotContainer from '../plot-container/PlotContainer';
 
-function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {}, tooltipContent = false }) {
+function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipContent = () => {} }) {
+  const xAxisDataKey = getXAxisDataKey(plotConfig);
+  const xAxisFormat = getAxisFormat(plotConfig, xAxisDataKey);
+  const xAxisName = getXAxisName(plotConfig);
+
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const data = getData(plotConfig);
@@ -21,18 +29,33 @@ function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {}, tooltipContent
 
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
 
-  const [brush, brushEvents] = useBrush({ onBrushUpdate });
+  const [tooltip, tooltipHandlers] = useTooltip();
+  const [brush, brushEvents] = useBrush({
+    onBrushUpdate,
+    tooltipHandlers,
+    tooltip,
+    xAxisDataKey,
+    xAxisFormat,
+  });
 
   return (
     <PlotContainer>
       <LineChart data={data} margin={margin} {...brushEvents}>
-        {GeneralChartComponents({ plotConfig, brush, tooltipContent })}
+        {GeneralChartComponents({
+          plotConfig,
+          brush,
+          brushEvents,
+          tooltip,
+          TooltipContent,
+          tooltipHandlers,
+        })}
         <Line
           type="monotone"
           dataKey={yAxisDataKey}
           stroke={seriesStrokeColor}
           dot
           strokeWidth={2}
+          name={xAxisName}
         />
       </LineChart>
     </PlotContainer>

@@ -18,9 +18,13 @@ function GeneralChartComponents({
   useGridLines = true,
   margin = getMargin(plotConfig),
   brush = {},
-  tooltipContent = false,
+  brushEvents = {},
+  tooltip = {},
+  TooltipContent = () => {},
   legendConfig = {},
   customLabelFormatter = null,
+  customValueFormatter = null,
+  tooltipHandlers = {},
 }) {
   return (
     <>
@@ -33,14 +37,18 @@ function GeneralChartComponents({
           margin,
           ...legendConfig,
         })}
-      {Brush({ ...brush })}
+      {brush && Brush({ ...brush })}
       {Tooltip({
         plotConfig,
         xAxisConfig,
         yAxisConfig,
         zAxisConfig,
-        tooltipContent,
+        TooltipContent,
+        tooltip,
         customLabelFormatter,
+        customValueFormatter,
+        tooltipHandlers,
+        brushEvents,
       })}
     </>
   );

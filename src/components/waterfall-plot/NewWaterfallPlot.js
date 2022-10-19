@@ -35,7 +35,6 @@ function NewWaterfallPlot({ plotConfig = {}, tooltipContent = false }) {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const data = getData(plotConfig);
-  console.log('🚀 ~ file: NewWaterfallPlot.js ~ line 38 ~ NewWaterfallPlot ~ data', data);
   const margin = getMargin(plotConfig);
 
   return (

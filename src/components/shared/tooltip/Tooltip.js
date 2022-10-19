@@ -6,19 +6,38 @@ import TooltipHandler from '../../tooltip-handler/TooltipHandler';
 import formatValue from '../../../utils/formatValue';
 import getD3DataFormatter from '../../../utils/getD3DataFormatter';
 import { getFormatter, getTickFormatterFromDataKey } from '../../../utils/plotConfigGetters';
+import OutsideClickHandler from 'react-outside-click-handler';
+import { HIGHTLIGHT_BAR_COLOR } from '../../../constants/plotConstants';
 
 // eslint-disable-next-line react/prop-types
+
+function TooltipContentWithOutsideClickHandler(props) {
+  const { onOutsideClick = () => {}, TooltipContent = false } = props;
+  return (
+    <OutsideClickHandler onOutsideClick={onOutsideClick}>
+      {TooltipContent(props)}
+    </OutsideClickHandler>
+  );
+}
+
 function Tooltip({
   xAxisConfig = {},
   yAxisConfig = {},
   zAxisConfig = {},
-  tooltipContent = false,
+  TooltipContent = () => {},
+  tooltipHandlers = {},
+  tooltip = {},
   plotConfig = {},
   customLabelFormatter = null,
+  customValueFormatter = null,
+  brushEvents = {},
 }) {
   const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
   const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
   const { dataKey: xAxisDataKey } = xAxisConfig || {};
+  const { tooltipCoords, isFollowUpMenuOpen, hoveredItemId, clickedItemId } = tooltip || {};
+  const { updateBrush = () => {} } = brushEvents || {};
+  const { updateIsFollowUpMenuOpen = () => {} } = tooltipHandlers || {};
 
   const labelFormatter = (value, payload) => {
     if (customLabelFormatter) {
@@ -28,16 +47,35 @@ function Tooltip({
     return formatter(value);
   };
 
+  const valueFormatter = (value, dataKey) => {
+    if (customValueFormatter) {
+      return customValueFormatter(value, dataKey);
+    }
+    const formatter = getTickFormatterFromDataKey(plotConfig, dataKey);
+    return formatter(value);
+  };
+
   return (
     <RechartsTooltip
-      formatter={(value, dataKey) => {
-        console.log('🚀 ~ file: Tooltip.js ~ line 34 ~ dataKey', dataKey);
-        console.log('🚀 ~ file: Tooltip.js ~ line 34 ~ value', value);
-        const formatter = getTickFormatterFromDataKey(plotConfig, dataKey);
-        return formatter(value);
-      }}
+      wrapperStyle={isFollowUpMenuOpen ? { visibility: 'visible', zIndex: 10000 } : undefined}
+      isFollowUpMenuOpen={isFollowUpMenuOpen}
+      position={isFollowUpMenuOpen ? tooltipCoords : undefined}
+      cursor={isFollowUpMenuOpen ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
+      formatter={valueFormatter}
       labelFormatter={labelFormatter}
-      content={tooltipContent}
+      content={(props) => {
+        return TooltipContentWithOutsideClickHandler({
+          ...props,
+          payload: hoveredItemId
+            ? props?.payload?.filter((payloadItem) => payloadItem?.id === hoveredItemId)
+            : props?.payload,
+          onOutsideClick: () => {
+            updateIsFollowUpMenuOpen(false);
+            updateBrush({ x1: null, x2: null, y1: null, y2: null, isBrushing: false });
+          },
+          TooltipContent,
+        });
+      }}
     />
   );
 }

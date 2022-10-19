@@ -3,8 +3,10 @@
 import React from 'react';
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts';
 import useBrush from '../../hooks/useBrush';
+import useTooltip from '../../hooks/useTooltip';
 
 import {
+  getAxisFormat,
   getData,
   getFormatter,
   getMargin,
@@ -19,9 +21,10 @@ import {
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
 import PlotContainer from '../plot-container/PlotContainer';
 
-function NewHistogramPlot({ plotConfig = {}, onBrushUpdate = () => {}, tooltipContent = false }) {
+function NewHistogramPlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipContent = false }) {
   const xAxisConfig = getXAxis(plotConfig);
   const xAxisDataKey = getXAxisDataKey(plotConfig);
+  const xAxisFormat = getAxisFormat(plotConfig, xAxisDataKey);
 
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
@@ -31,7 +34,15 @@ function NewHistogramPlot({ plotConfig = {}, onBrushUpdate = () => {}, tooltipCo
 
   const yAxisTickFormatter = getFormatter('decimal');
 
-  const [brush, brushEvents] = useBrush({ onBrushUpdate });
+  const [tooltip, tooltipHandlers] = useTooltip();
+  const [brush, brushEvents] = useBrush({
+    onBrushUpdate,
+    tooltipHandlers,
+    tooltip,
+    xAxisDataKey,
+    xAxisFormat,
+  });
+
   // <XAxis dataKey={'rangeBottom'} name="MEMMMM" category="number" />
   // <YAxis dataKey="value" name="Freq" category="number" />
 
@@ -49,7 +60,10 @@ function NewHistogramPlot({ plotConfig = {}, onBrushUpdate = () => {}, tooltipCo
         {GeneralChartComponents({
           plotConfig,
           brush,
-          tooltipContent,
+          brushEvents,
+          tooltip,
+          TooltipContent,
+          tooltipHandlers,
           xAxisConfig: {
             ...xAxisConfig,
             type: 'number',

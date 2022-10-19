@@ -7,7 +7,9 @@ import { PLOT_COLORS } from '../../constants/plotConstants';
 import {
   getData,
   getMargin,
+  getTickFormatterFromDataKey,
   getXAxisDataKey,
+  getYAxisDataKey,
   getYAxisTickFormatter,
 } from '../../utils/plotConfigGetters';
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
@@ -15,11 +17,12 @@ import PlotContainer from '../plot-container/PlotContainer';
 import SankeyPlotLink from './components/sankey-plot-link/SankeyPlotLink';
 import SankeyPlotNode from './components/sankey-plot-node/SankeyPlotNode';
 
-function NewLinePlot({ plotConfig = {}, tooltipContent = false }) {
+function NewLinePlot({ plotConfig = {}, TooltipContent = () => {} }) {
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
 
   const xAxisDataKey = getXAxisDataKey(plotConfig);
+  const yAxisDataKey = getYAxisDataKey(plotConfig);
 
   const yAxisTickFormatter = getYAxisTickFormatter(plotConfig);
 
@@ -38,6 +41,11 @@ function NewLinePlot({ plotConfig = {}, tooltipContent = false }) {
     };
   });
 
+  const customValueFormatter = (value) => {
+    const formatter = getTickFormatterFromDataKey(plotConfig, yAxisDataKey);
+    return formatter(value);
+  };
+
   return (
     <PlotContainer>
       <Sankey
@@ -55,8 +63,9 @@ function NewLinePlot({ plotConfig = {}, tooltipContent = false }) {
         }>
         {GeneralChartComponents({
           plotConfig,
-          tooltipContent,
+          TooltipContent,
           useGridLines: false,
+          customValueFormatter,
         })}
       </Sankey>
     </PlotContainer>

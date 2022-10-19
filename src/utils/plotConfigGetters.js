@@ -44,9 +44,14 @@ const getAxisFromDataKey = (plotConfig, axisDataKey) => {
   return axes.find((axis) => axis.dataKey === axisDataKey);
 };
 
-export const getTickFormatterFromDataKey = (plotConfig, dataKey) => {
+export const getAxisFormat = (plotConfig, dataKey) => {
   const axis = getAxisFromDataKey(plotConfig, dataKey);
-  return getFormatter(axis?.format);
+  return axis?.format;
+};
+
+export const getTickFormatterFromDataKey = (plotConfig, dataKey) => {
+  const axisFormat = getAxisFormat(plotConfig, dataKey);
+  return getFormatter(axisFormat);
 };
 
 const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {

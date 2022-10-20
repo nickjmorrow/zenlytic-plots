@@ -136,6 +136,7 @@ function Tooltip({
           onOutsideClick: () => {
             updateIsFollowUpMenuOpen(false);
             updateBrush({ x1: null, x2: null, y1: null, y2: null, isBrushing: false });
+            updateClickedItemId(null);
           },
           TooltipContent,
         });

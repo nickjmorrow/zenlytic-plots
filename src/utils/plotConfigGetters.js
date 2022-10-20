@@ -332,6 +332,7 @@ const getWaterfallSpeicifcData = (plotConfig, data) => {
   });
 
   const otherFactorsDataPoint = {
+    id: 'other_factors',
     [xAxisDataKey]: 'Other Factors',
     [yAxisDataKey]: [baseValueAccumulator, endDataPoint[yAxisDataKey][0]],
   };

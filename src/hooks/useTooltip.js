@@ -7,10 +7,10 @@ function useTooltip(params) {
       isFollowUpMenuOpen: false,
       hoveredItemId: null,
       clickedItemId: null,
+      useOutsideClickHandler: true,
     },
   } = params || {};
   const [state, setState] = useState(initialState);
-  console.log('🚀 ~ file: useTooltip.js ~ line 13 ~ useTooltip ~ state', state);
 
   const updateHoveredItemId = (hoveredItemId) => {
     setState({ ...state, hoveredItemId });
@@ -21,7 +21,6 @@ function useTooltip(params) {
   };
 
   const updateIsFollowUpMenuOpen = (isOpen) => {
-    console.log('🚀 ~ file: useTooltip.js ~ line 24 ~ updateIsFollowUpMenuOpen ~ isOpen', isOpen);
     setState({ ...state, isFollowUpMenuOpen: isOpen });
   };
 

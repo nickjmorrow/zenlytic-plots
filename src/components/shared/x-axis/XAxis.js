@@ -12,6 +12,7 @@ import {
 } from '../../../constants/plotConstants';
 
 const XAxis = (props) => {
+  console.log('🚀 ~ file: XAxis.js ~ line 15 ~ XAxis ~ props', props);
   const { name, type = 'number', dataKey, tickFormatter, allowDuplicatedCategory } = props;
   return (
     <RechartsXAxis

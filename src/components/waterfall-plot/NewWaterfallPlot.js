@@ -34,12 +34,12 @@ function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
       <BarChart
         data={data}
         margin={margin}
-        onMouseMove={(e) => {
-          updateHoveredItemId(e?.activePayload?.[0]?.payload?.id);
-        }}
-        onMouseLeave={() => {
-          updateHoveredItemId(null);
-        }}
+        // onMouseMove={(e) => {
+        //   updateHoveredItemId(e?.activePayload?.[0]?.payload?.id);
+        // }}
+        // onMouseLeave={() => {
+        //   updateHoveredItemId(null);
+        // }}
         onClick={onPlotClick}>
         {GeneralChartComponents({ plotConfig, TooltipContent, tooltipHandlers, tooltip })}
         <Bar dataKey={yAxisDataKey}>

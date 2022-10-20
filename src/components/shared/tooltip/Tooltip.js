@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip as RechartsTooltip } from 'recharts';
 import TooltipHandler from '../../tooltip-handler/TooltipHandler';
@@ -11,34 +11,11 @@ import { HIGHTLIGHT_BAR_COLOR } from '../../../constants/plotConstants';
 
 // eslint-disable-next-line react/prop-types
 
-function TooltipContentWithOutsideClickHandler(props) {
-  const {
-    onOutsideClick = () => {},
-    TooltipContent = false,
-    useOutsideClickHandler = true,
-  } = props;
-
-  if (useOutsideClickHandler) {
-    return (
-      <OutsideClickHandler onOutsideClick={onOutsideClick}>
-        {TooltipContent(props)}
-      </OutsideClickHandler>
-    );
-  }
-  return TooltipContent(props);
-}
-
 // The tooltip payload can have a nested array in it
-const getPayloadFromTooltip = (tooltipPayload, hoveredItemId, clickedItemId) => {
-  console.log(
-    '🚀 ~ file: Tooltip.js ~ line 33 ~ getPayloadFromTooltip ~ hoveredItemId',
-    hoveredItemId
-  );
-  console.log(
-    '🚀 ~ file: Tooltip.js ~ line 33 ~ getPayloadFromTooltip ~ tooltipPayload',
-    tooltipPayload
-  ); // if (!hoveredItemId && !clickedItemId) return tooltipPayload;
-
+const getPayloadFromTooltip = (tooltipPayload, clickedItemId, hoveredItemId) => {
+  if (clickedItemId) {
+    return tooltipPayload?.filter((payloadItem) => payloadItem?.id === clickedItemId);
+  }
   if (hoveredItemId) {
     return tooltipPayload?.filter((payloadItem) => payloadItem?.id === hoveredItemId);
   }
@@ -48,6 +25,38 @@ const getPayloadFromTooltip = (tooltipPayload, hoveredItemId, clickedItemId) => 
   // }
   return tooltipPayload;
 };
+
+function TooltipContentWithOutsideClickHandler(props) {
+  const {
+    onOutsideClick = () => {},
+    TooltipContent = false,
+    useOutsideClickHandler = true,
+    clickedItemId,
+    hoveredItemId,
+    payload,
+    isFollowUpMenuOpen,
+  } = props;
+
+  const [newPayload, setNewPayload] = useState(
+    getPayloadFromTooltip(payload, clickedItemId, hoveredItemId)
+  );
+
+  useEffect(() => {
+    if (isFollowUpMenuOpen) {
+      return;
+    }
+    setNewPayload(getPayloadFromTooltip(payload, clickedItemId, hoveredItemId));
+  }, [payload, clickedItemId, hoveredItemId, isFollowUpMenuOpen]);
+
+  if (useOutsideClickHandler) {
+    return (
+      <OutsideClickHandler onOutsideClick={onOutsideClick}>
+        {TooltipContent({ ...props, payload: newPayload })}
+      </OutsideClickHandler>
+    );
+  }
+  return TooltipContent({ ...props, payload: newPayload });
+}
 
 function Tooltip({
   xAxisConfig = {},
@@ -71,6 +80,8 @@ function Tooltip({
     clickedItemId,
     useOutsideClickHandler,
   } = tooltip || {};
+  console.log('🚀 ~ file: Tooltip.js ~ line 83 ~ tooltip', tooltip);
+  console.log('🚀 ~ file: Tooltip.js ~ line 83 ~ tooltipCoords', tooltipCoords);
   const { updateBrush = () => {} } = brushEvents || {};
   const {
     updateIsFollowUpMenuOpen = () => {},
@@ -111,7 +122,9 @@ function Tooltip({
       content={(tooltipProps) => {
         return TooltipContentWithOutsideClickHandler({
           ...tooltipProps,
-          payload: getPayloadFromTooltip(tooltipProps?.payload, hoveredItemId),
+          clickedItemId,
+          hoveredItemId,
+          // payload: getPayloadFromTooltip(tooltipProps?.payload, hoveredItemId),
           // payload: hoveredItemId
           //   ? tooltipProps?.payload?.filter((payloadItem) => payloadItem?.id === hoveredItemId)
           //   : tooltipProps?.payload,

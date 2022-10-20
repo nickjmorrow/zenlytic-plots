@@ -54,6 +54,7 @@ export const PLOT_TYPES = {
   BAR: 'bar',
   GROUPED_BAR: 'grouped_bar',
   LINE: 'line',
+  MULTI_LINE: 'multi_line',
   LINE_COHORT: 'line_cohort',
   TABLE_ONLY: 'table_only',
   SCATTER: 'scatter',

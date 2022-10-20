@@ -62,6 +62,7 @@ const getAxisFromAxes = (plotConfig, axisDataKeyKey) => {
 export const getXAxis = (plotConfig) => {
   const xAxis = getAxisFromAxes(plotConfig, AXIS_DATA_KEY_KEYS.X_AXIS_DATA_KEY_KEY);
   const seriesType = getSeriesType(plotConfig);
+  console.log('🚀 ~ file: plotConfigGetters.js ~ line 65 ~ getXAxis ~ seriesType', seriesType);
   if (!xAxis) return {};
   const { dataType, name, dataKey, format } = xAxis || {};
   const tickFormatter = getFormatter(format);
@@ -70,7 +71,8 @@ export const getXAxis = (plotConfig) => {
     name,
     dataKey,
     tickFormatter,
-    allowDuplicatedCategory: seriesType !== PLOT_TYPES.GROUPED_BAR,
+    allowDuplicatedCategory:
+      seriesType !== PLOT_TYPES.GROUPED_BAR && seriesType !== PLOT_TYPES.MULTI_LINE,
   };
 };
 

@@ -19,8 +19,7 @@ function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
   const [tooltip, tooltipHandlers] = useTooltip();
   const { isFollowUpMenuOpen } = tooltip;
 
-  const { updateHoveredItemId, updateClickedItemId, updateIsFollowUpMenuOpen } =
-    tooltipHandlers || {};
+  const { updateHoveredItemId, updateClickedItemId } = tooltipHandlers || {};
   const { hoveredItemId = null, clickedItemId = null } = tooltip || {};
 
   const onPlotClick = useCallback(
@@ -41,7 +40,6 @@ function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
         onMouseLeave={() => {
           updateHoveredItemId(null);
         }}
-        // onMouseLeave={() => updateHoveredItemId(null)}
         onClick={onPlotClick}>
         {GeneralChartComponents({ plotConfig, TooltipContent, tooltipHandlers, tooltip })}
         <Bar dataKey={yAxisDataKey}>

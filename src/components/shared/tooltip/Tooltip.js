@@ -31,9 +31,17 @@ function TooltipContentWithOutsideClickHandler(props) {
 // The tooltip payload can have a nested array in it
 const getPayloadFromTooltip = (tooltipPayload, hoveredItemId, clickedItemId) => {
   console.log(
+    '🚀 ~ file: Tooltip.js ~ line 33 ~ getPayloadFromTooltip ~ hoveredItemId',
+    hoveredItemId
+  );
+  console.log(
     '🚀 ~ file: Tooltip.js ~ line 33 ~ getPayloadFromTooltip ~ tooltipPayload',
     tooltipPayload
   ); // if (!hoveredItemId && !clickedItemId) return tooltipPayload;
+
+  if (hoveredItemId) {
+    return tooltipPayload?.filter((payloadItem) => payloadItem?.id === hoveredItemId);
+  }
 
   // if (Array.isArray(tooltipPayload?.payload)) {
   //   return tooltipPayload.payload.filter((payloadItem) => payloadItem?.id === hoveredItemId);
@@ -92,32 +100,6 @@ function Tooltip({
     [plotConfig]
   );
 
-  // return (
-  //   <RechartsTooltip
-  //     isFollowUpMenuOpen={isFollowUpMenuOpen}
-  //     cursor={isFollowUpMenuOpen ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
-  //     wrapperStyle={isFollowUpMenuOpen ? { visibility: 'visible', zIndex: 10000 } : undefined}
-  //     position={isFollowUpMenuOpen ? tooltipCoords : undefined}
-  //     formatter={valueFormatter}
-  //     labelFormatter={labelFormatter}
-  //     content={(tooltipProps) => {
-  //       return TooltipContentWithOutsideClickHandler({
-  //         ...tooltipProps,
-  //         useOutsideClickHandler,
-  //         onOutsideClick: () => {
-  //           if (isFollowUpMenuOpen) {
-  //             updateIsFollowUpMenuOpen(false);
-  //             updateClickedItemId(null);
-  //             updateHoveredItemId(null);
-  //             updateBrush({ x1: null, x2: null, y1: null, y2: null, isBrushing: false });
-  //           }
-  //         },
-  //         TooltipContent,
-  //       });
-  //     }}
-  //   />
-  // );
-
   return (
     <RechartsTooltip
       wrapperStyle={isFollowUpMenuOpen ? { visibility: 'visible', zIndex: 10000 } : undefined}
@@ -129,7 +111,7 @@ function Tooltip({
       content={(tooltipProps) => {
         return TooltipContentWithOutsideClickHandler({
           ...tooltipProps,
-          payload: getPayloadFromTooltip(tooltipProps?.payload),
+          payload: getPayloadFromTooltip(tooltipProps?.payload, hoveredItemId),
           // payload: hoveredItemId
           //   ? tooltipProps?.payload?.filter((payloadItem) => payloadItem?.id === hoveredItemId)
           //   : tooltipProps?.payload,

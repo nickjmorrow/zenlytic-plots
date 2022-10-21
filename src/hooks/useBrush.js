@@ -31,7 +31,6 @@ function useBrush(params) {
   const { isFollowUpMenuOpen = false } = tooltip;
 
   const [state, setState] = useState(initialState);
-  console.log('🚀 ~ file: useBrush.js ~ line 34 ~ useBrush ~ state', state);
 
   const getHorizontalEventValue = (e) => {
     if (brushType === 'number') {
@@ -71,15 +70,12 @@ function useBrush(params) {
         y2: e?.yValue,
         isBrushing: true,
       });
-      console.log('pull the trigger');
-      console.log('🚀 ~ file: useBrush.js ~ line 76 ~ onMouseMove ~ e', e);
+
       updateTooltipCoords({ x: e?.chartX, y: e?.chartY });
       return;
     }
     if (getHorizontalEventValue(e)) {
-      console.log('🚀 ~ file: useBrush.js ~ line 80 ~ onMouseMove ~ e', e);
       updateBrush({ x1: state.x1, x2: getHorizontalEventValue(e), isBrushing: true });
-      console.log('whats a couple');
 
       updateTooltipCoords(e?.activeCoordinate);
     }

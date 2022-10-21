@@ -80,8 +80,7 @@ function Tooltip({
     clickedItemId,
     useOutsideClickHandler,
   } = tooltip || {};
-  console.log('🚀 ~ file: Tooltip.js ~ line 83 ~ tooltip', tooltip);
-  console.log('🚀 ~ file: Tooltip.js ~ line 83 ~ tooltipCoords', tooltipCoords);
+
   const { updateBrush = () => {} } = brushEvents || {};
   const {
     updateIsFollowUpMenuOpen = () => {},

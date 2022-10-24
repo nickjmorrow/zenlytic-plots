@@ -70,6 +70,7 @@ function Tooltip({
   customValueFormatter = null,
   brushEvents = {},
 }) {
+  console.log('🚀 ~ file: Tooltip.js ~ line 73 ~ customLabelFormatter', customLabelFormatter);
   const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
   const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
   const { dataKey: xAxisDataKey } = xAxisConfig || {};

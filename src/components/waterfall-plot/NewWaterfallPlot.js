@@ -41,7 +41,12 @@ function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
         //   updateHoveredItemId(null);
         // }}
         onClick={onPlotClick}>
-        {GeneralChartComponents({ plotConfig, TooltipContent, tooltipHandlers, tooltip })}
+        {GeneralChartComponents({
+          plotConfig,
+          TooltipContent,
+          tooltipHandlers,
+          tooltip,
+        })}
         <Bar dataKey={yAxisDataKey}>
           {data.map((item, index) => {
             const itemOpacity = getItemOpacity({ id: item.id, hoveredItemId, clickedItemId });

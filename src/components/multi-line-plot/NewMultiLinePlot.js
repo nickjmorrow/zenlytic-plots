@@ -34,6 +34,7 @@ function PivotedMultiLinePlot({ plotConfig }) {
         strokeWidth={2}
         name={series.name}
         key={series.name}
+        isAnimationActive={false}
       />
     );
   });
@@ -51,6 +52,7 @@ function NonPivotedMultiLinePlot({ plotConfig }) {
       stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
       dot
       strokeWidth={2}
+      isAnimationActive={false}
     />
   ));
 }

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Line, LineChart } from 'recharts';
 import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
-import useBrush from '../../hooks/useBrush';
+import useBrush, { BRUSH_SELECTION_TYPES } from '../../hooks/useBrush';
 import useTooltip from '../../hooks/useTooltip';
 
 import {
@@ -74,6 +74,7 @@ function NewMultiLinePlot({
     tooltip,
     xAxisDataKey,
     xAxisFormat,
+    brushSelectionType: BRUSH_SELECTION_TYPES.RANGE_AND_ITEMS,
   });
 
   return (

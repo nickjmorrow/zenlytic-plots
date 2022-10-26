@@ -1,5 +1,11 @@
 import { useState } from 'react';
 
+export const BRUSH_SELECTION_TYPES = {
+  RANGE: 'range',
+  ITEMS: 'items',
+  RANGE_AND_ITEMS: 'rangeAndItems',
+};
+
 export const BRUSH_DIRECTIONS = {
   BOTH: 'both',
   HORIZONTAL: 'horizontal',
@@ -24,6 +30,8 @@ function useBrush(params) {
     xAxisDataKey,
     xAxisFormat,
     yAxisDataKey,
+
+    brushSelectionType = BRUSH_SELECTION_TYPES.RANGE, // brushSelectionType is used to what it is we are trying to select
     yAxisFormat,
   } = params || {};
 
@@ -102,6 +110,7 @@ function useBrush(params) {
       xAxisFormat,
       yAxisDataKey,
       yAxisFormat,
+      brushSelectionType,
     });
   };
 

@@ -1,6 +1,12 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { getMargin, getXAxis, getYAxis, getZAxis } from '../../utils/plotConfigGetters';
+import {
+  getCategoryAxis,
+  getMargin,
+  getXAxis,
+  getYAxis,
+  getZAxis,
+} from '../../utils/plotConfigGetters';
 import Brush from '../shared/brush/Brush';
 import GridLines from '../shared/grid-lines/GridLines';
 import Tooltip from '../shared/tooltip/Tooltip';
@@ -14,6 +20,7 @@ function GeneralChartComponents({
   xAxisConfig = getXAxis(plotConfig),
   yAxisConfig = getYAxis(plotConfig),
   zAxisConfig = getZAxis(plotConfig),
+  categoryAxisConfig = getCategoryAxis(plotConfig),
   useLegend = false,
   useGridLines = true,
   margin = getMargin(plotConfig),
@@ -43,6 +50,7 @@ function GeneralChartComponents({
         xAxisConfig,
         yAxisConfig,
         zAxisConfig,
+        categoryAxisConfig,
         TooltipContent,
         tooltip,
         customLabelFormatter,

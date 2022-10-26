@@ -62,6 +62,7 @@ function Tooltip({
   xAxisConfig = {},
   yAxisConfig = {},
   zAxisConfig = {},
+  categoryAxisConfig = {},
   TooltipContent = () => {},
   tooltipHandlers = {},
   tooltip = {},
@@ -70,9 +71,10 @@ function Tooltip({
   customValueFormatter = null,
   brushEvents = {},
 }) {
-  console.log('🚀 ~ file: Tooltip.js ~ line 73 ~ customLabelFormatter', customLabelFormatter);
   const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
   const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
+  const { dataKey: categoryAxisDataKey } = categoryAxisConfig;
+  console.log('🚀 ~ file: Tooltip.js ~ line 77 ~ categoryAxisConfig', categoryAxisConfig);
   const { dataKey: xAxisDataKey } = xAxisConfig || {};
   const {
     tooltipCoords,
@@ -124,6 +126,7 @@ function Tooltip({
           ...tooltipProps,
           clickedItemId,
           hoveredItemId,
+          categoryAxisDataKey,
           // payload: getPayloadFromTooltip(tooltipProps?.payload, hoveredItemId),
           // payload: hoveredItemId
           //   ? tooltipProps?.payload?.filter((payloadItem) => payloadItem?.id === hoveredItemId)

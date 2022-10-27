@@ -17,7 +17,12 @@ import {
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
 import PlotContainer from '../plot-container/PlotContainer';
 
-function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipContent = () => {} }) {
+function NewLinePlot({
+  plotConfig = {},
+  onBrushUpdate = () => {},
+  TooltipContent = () => {},
+  isFollowUpDisabled = false,
+}) {
   const xAxisDataKey = getXAxisDataKey(plotConfig);
   const xAxisFormat = getAxisFormat(plotConfig, xAxisDataKey);
   const xAxisName = getXAxisName(plotConfig);
@@ -48,6 +53,7 @@ function NewLinePlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipContent
           tooltip,
           TooltipContent,
           tooltipHandlers,
+          isFollowUpDisabled,
         })}
         <Line
           type="monotone"

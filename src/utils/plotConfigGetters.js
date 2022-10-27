@@ -314,8 +314,8 @@ const getWaterfallSpecificData = (plotConfig, data) => {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
   const activeIds = getSeriesActiveIds(plotConfig);
 
-  let startDataPoint = data.find((d) => d.id === 'start');
-  let endDataPoint = data.find((d) => d.id === 'end');
+  const startDataPoint = data.find((d) => d.id === 'start');
+  const endDataPoint = data.find((d) => d.id === 'end');
 
   if (!startDataPoint || !endDataPoint) return [];
 

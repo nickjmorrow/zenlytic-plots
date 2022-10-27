@@ -32,6 +32,7 @@ function GeneralChartComponents({
   customLabelFormatter = null,
   customValueFormatter = null,
   tooltipHandlers = {},
+  isFollowUpDisabled = false,
 }) {
   return (
     <>
@@ -44,7 +45,7 @@ function GeneralChartComponents({
           margin,
           ...legendConfig,
         })}
-      {brush && Brush({ ...brush })}
+      {!isFollowUpDisabled && brush && Brush({ ...brush })}
       {Tooltip({
         plotConfig,
         xAxisConfig,
@@ -57,6 +58,7 @@ function GeneralChartComponents({
         customValueFormatter,
         tooltipHandlers,
         brushEvents,
+        isFollowUpDisabled,
       })}
     </>
   );

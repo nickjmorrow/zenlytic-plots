@@ -16,7 +16,12 @@ import {
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
 import PlotContainer from '../plot-container/PlotContainer';
 
-function NewScatterPlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipContent = false }) {
+function NewScatterPlot({
+  plotConfig = {},
+  onBrushUpdate = () => {},
+  TooltipContent = false,
+  isFollowUpDisabled = false,
+}) {
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
   const seriesStrokeColor = getSeriesStrokeColor(plotConfig);
@@ -49,6 +54,7 @@ function NewScatterPlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipCont
           TooltipContent,
           tooltipHandlers,
           tooltip,
+          isFollowUpDisabled,
         })}
         <Scatter data={data} fill={seriesStrokeColor} />
       </ScatterChart>

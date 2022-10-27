@@ -21,7 +21,12 @@ import {
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
 import PlotContainer from '../plot-container/PlotContainer';
 
-function NewHistogramPlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipContent = false }) {
+function NewHistogramPlot({
+  plotConfig = {},
+  onBrushUpdate = () => {},
+  TooltipContent = false,
+  isFollowUpDisabled = false,
+}) {
   const xAxisConfig = getXAxis(plotConfig);
   const xAxisDataKey = getXAxisDataKey(plotConfig);
   const xAxisFormat = getAxisFormat(plotConfig, xAxisDataKey);
@@ -64,6 +69,7 @@ function NewHistogramPlot({ plotConfig = {}, onBrushUpdate = () => {}, TooltipCo
           tooltip,
           TooltipContent,
           tooltipHandlers,
+          isFollowUpDisabled,
           xAxisConfig: {
             ...xAxisConfig,
             type: 'number',

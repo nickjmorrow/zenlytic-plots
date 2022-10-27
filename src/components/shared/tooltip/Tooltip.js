@@ -13,6 +13,10 @@ import { HIGHTLIGHT_BAR_COLOR } from '../../../constants/plotConstants';
 
 // The tooltip payload can have a nested array in it
 const getPayloadFromTooltip = (tooltipPayload, clickedItemId, hoveredItemId) => {
+  console.log(
+    '🚀 ~ file: Tooltip.js ~ line 16 ~ getPayloadFromTooltip ~ tooltipPayload',
+    tooltipPayload
+  );
   if (clickedItemId) {
     return tooltipPayload?.filter((payloadItem) => payloadItem?.id === clickedItemId);
   }
@@ -70,6 +74,7 @@ function Tooltip({
   customLabelFormatter = null,
   customValueFormatter = null,
   brushEvents = {},
+  isFollowUpDisabled = false,
 }) {
   const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
   const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
@@ -113,12 +118,16 @@ function Tooltip({
     [plotConfig]
   );
 
+  const isFollowUpMenuOpenAndEnabled = isFollowUpMenuOpen && !isFollowUpDisabled;
+
   return (
     <RechartsTooltip
-      wrapperStyle={isFollowUpMenuOpen ? { visibility: 'visible', zIndex: 10000 } : undefined}
-      isFollowUpMenuOpen={isFollowUpMenuOpen}
-      position={isFollowUpMenuOpen ? tooltipCoords : undefined}
-      cursor={isFollowUpMenuOpen ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
+      wrapperStyle={
+        isFollowUpMenuOpenAndEnabled ? { visibility: 'visible', zIndex: 10000 } : { zIndex: 10000 }
+      }
+      isFollowUpMenuOpen={isFollowUpMenuOpenAndEnabled}
+      position={isFollowUpMenuOpenAndEnabled ? tooltipCoords : undefined}
+      cursor={isFollowUpMenuOpenAndEnabled ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
       formatter={valueFormatter}
       labelFormatter={labelFormatter}
       content={(tooltipProps) => {

@@ -61,6 +61,7 @@ function NewMultiLinePlot({
   plotConfig = {},
   TooltipContent = () => {},
   onBrushUpdate = () => {},
+  isFollowUpDisabled = false,
 }) {
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
@@ -87,6 +88,7 @@ function NewMultiLinePlot({
           brush,
           useLegend: true,
           brushEvents,
+          isFollowUpDisabled,
           tooltip,
           TooltipContent,
           tooltipHandlers,

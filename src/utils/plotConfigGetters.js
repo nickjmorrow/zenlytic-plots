@@ -303,19 +303,22 @@ const getNonPivotedFunnelSpecificData = (plotConfig, data) => {
   return newData;
 };
 
-const getFunnelSpeicifcData = (plotConfig, data, isDataPivoted) => {
+const getFunnelSpecificData = (plotConfig, data, isDataPivoted) => {
   return isDataPivoted
     ? getPivotedFunnelSpecificData(plotConfig, data)
     : getNonPivotedFunnelSpecificData(plotConfig, data);
 };
 
-const getWaterfallSpeicifcData = (plotConfig, data) => {
+const getWaterfallSpecificData = (plotConfig, data) => {
   const xAxisDataKey = getXAxisDataKey(plotConfig);
   const yAxisDataKey = getYAxisDataKey(plotConfig);
   const activeIds = getSeriesActiveIds(plotConfig);
 
-  const startDataPoint = data.find((d) => d.id === 'start');
-  const endDataPoint = data.find((d) => d.id === 'end');
+  let startDataPoint = data.find((d) => d.id === 'start');
+  let endDataPoint = data.find((d) => d.id === 'end');
+
+  if (!startDataPoint || !endDataPoint) return [];
+
   // If activeIds isnt passed, we assume all are active
   const activeData = activeIds ? data.filter((d) => activeIds.includes(d.id)) : data;
 
@@ -335,8 +338,12 @@ const getWaterfallSpeicifcData = (plotConfig, data) => {
   const otherFactorsDataPoint = {
     id: 'other_factors',
     [xAxisDataKey]: 'Other Factors',
-    [yAxisDataKey]: [baseValueAccumulator, endDataPoint[yAxisDataKey][0]],
+    [yAxisDataKey]: [baseValueAccumulator, endDataPoint[yAxisDataKey][1]],
   };
+  console.log(
+    '🚀 ~ file: plotConfigGetters.js ~ line 340 ~ getWaterfallSpecificData ~ [baseValueAccumulator, endDataPoint[yAxisDataKey][0]]',
+    [baseValueAccumulator, endDataPoint[yAxisDataKey][0]]
+  );
 
   return [startDataPoint, ...accumulatedData, otherFactorsDataPoint, endDataPoint];
 };
@@ -346,9 +353,9 @@ export const getData = (plotConfig) => {
   const isDataPivoted = getIsDataPivoted(plotConfig);
   switch (getSeriesType(plotConfig)) {
     case PLOT_TYPES.FUNNEL_BAR:
-      return getFunnelSpeicifcData(plotConfig, data, isDataPivoted);
+      return getFunnelSpecificData(plotConfig, data, isDataPivoted);
     case PLOT_TYPES.WATERFALL:
-      return getWaterfallSpeicifcData(plotConfig, data, isDataPivoted);
+      return getWaterfallSpecificData(plotConfig, data, isDataPivoted);
     default:
       return isDataPivoted ? getPivotedData(plotConfig, data) : data;
   }

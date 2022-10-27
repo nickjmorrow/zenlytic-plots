@@ -1,17 +1,69 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React, { useCallback } from 'react';
-import { Bar, BarChart, Cell } from 'recharts';
-import { PLOT_COLORS, PLOT_SECONDARY_COLORS } from '../../constants/plotConstants';
+import { Bar, BarChart, Cell, LabelList } from 'recharts';
+import fontSizes from '../../constants/fontSizes';
+import fontWeights from '../../constants/fontWeights';
+import {
+  COLOR_FAIL,
+  COLOR_SUCCESS,
+  PLOT_COLORS,
+  PLOT_SECONDARY_COLORS,
+} from '../../constants/plotConstants';
 import useTooltip from '../../hooks/useTooltip';
 import getItemOpacity from '../../utils/getItemOpacity';
 
-import { getData, getMargin, getYAxisDataKey } from '../../utils/plotConfigGetters';
+import {
+  getData,
+  getMargin,
+  getXAxis,
+  getYAxisDataKey,
+  getYAxisTickFormatter,
+} from '../../utils/plotConfigGetters';
 import GeneralChartComponents from '../general-chart-components/GeneralChartComponents';
 import PlotContainer from '../plot-container/PlotContainer';
 
+const renderCustomizedLabel = (props, yAxisTickFormatter) => {
+  const { x, y, width, height, value, fill, label, index } = props;
+
+  const verticalOffset = height >= 0 ? 16 : -16;
+
+  const textColor = height >= 0 ? COLOR_SUCCESS : COLOR_FAIL;
+
+  const { id } = props || {};
+  console.log('🚀 ~ file: NewWaterfallPlot.js ~ line 34 ~ renderCustomizedLabel ~ props', props);
+  if (id === 'start' || id === 'end') return null;
+
+  const valueDifference = value.length === 2 ? yAxisTickFormatter(value[1] - value[0]) : null;
+
+  return (
+    <g>
+      <text
+        x={x + width / 2}
+        y={y - verticalOffset}
+        position="top"
+        fill={textColor}
+        textAnchor="middle"
+        fontSize={fontSizes.xs}
+        fontWeight={fontWeights.medium}
+        dominantBaseline="middle">
+        {valueDifference}
+      </text>
+    </g>
+  );
+};
+
 function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
+  const yAxisTickFormatter = getYAxisTickFormatter(plotConfig);
+
+  // const customLabelFormatter = getCustomLabelFormatter(plotConfig);
+  // console.log(
+  //   '🚀 ~ file: NewWaterfallPlosdadsadst.js ~ line 69 ~ NewWaterfallPlot ~ customLabelFormatter',
+  //   customLabelFormatter
+  // );
+
+  const xAxisConfig = getXAxis(plotConfig);
 
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
@@ -31,23 +83,19 @@ function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
 
   return (
     <PlotContainer>
-      <BarChart
-        data={data}
-        margin={margin}
-        // onMouseMove={(e) => {
-        //   updateHoveredItemId(e?.activePayload?.[0]?.payload?.id);
-        // }}
-        // onMouseLeave={() => {
-        //   updateHoveredItemId(null);
-        // }}
-        onClick={onPlotClick}>
+      <BarChart data={data} margin={margin} onClick={onPlotClick}>
         {GeneralChartComponents({
           plotConfig,
           TooltipContent,
           tooltipHandlers,
           tooltip,
+          xAxisConfig: { ...xAxisConfig, tickLine: false },
         })}
-        <Bar dataKey={yAxisDataKey}>
+        <Bar dataKey={yAxisDataKey} isAnimationActive={false}>
+          <LabelList
+            dataKey={yAxisDataKey}
+            content={(props) => renderCustomizedLabel(props, yAxisTickFormatter)}
+          />
           {data.map((item, index) => {
             const itemOpacity = getItemOpacity({ id: item.id, hoveredItemId, clickedItemId });
             return (

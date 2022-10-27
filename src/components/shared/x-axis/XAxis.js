@@ -4,7 +4,6 @@
 import React from 'react';
 import { Label, XAxis as RechartsXAxis } from 'recharts';
 import {
-  AXIS_TYPES,
   DEFAULT_AXIS_COLOR,
   DEFAULT_LABEL_PROPS,
   DEFAULT_TICK_PROPS,
@@ -12,7 +11,15 @@ import {
 } from '../../../constants/plotConstants';
 
 const XAxis = (props) => {
-  const { name, type = 'number', dataKey, tickFormatter, allowDuplicatedCategory } = props;
+  const {
+    name,
+    type = 'number',
+    dataKey,
+    tickFormatter,
+    allowDuplicatedCategory,
+    tickLine = true,
+  } = props;
+
   return (
     <RechartsXAxis
       dataKey={dataKey}
@@ -22,6 +29,7 @@ const XAxis = (props) => {
       allowDuplicatedCategory={allowDuplicatedCategory}
       stroke={DEFAULT_AXIS_COLOR}
       height={DEFAULT_X_AXIS_HEIGHT}
+      tickLine={tickLine}
       tick={DEFAULT_TICK_PROPS}>
       <Label {...DEFAULT_LABEL_PROPS} value={name} position="bottom" />
     </RechartsXAxis>

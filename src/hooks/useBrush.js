@@ -11,17 +11,19 @@ export const BRUSH_DIRECTIONS = {
   HORIZONTAL: 'horizontal',
 };
 
+const defaultInitialState = {
+  x1: null,
+  x2: null,
+  y1: null,
+  y2: null,
+  isBrushing: false,
+  xDataKey: null,
+  yDataKey: null,
+};
+
 function useBrush(params) {
   const {
-    initialState = {
-      x1: null,
-      x2: null,
-      y1: null,
-      y2: null,
-      isBrushing: false,
-      xDataKey: null,
-      yDataKey: null,
-    },
+    initialState = defaultInitialState,
     brushType = 'category',
     brushDirection = 'horizontal',
     onBrushUpdate = () => {},
@@ -30,7 +32,6 @@ function useBrush(params) {
     xAxisDataKey,
     xAxisFormat,
     yAxisDataKey,
-
     brushSelectionType = BRUSH_SELECTION_TYPES.RANGE, // brushSelectionType is used to what it is we are trying to select
     yAxisFormat,
   } = params || {};
@@ -52,6 +53,14 @@ function useBrush(params) {
     setState({ x1, x2, y1, y2, isBrushing });
   };
 
+  const updateIsBrushing = (newIsBrushing) => {
+    updateBrush({ ...state, isBrushing: newIsBrushing });
+  };
+
+  const resetBrush = () => {
+    setState(initialState);
+  };
+
   const onMouseDown = (e) => {
     if (isFollowUpMenuOpen) return; // If the follow up menu is open, don't allow the brush to start
     if (brushDirection === BRUSH_DIRECTIONS.BOTH) {
@@ -70,6 +79,7 @@ function useBrush(params) {
     if (isFollowUpMenuOpen) return; // If the follow up menu is open, don't allow the brush to start
     if (!state.isBrushing) return; // User is not brushing, so don't update the brush
     if (!state.x1 || (brushDirection === BRUSH_DIRECTIONS.BOTH && !state.y1)) return; // User moved their brushing cursor outside of the chart, so don't update the brush
+
     if (brushDirection === BRUSH_DIRECTIONS.BOTH && e?.xValue && e?.yValue) {
       updateBrush({
         x1: state.x1,
@@ -83,8 +93,11 @@ function useBrush(params) {
       return;
     }
     if (getHorizontalEventValue(e)) {
-      updateBrush({ x1: state.x1, x2: getHorizontalEventValue(e), isBrushing: true });
-
+      updateBrush({
+        x1: state.x1,
+        x2: getHorizontalEventValue(e),
+        isBrushing: true,
+      });
       updateTooltipCoords(e?.activeCoordinate);
     }
   };
@@ -92,20 +105,24 @@ function useBrush(params) {
   const onMouseUp = (e) => {
     if (!state.isBrushing) return; // User is not brushing, so don't update the brush
     if (isFollowUpMenuOpen) return; // If the follow up menu is open, don't update the brush
-    updateBrush({ ...state, isBrushing: false }); // User is done brushing, so set isBrushing to false
+    updateIsBrushing(true); // User is done brushing, so set isBrushing to false
     updateIsFollowUpMenuOpen(true); // Open the follow up menu
     // The user either clicked or dragged the brush off the plot, so invalidate the brush
     if (state.x1 === state.x2 || state.x2 === null) {
-      updateBrush({ x1: null, x2: null, y1: null, y2: null, isBrushing: false });
+      resetBrush();
       updateIsFollowUpMenuOpen(false);
       updateTooltipCoords(null);
       return;
     }
+
+    const isXFlipped = state.x1 > state.x2;
+    const isYFlipped = state.y1 > state.y2;
+
     onBrushUpdate({
-      x1: state.x1,
-      x2: state.x2,
-      y1: state.y1,
-      y2: state.y2,
+      x1: isXFlipped ? state.x2 : state.x1,
+      x2: isXFlipped ? state.x1 : state.x2,
+      y1: isYFlipped ? state.y2 : state.y1,
+      y2: isYFlipped ? state.y1 : state.y2,
       xAxisDataKey,
       xAxisFormat,
       yAxisDataKey,
@@ -121,6 +138,7 @@ function useBrush(params) {
       onMouseDown,
       onMouseUp,
       onMouseMove,
+      resetBrush,
     },
   ];
 }

@@ -18,6 +18,7 @@ const XAxis = (props) => {
     tickFormatter,
     allowDuplicatedCategory,
     tickLine = true,
+    interval = 'preserveEnd',
   } = props;
 
   return (
@@ -30,6 +31,7 @@ const XAxis = (props) => {
       stroke={DEFAULT_AXIS_COLOR}
       height={DEFAULT_X_AXIS_HEIGHT}
       tickLine={tickLine}
+      interval={interval}
       tick={DEFAULT_TICK_PROPS}>
       <Label {...DEFAULT_LABEL_PROPS} value={name} position="bottom" />
     </RechartsXAxis>

@@ -340,10 +340,6 @@ const getWaterfallSpecificData = (plotConfig, data) => {
     [xAxisDataKey]: 'Other Factors',
     [yAxisDataKey]: [baseValueAccumulator, endDataPoint[yAxisDataKey][1]],
   };
-  console.log(
-    '🚀 ~ file: plotConfigGetters.js ~ line 340 ~ getWaterfallSpecificData ~ [baseValueAccumulator, endDataPoint[yAxisDataKey][0]]',
-    [baseValueAccumulator, endDataPoint[yAxisDataKey][0]]
-  );
 
   return [startDataPoint, ...accumulatedData, otherFactorsDataPoint, endDataPoint];
 };

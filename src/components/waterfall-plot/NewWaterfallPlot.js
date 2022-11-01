@@ -31,7 +31,6 @@ const renderCustomizedLabel = (props, yAxisTickFormatter) => {
   const textColor = height >= 0 ? COLOR_SUCCESS : COLOR_FAIL;
 
   const { id } = props || {};
-  console.log('🚀 ~ file: NewWaterfallPlot.js ~ line 34 ~ renderCustomizedLabel ~ props', props);
   if (id === 'start' || id === 'end') return null;
 
   const valueDifference = value.length === 2 ? yAxisTickFormatter(value[1] - value[0]) : null;
@@ -56,12 +55,6 @@ const renderCustomizedLabel = (props, yAxisTickFormatter) => {
 function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
   const yAxisDataKey = getYAxisDataKey(plotConfig);
   const yAxisTickFormatter = getYAxisTickFormatter(plotConfig);
-
-  // const customLabelFormatter = getCustomLabelFormatter(plotConfig);
-  // console.log(
-  //   '🚀 ~ file: NewWaterfallPlosdadsadst.js ~ line 69 ~ NewWaterfallPlot ~ customLabelFormatter',
-  //   customLabelFormatter
-  // );
 
   const xAxisConfig = getXAxis(plotConfig);
 
@@ -89,7 +82,22 @@ function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
           TooltipContent,
           tooltipHandlers,
           tooltip,
-          xAxisConfig: { ...xAxisConfig, tickLine: false },
+          xAxisConfig: {
+            ...xAxisConfig,
+            tickLine: false,
+            interval: 0,
+            // This is in charge of only show the start, end, and other factors bar
+            tickFormatter: (value, index) => {
+              console.log(
+                '🚀 ~ file: NewWaterfallPlot.js ~ line 91 ~ NewWaterfallPlot ~ data',
+                data
+              );
+
+              return index === 0 || index === data.length - 1 || index === data.length - 2
+                ? value
+                : '';
+            },
+          },
         })}
         <Bar dataKey={yAxisDataKey} isAnimationActive={false}>
           <LabelList

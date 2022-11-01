@@ -18,10 +18,10 @@ const getPayloadFromTooltip = (tooltipPayload, clickedItemId, hoveredItemId) => 
     tooltipPayload
   );
   if (clickedItemId) {
-    return tooltipPayload?.filter((payloadItem) => payloadItem?.id === clickedItemId);
+    return tooltipPayload?.filter((payloadItem) => payloadItem?.payload?.id === clickedItemId);
   }
   if (hoveredItemId) {
-    return tooltipPayload?.filter((payloadItem) => payloadItem?.id === hoveredItemId);
+    return tooltipPayload?.filter((payloadItem) => payloadItem?.payload?.id === hoveredItemId);
   }
 
   // if (Array.isArray(tooltipPayload?.payload)) {
@@ -79,7 +79,6 @@ function Tooltip({
   const { tickFormatter: xAxisTickFormatter } = xAxisConfig;
   const { tickFormatter: yAxisTickFormatter } = yAxisConfig;
   const { dataKey: categoryAxisDataKey } = categoryAxisConfig;
-  console.log('🚀 ~ file: Tooltip.js ~ line 77 ~ categoryAxisConfig', categoryAxisConfig);
   const { dataKey: xAxisDataKey } = xAxisConfig || {};
   const {
     tooltipCoords,
@@ -89,7 +88,7 @@ function Tooltip({
     useOutsideClickHandler,
   } = tooltip || {};
 
-  const { updateBrush = () => {} } = brushEvents || {};
+  const { updateBrush = () => {}, resetBrush = () => {} } = brushEvents || {};
   const {
     updateIsFollowUpMenuOpen = () => {},
     updateClickedItemId = () => {},
@@ -142,7 +141,7 @@ function Tooltip({
           //   : tooltipProps?.payload,
           onOutsideClick: () => {
             updateIsFollowUpMenuOpen(false);
-            updateBrush({ x1: null, x2: null, y1: null, y2: null, isBrushing: false });
+            resetBrush();
             updateClickedItemId(null);
           },
           TooltipContent,

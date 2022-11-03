@@ -13,10 +13,6 @@ import { HIGHTLIGHT_BAR_COLOR } from '../../../constants/plotConstants';
 
 // The tooltip payload can have a nested array in it
 const getPayloadFromTooltip = (tooltipPayload, clickedItemId, hoveredItemId) => {
-  console.log(
-    '🚀 ~ file: Tooltip.js ~ line 16 ~ getPayloadFromTooltip ~ tooltipPayload',
-    tooltipPayload
-  );
   if (clickedItemId) {
     return tooltipPayload?.filter((payloadItem) => payloadItem?.payload?.id === clickedItemId);
   }

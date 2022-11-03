@@ -88,11 +88,6 @@ function NewWaterfallPlot({ plotConfig = {}, TooltipContent = false }) {
             interval: 0,
             // This is in charge of only show the start, end, and other factors bar
             tickFormatter: (value, index) => {
-              console.log(
-                '🚀 ~ file: NewWaterfallPlot.js ~ line 91 ~ NewWaterfallPlot ~ data',
-                data
-              );
-
               return index === 0 || index === data.length - 1 || index === data.length - 2
                 ? value
                 : '';

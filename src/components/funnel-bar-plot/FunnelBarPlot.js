@@ -12,7 +12,7 @@ import {
   DEFAULT_TICK_PROPS,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
-  HIGHTLIGHT_BAR_COLOR,
+  HIGHLIGHT_BAR_COLOR,
   PLOT_COLORS,
   PLOT_SECONDARY_COLORS,
 } from '../../constants/plotConstants';
@@ -95,7 +95,7 @@ function FunnelBarPlot({
           <Label {...DEFAULT_LABEL_PROPS} value={yAxisLabel} position="left" angle={-90} />
         </YAxis>
         <Tooltip
-          cursor={{ fill: HIGHTLIGHT_BAR_COLOR }}
+          cursor={{ fill: HIGHLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler

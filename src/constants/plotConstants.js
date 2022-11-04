@@ -103,7 +103,7 @@ export const AXIS_COLOR = '#A6A6A6';
 export const GRID_COLOR = '#F0F0F0';
 export const LABEL_COLOR = '#737373';
 
-export const HIGHTLIGHT_BAR_COLOR = colors.gray[30];
+export const HIGHLIGHT_BAR_COLOR = colors.gray[30];
 
 export const BRUSH_COLOR = colors.gray[50];
 export const BRUSH_BORDER_COLOR = colors.gray[100];

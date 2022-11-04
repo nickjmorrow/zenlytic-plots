@@ -7,7 +7,7 @@ import formatValue from '../../../utils/formatValue';
 import getD3DataFormatter from '../../../utils/getD3DataFormatter';
 import { getFormatter, getTickFormatterFromDataKey } from '../../../utils/plotConfigGetters';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { HIGHTLIGHT_BAR_COLOR } from '../../../constants/plotConstants';
+import { HIGHLIGHT_BAR_COLOR } from '../../../constants/plotConstants';
 
 // eslint-disable-next-line react/prop-types
 
@@ -122,7 +122,7 @@ function Tooltip({
       }
       isFollowUpMenuOpen={isFollowUpMenuOpenAndEnabled}
       position={isFollowUpMenuOpenAndEnabled ? tooltipCoords : undefined}
-      cursor={isFollowUpMenuOpenAndEnabled ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
+      cursor={isFollowUpMenuOpenAndEnabled ? false : { fill: HIGHLIGHT_BAR_COLOR }}
       formatter={valueFormatter}
       labelFormatter={labelFormatter}
       content={(tooltipProps) => {

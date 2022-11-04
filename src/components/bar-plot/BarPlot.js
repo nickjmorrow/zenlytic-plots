@@ -19,7 +19,7 @@ import {
   DEFAULT_TICK_PROPS,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
-  HIGHTLIGHT_BAR_COLOR,
+  HIGHLIGHT_BAR_COLOR,
 } from '../../constants/plotConstants';
 import formatValue from '../../utils/formatValue';
 import getD3DataFormatter from '../../utils/getD3DataFormatter';
@@ -122,7 +122,7 @@ function BarPlot({
           }></YAxis>
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
-          cursor={isClickTooltipVisible ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
+          cursor={isClickTooltipVisible ? false : { fill: HIGHLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler

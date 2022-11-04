@@ -27,7 +27,7 @@ import {
   DEFAULT_WATERFALL_X_AXIS_HEIGHT,
   DEFAULT_X_AXIS_HEIGHT,
   DEFAULT_Y_AXIS_WIDTH,
-  HIGHTLIGHT_BAR_COLOR,
+  HIGHLIGHT_BAR_COLOR,
 } from '../../constants/plotConstants';
 import fontSizes from '../../constants/fontSizes';
 import fontWeights from '../../constants/fontWeights';
@@ -157,7 +157,7 @@ function WaterfallPlot({
         </YAxis>
         <Tooltip
           position={isClickTooltipVisible ? clickTooltipCoords : undefined}
-          cursor={isClickTooltipVisible ? false : { fill: HIGHTLIGHT_BAR_COLOR }}
+          cursor={isClickTooltipVisible ? false : { fill: HIGHLIGHT_BAR_COLOR }}
           wrapperStyle={{ visibility: 'visible', zIndex: 10000 }}
           content={
             <TooltipHandler

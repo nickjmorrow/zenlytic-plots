@@ -17,7 +17,7 @@ import PlotContainer from '../plot-container/PlotContainer';
 import SankeyPlotLink from './components/sankey-plot-link/SankeyPlotLink';
 import SankeyPlotNode from './components/sankey-plot-node/SankeyPlotNode';
 
-function NewLinePlot({ plotConfig = {}, TooltipContent = () => {} }) {
+function NewSankeyPlot({ plotConfig = {}, TooltipContent = () => {} }) {
   const data = getData(plotConfig);
   const margin = getMargin(plotConfig);
 
@@ -34,10 +34,10 @@ function NewLinePlot({ plotConfig = {}, TooltipContent = () => {} }) {
     nodeColors[category] = PLOT_COLORS[index % PLOT_COLORS.length];
   });
 
-  const colorGradients = data.links.map((link) => {
+  const colorGradients = data.links?.map((link) => {
     return {
-      source: data.nodes[link.source].color || nodeColors[data.nodes[link.source][xAxisDataKey]],
-      target: data.nodes[link.target].color || nodeColors[data.nodes[link.target][xAxisDataKey]],
+      source: data.nodes[link.source]?.color || nodeColors[data.nodes[link.source][xAxisDataKey]],
+      target: data.nodes[link.target]?.color || nodeColors[data.nodes[link.target][xAxisDataKey]],
     };
   });
 
@@ -72,6 +72,6 @@ function NewLinePlot({ plotConfig = {}, TooltipContent = () => {} }) {
   );
 }
 
-NewLinePlot.propTypes = {};
+NewSankeyPlot.propTypes = {};
 
-export default NewLinePlot;
+export default NewSankeyPlot;

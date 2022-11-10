@@ -31,6 +31,7 @@ function PivotedGroupedBar({
         id={series.name}
         data={series.data}
         stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
+        strokeWidth={2}
         fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
         dataKey={yAxisDataKey}
         name={series.name}
@@ -59,6 +60,7 @@ function NonPivotedGroupedBar({
         name={axes.name}
         fill={PLOT_SECONDARY_COLORS[index % PLOT_SECONDARY_COLORS.length]}
         stroke={PLOT_COLORS[index % PLOT_COLORS.length]}
+        strokeWidth={2}
         stackId={isSeriesStacked ? 'a' : undefined}
         // onMouseOver={() => updateHoveredItemId(series.name)}
         onMouseLeave={() => updateHoveredItemId(null)}
